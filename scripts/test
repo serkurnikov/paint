@@ -1,0 +1,20 @@
+#!/bin/bash
+set -x -e -o pipefail
+
+hadolint Dockerfile
+
+shellcheck env.sh.dist scripts/*
+
+# When https://github.com/quasilyte/go-ruleguard/issues/78 will be
+# implemented and available in golangci-lint then replace using
+# build/gorules/rules.go.
+mod="$(go list -m)"
+(! grep --color=auto -r "\"$mod/internal" pkg)
+
+golangci-lint run
+
+if which dockerize &>/dev/null; then
+	dockerize -timeout 30s -wait "tcp://${EXAMPLE_MYSQL_ADDR_HOST}:${EXAMPLE_MYSQL_ADDR_PORT:-3306}"
+fi
+
+gotestsum -- -race -tags=integration "$@" ./...

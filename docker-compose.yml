@@ -1,0 +1,17 @@
+version: '3.6'
+
+volumes:
+  state-db:
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: paint
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+    volumes:
+      - state-db:/var/lib/postgresql/data

@@ -1,0 +1,54 @@
+swagger: '2.0'
+
+info:
+  title: paint
+  version: 0.2.0
+  description: |
+    # ...
+    ## List of all custom errors
+    First number is HTTP Status code, second is value of "code" field in returned JSON object, text description may or may not match "message" field in returned JSON object.
+    - 409.1000: contact already exists
+basePath: /
+schemes:
+  - http
+
+definitions:
+  # This model should match output of api.ServeError handler, to ensure
+  # errors returned by go-swagger (like failed validation) use same
+  # format as general errors returned by our handlers.
+  # By default api.ServeError = github.com/go-openapi/errors.ServeError.
+  Error:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        description: Either same as HTTP Status Code OR >= 600 with HTTP Status Code 422.
+        type: integer
+        format: int32
+      message:
+        type: string
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+  /test:
+    get:
+      operationId: test
+      description: test
+      responses:
+        '200':
+          description: response
+          schema:
+            type: object
+            required:
+              - result
+            properties:
+              result:
+                type: object
+        default:
+          $ref: '#/definitions/Error'
