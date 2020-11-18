@@ -11,8 +11,9 @@ import (
 type (
 	Ctx = context.Context
 
-	Appl interface{
-		externalApiTest()
+	Appl interface {
+		ExternalApiTest()
+		UnderPaint(tileSize int) map[string]string
 	}
 
 	Repo interface{}
