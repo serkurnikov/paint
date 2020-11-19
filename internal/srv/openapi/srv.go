@@ -51,7 +51,7 @@ func NewServer(appl app.Appl) (*restapi.Server, error) {
 	api := op.NewPaintAPI(swaggerSpec)
 	api.Logger = structlog.New(structlog.KeyUnit, "swagger").Printf
 
-	api.TestHandler = op.TestHandlerFunc(srv.TestHandlerFunc)
+	api.RenderHandler = op.RenderHandlerFunc(srv.RenderHandlerFunc)
 
 	server := restapi.NewServer(api)
 	server.Host = "localhost"

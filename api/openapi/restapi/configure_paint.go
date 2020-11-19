@@ -35,9 +35,9 @@ func configureAPI(api *op.PaintAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	if api.TestHandler == nil {
-		api.TestHandler = op.TestHandlerFunc(func(params op.TestParams) op.TestResponder {
-			return op.TestNotImplemented()
+	if api.RenderHandler == nil {
+		api.RenderHandler = op.RenderHandlerFunc(func(params op.RenderParams) op.RenderResponder {
+			return op.RenderNotImplemented()
 		})
 	}
 

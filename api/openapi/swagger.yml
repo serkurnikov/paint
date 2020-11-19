@@ -36,10 +36,10 @@ produces:
   - application/json
 
 paths:
-  /test:
+  /render:
     get:
-      operationId: test
-      description: test
+      operationId: render
+      description: render
       responses:
         '200':
           description: response

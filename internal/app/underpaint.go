@@ -1,8 +1,6 @@
 package app
 
 import (
-	"bytes"
-	"encoding/base64"
 	"image"
 	"image/color"
 	"image/draw"
@@ -13,8 +11,9 @@ import (
 )
 
 const (
-	imageURL = "http://i.imgur.com/m1UIjW1.jpg"
-	pathImage = "/tmp/image.jpg"
+	imageURL          = "http://i.imgur.com/m1UIjW1.jpg"
+	originalPathImage = "/tmp/image2.jpg"
+	resultPathImage   = "/tmp/result.jpg"
 )
 
 func (a App) ExternalApiTest() {}
@@ -23,20 +22,20 @@ type SubImager interface {
 	SubImage(r image.Rectangle) image.Image
 }
 
-func averageColor(img image.Image) [3]float64 {
+func calculateAverageColor(img image.Image) [4]float64 {
 	bounds := img.Bounds()
-	r, g, b := 0.0, 0.0, 0.0
+	r, g, b, a := 0.0, 0.0, 0.0, 0.0
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			r1, g1, b1, _ := img.At(x, y).RGBA()
-			r, g, b = r+float64(r1), g+float64(g1), b+float64(b1)
+			r1, g1, b1, a1 := img.At(x, y).RGBA()
+			r, g, b, a = r+float64(r1), g+float64(g1), b+float64(b1), a+float64(a1)
 		}
 	}
 	totalPixels := float64(bounds.Max.X * bounds.Max.Y)
-	return [3]float64{r / totalPixels, g / totalPixels, b / totalPixels}
+	return [4]float64{r / totalPixels, g / totalPixels, b / totalPixels, a / totalPixels}
 }
 
-func DownloadFile(filepath string, url string) error {
+func downloadFile(filepath, url string) error {
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -54,6 +53,25 @@ func DownloadFile(filepath string, url string) error {
 	return err
 }
 
+func saveImage(filepath string, img image.Image) error {
+
+	f, err := os.Create(filepath)
+	if err != nil {
+
+	}
+	defer f.Close()
+
+	opt := jpeg.Options{
+		Quality: 90,
+	}
+	err = jpeg.Encode(f, img, &opt)
+	if err != nil {
+
+	}
+
+	return err
+}
+
 func getImageFromFilePath(filePath string) (image.Image, error) {
 	f, err := os.Open(filePath)
 	if err != nil {
@@ -63,58 +81,43 @@ func getImageFromFilePath(filePath string) (image.Image, error) {
 	return image, err
 }
 
-func underPaintImage(img image.Image) image.Image {
+func underTileImage(img image.Image) image.Image {
 	bounds := img.Bounds()
-	aColor := averageColor(img)
-	for x := 0; x < bounds.Max.X; x++ {
-		for y := 0; y < bounds.Max.Y; y++ {
-			img.(draw.Image).Set(x, y, color.RGBA{uint8(aColor[0]),
-				uint8(aColor[1]),
-				uint8(aColor[2]), 1})
-		}
-	}
 
-	return img
-}
-
-func (a App) UnderPaint(tileSize int) map[string]string {
-
-	DownloadFile(pathImage, imageURL)
-
-	original, _ := getImageFromFilePath(pathImage)
-	bounds := original.Bounds()
-
-	newimage := image.NewNRGBA(image.Rect(bounds.Min.X, bounds.Min.X,
+	resultImage := image.NewNRGBA(image.Rect(bounds.Min.X, bounds.Min.X,
 		bounds.Max.X, bounds.Max.Y))
 
-	sp := image.Point{0, 0}
+	green := color.RGBA{
+		uint8(calculateAverageColor(img)[0]),
+		uint8(calculateAverageColor(img)[1]),
+		uint8(calculateAverageColor(img)[2]),
+		250}
+
+	draw.Draw(resultImage, bounds, &image.Uniform{green}, image.Point{0, 0}, draw.Src)
+
+	return resultImage
+}
+
+func (a App) UnderPaint(tileSize int) {
+
+	original, _ := getImageFromFilePath(originalPathImage)
+	bounds := original.Bounds()
+
+	resultImage := image.NewNRGBA(image.Rect(bounds.Min.X, bounds.Min.X,
+		bounds.Max.X, bounds.Max.Y))
+
+	draw.Draw(resultImage, bounds, original, image.Point{0, 0}, draw.Src)
+	saveImage(resultPathImage, resultImage)
 
 	for y := bounds.Min.Y; y < bounds.Max.Y; y = y + tileSize {
 		for x := bounds.Min.X; x < bounds.Max.X; x = x + tileSize {
 
 			tileBounds := image.Rect(x, y, x+tileSize, y+tileSize)
 			tileImage := original.(SubImager).SubImage(tileBounds)
+			img := underTileImage(tileImage)
 
-			draw.Draw(newimage, tileBounds, underPaintImage(tileImage), sp, draw.Src)
+			draw.Draw(resultImage, tileBounds, img, image.Point{-x, -y}, draw.Src)
+			saveImage(resultPathImage, resultImage)
 		}
 	}
-
-	return output(original, newimage)
-}
-
-func output(imgOrigin, imgUnderPaint image.Image) map[string]string {
-	buf1 := new(bytes.Buffer)
-	jpeg.Encode(buf1, imgOrigin, nil)
-	originalStr := base64.StdEncoding.EncodeToString(buf1.Bytes())
-
-	buf2 := new(bytes.Buffer)
-	jpeg.Encode(buf2, imgUnderPaint, nil)
-	underPaint := base64.StdEncoding.EncodeToString(buf2.Bytes())
-
-	result := map[string]string{
-		"original":   originalStr,
-		"underPaint": underPaint,
-	}
-
-	return result
 }

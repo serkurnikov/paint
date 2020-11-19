@@ -42,8 +42,8 @@ func NewPaintAPI(spec *loads.Document) *PaintAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
-		TestHandler: TestHandlerFunc(func(params TestParams) TestResponder {
-			return TestNotImplemented()
+		RenderHandler: RenderHandlerFunc(func(params RenderParams) RenderResponder {
+			return RenderNotImplemented()
 		}),
 	}
 }
@@ -83,8 +83,8 @@ type PaintAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
-	// TestHandler sets the operation handler for the test operation
-	TestHandler TestHandler
+	// RenderHandler sets the operation handler for the render operation
+	RenderHandler RenderHandler
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
 	ServeError func(http.ResponseWriter, *http.Request, error)
@@ -161,8 +161,8 @@ func (o *PaintAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
-	if o.TestHandler == nil {
-		unregistered = append(unregistered, "TestHandler")
+	if o.RenderHandler == nil {
+		unregistered = append(unregistered, "RenderHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -255,7 +255,7 @@ func (o *PaintAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/test"] = NewTest(o.context, o.TestHandler)
+	o.handlers["GET"]["/render"] = NewRender(o.context, o.RenderHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

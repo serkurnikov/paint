@@ -17,40 +17,40 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// TestHandlerFunc turns a function with the right signature into a test handler
-type TestHandlerFunc func(TestParams) TestResponder
+// RenderHandlerFunc turns a function with the right signature into a render handler
+type RenderHandlerFunc func(RenderParams) RenderResponder
 
 // Handle executing the request and returning a response
-func (fn TestHandlerFunc) Handle(params TestParams) TestResponder {
+func (fn RenderHandlerFunc) Handle(params RenderParams) RenderResponder {
 	return fn(params)
 }
 
-// TestHandler interface for that can handle valid test params
-type TestHandler interface {
-	Handle(TestParams) TestResponder
+// RenderHandler interface for that can handle valid render params
+type RenderHandler interface {
+	Handle(RenderParams) RenderResponder
 }
 
-// NewTest creates a new http.Handler for the test operation
-func NewTest(ctx *middleware.Context, handler TestHandler) *Test {
-	return &Test{Context: ctx, Handler: handler}
+// NewRender creates a new http.Handler for the render operation
+func NewRender(ctx *middleware.Context, handler RenderHandler) *Render {
+	return &Render{Context: ctx, Handler: handler}
 }
 
-/*Test swagger:route GET /test test
+/*Render swagger:route GET /render render
 
-test
+render
 
 */
-type Test struct {
+type Render struct {
 	Context *middleware.Context
-	Handler TestHandler
+	Handler RenderHandler
 }
 
-func (o *Test) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+func (o *Render) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
 		r = rCtx
 	}
-	var Params = NewTestParams()
+	var Params = NewRenderParams()
 
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
@@ -63,10 +63,10 @@ func (o *Test) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// TestOKBody test o k body
+// RenderOKBody render o k body
 //
-// swagger:model TestOKBody
-type TestOKBody struct {
+// swagger:model RenderOKBody
+type RenderOKBody struct {
 
 	// result
 	// Required: true
@@ -74,7 +74,7 @@ type TestOKBody struct {
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
-func (o *TestOKBody) UnmarshalJSON(data []byte) error {
+func (o *RenderOKBody) UnmarshalJSON(data []byte) error {
 	var props struct {
 
 		// result
@@ -92,8 +92,8 @@ func (o *TestOKBody) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// Validate validates this test o k body
-func (o *TestOKBody) Validate(formats strfmt.Registry) error {
+// Validate validates this render o k body
+func (o *RenderOKBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateResult(formats); err != nil {
@@ -106,9 +106,9 @@ func (o *TestOKBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *TestOKBody) validateResult(formats strfmt.Registry) error {
+func (o *RenderOKBody) validateResult(formats strfmt.Registry) error {
 
-	if err := validate.Required("testOK"+"."+"result", "body", o.Result); err != nil {
+	if err := validate.Required("renderOK"+"."+"result", "body", o.Result); err != nil {
 		return err
 	}
 
@@ -116,7 +116,7 @@ func (o *TestOKBody) validateResult(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (o *TestOKBody) MarshalBinary() ([]byte, error) {
+func (o *RenderOKBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -124,8 +124,8 @@ func (o *TestOKBody) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *TestOKBody) UnmarshalBinary(b []byte) error {
-	var res TestOKBody
+func (o *RenderOKBody) UnmarshalBinary(b []byte) error {
+	var res RenderOKBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -13,7 +13,7 @@ type (
 
 	Appl interface {
 		ExternalApiTest()
-		UnderPaint(tileSize int) map[string]string
+		UnderPaint(tileSize int)
 	}
 
 	Repo interface{}

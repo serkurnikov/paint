@@ -12,18 +12,18 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 )
 
-// NewTestParams creates a new TestParams object
+// NewRenderParams creates a new RenderParams object
 // no default values defined in spec.
-func NewTestParams() TestParams {
+func NewRenderParams() RenderParams {
 
-	return TestParams{}
+	return RenderParams{}
 }
 
-// TestParams contains all the bound params for the test operation
+// RenderParams contains all the bound params for the render operation
 // typically these are obtained from a http.Request
 //
-// swagger:parameters test
-type TestParams struct {
+// swagger:parameters render
+type RenderParams struct {
 
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
@@ -32,8 +32,8 @@ type TestParams struct {
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
 // for simple values it will use straight method calls.
 //
-// To ensure default values, the struct must have been initialized with NewTestParams() beforehand.
-func (o *TestParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
+// To ensure default values, the struct must have been initialized with NewRenderParams() beforehand.
+func (o *RenderParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
 
 	o.HTTPRequest = r

@@ -35,10 +35,10 @@ func init() {
   },
   "basePath": "/",
   "paths": {
-    "/test": {
+    "/render": {
       "get": {
-        "description": "test",
-        "operationId": "test",
+        "description": "render",
+        "operationId": "render",
         "responses": {
           "200": {
             "description": "response",
@@ -101,10 +101,10 @@ func init() {
   },
   "basePath": "/",
   "paths": {
-    "/test": {
+    "/render": {
       "get": {
-        "description": "test",
-        "operationId": "test",
+        "description": "render",
+        "operationId": "render",
         "responses": {
           "200": {
             "description": "response",

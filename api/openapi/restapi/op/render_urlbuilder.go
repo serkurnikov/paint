@@ -11,15 +11,15 @@ import (
 	golangswaggerpaths "path"
 )
 
-// TestURL generates an URL for the test operation
-type TestURL struct {
+// RenderURL generates an URL for the render operation
+type RenderURL struct {
 	_basePath string
 }
 
 // WithBasePath sets the base path for this url builder, only required when it's different from the
 // base path specified in the swagger spec.
 // When the value of the base path is an empty string
-func (o *TestURL) WithBasePath(bp string) *TestURL {
+func (o *RenderURL) WithBasePath(bp string) *RenderURL {
 	o.SetBasePath(bp)
 	return o
 }
@@ -27,15 +27,15 @@ func (o *TestURL) WithBasePath(bp string) *TestURL {
 // SetBasePath sets the base path for this url builder, only required when it's different from the
 // base path specified in the swagger spec.
 // When the value of the base path is an empty string
-func (o *TestURL) SetBasePath(bp string) {
+func (o *RenderURL) SetBasePath(bp string) {
 	o._basePath = bp
 }
 
 // Build a url path and query string
-func (o *TestURL) Build() (*url.URL, error) {
+func (o *RenderURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/test"
+	var _path = "/render"
 
 	_basePath := o._basePath
 	if _basePath == "" {
@@ -47,7 +47,7 @@ func (o *TestURL) Build() (*url.URL, error) {
 }
 
 // Must is a helper function to panic when the url builder returns an error
-func (o *TestURL) Must(u *url.URL, err error) *url.URL {
+func (o *RenderURL) Must(u *url.URL, err error) *url.URL {
 	if err != nil {
 		panic(err)
 	}
@@ -58,17 +58,17 @@ func (o *TestURL) Must(u *url.URL, err error) *url.URL {
 }
 
 // String returns the string representation of the path with query string
-func (o *TestURL) String() string {
+func (o *RenderURL) String() string {
 	return o.Must(o.Build()).String()
 }
 
 // BuildFull builds a full url with scheme, host, path and query string
-func (o *TestURL) BuildFull(scheme, host string) (*url.URL, error) {
+func (o *RenderURL) BuildFull(scheme, host string) (*url.URL, error) {
 	if scheme == "" {
-		return nil, errors.New("scheme is required for a full url on TestURL")
+		return nil, errors.New("scheme is required for a full url on RenderURL")
 	}
 	if host == "" {
-		return nil, errors.New("host is required for a full url on TestURL")
+		return nil, errors.New("host is required for a full url on RenderURL")
 	}
 
 	base, err := o.Build()
@@ -82,6 +82,6 @@ func (o *TestURL) BuildFull(scheme, host string) (*url.URL, error) {
 }
 
 // StringFull returns the string representation of a complete url
-func (o *TestURL) StringFull(scheme, host string) string {
+func (o *RenderURL) StringFull(scheme, host string) string {
 	return o.Must(o.BuildFull(scheme, host)).String()
 }

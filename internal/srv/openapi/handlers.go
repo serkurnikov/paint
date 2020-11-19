@@ -4,9 +4,9 @@ import (
 	"paint/api/openapi/restapi/op"
 )
 
-func (srv *server) TestHandlerFunc(params op.TestParams) op.TestResponder {
+func (srv *server) RenderHandlerFunc(params op.RenderParams) op.RenderResponder {
 	//ctx, _ := fromRequest(params.HTTPRequest)
-	result := srv.app.UnderPaint(10)
+	srv.app.UnderPaint(40)
 
-	return op.NewTestOK().WithPayload(&op.TestOKBody{Result: result})
+	return op.NewRenderOK().WithPayload(&op.RenderOKBody{Result: "render finished"})
 }
