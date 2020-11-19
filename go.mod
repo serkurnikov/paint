@@ -3,6 +3,7 @@ module paint
 go 1.15
 
 require (
+	github.com/disintegration/gift v1.2.1
 	github.com/go-openapi/analysis v0.19.13 // indirect
 	github.com/go-openapi/errors v0.19.8
 	github.com/go-openapi/loads v0.19.6
