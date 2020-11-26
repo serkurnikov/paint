@@ -59,6 +59,31 @@ func init() {
           }
         }
       }
+    },
+    "/scobel": {
+      "get": {
+        "description": "scobel",
+        "operationId": "scobel",
+        "responses": {
+          "200": {
+            "description": "response",
+            "schema": {
+              "type": "object",
+              "required": [
+                "result"
+              ],
+              "properties": {
+                "result": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -105,6 +130,29 @@ func init() {
       "get": {
         "description": "render",
         "operationId": "render",
+        "responses": {
+          "200": {
+            "description": "response",
+            "schema": {
+              "type": "object",
+              "required": [
+                "result"
+              ],
+              "properties": {
+                "result": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {}
+        }
+      }
+    },
+    "/scobel": {
+      "get": {
+        "description": "scobel",
+        "operationId": "scobel",
         "responses": {
           "200": {
             "description": "response",

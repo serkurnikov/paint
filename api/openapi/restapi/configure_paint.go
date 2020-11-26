@@ -40,6 +40,11 @@ func configureAPI(api *op.PaintAPI) http.Handler {
 			return op.RenderNotImplemented()
 		})
 	}
+	if api.ScobelHandler == nil {
+		api.ScobelHandler = op.ScobelHandlerFunc(func(params op.ScobelParams) op.ScobelResponder {
+			return op.ScobelNotImplemented()
+		})
+	}
 
 	api.PreServerShutdown = func() {}
 

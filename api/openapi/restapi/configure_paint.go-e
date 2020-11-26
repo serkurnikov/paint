@@ -12,7 +12,7 @@ import (
 	"paint/api/openapi/restapi/op"
 )
 
-//go:generate swagger generate server --target ../../openapi --name Paint --spec ../../../../../../../../var/folders/hb/cw0qnn9j0zlf357fjvxrkfkc0000gn/T/swagger.yml641472063 --api-package op --model-package model --principal interface{} --exclude-main --strict-responders
+//go:generate swagger generate server --target ../../openapi --name Paint --spec ../../../../../../../../var/folders/hb/cw0qnn9j0zlf357fjvxrkfkc0000gn/T/swagger.yml040520732 --api-package op --model-package model --principal interface{} --exclude-main --strict-responders
 
 func configureFlags(api *op.PaintAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
@@ -39,6 +39,11 @@ func configureAPI(api *op.PaintAPI) http.Handler {
 	if api.RenderHandler == nil {
 		api.RenderHandler = op.RenderHandlerFunc(func(params op.RenderParams) op.RenderResponder {
 			return op.RenderNotImplemented()
+		})
+	}
+	if api.ScobelHandler == nil {
+		api.ScobelHandler = op.ScobelHandlerFunc(func(params op.ScobelParams) op.ScobelResponder {
+			return op.ScobelNotImplemented()
 		})
 	}
 

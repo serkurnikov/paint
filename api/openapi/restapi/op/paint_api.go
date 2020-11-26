@@ -45,6 +45,9 @@ func NewPaintAPI(spec *loads.Document) *PaintAPI {
 		RenderHandler: RenderHandlerFunc(func(params RenderParams) RenderResponder {
 			return RenderNotImplemented()
 		}),
+		ScobelHandler: ScobelHandlerFunc(func(params ScobelParams) ScobelResponder {
+			return ScobelNotImplemented()
+		}),
 	}
 }
 
@@ -85,6 +88,8 @@ type PaintAPI struct {
 
 	// RenderHandler sets the operation handler for the render operation
 	RenderHandler RenderHandler
+	// ScobelHandler sets the operation handler for the scobel operation
+	ScobelHandler ScobelHandler
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
 	ServeError func(http.ResponseWriter, *http.Request, error)
@@ -163,6 +168,9 @@ func (o *PaintAPI) Validate() error {
 
 	if o.RenderHandler == nil {
 		unregistered = append(unregistered, "RenderHandler")
+	}
+	if o.ScobelHandler == nil {
+		unregistered = append(unregistered, "ScobelHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -256,6 +264,10 @@ func (o *PaintAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/render"] = NewRender(o.context, o.RenderHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/scobel"] = NewScobel(o.context, o.ScobelHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

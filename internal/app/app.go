@@ -14,6 +14,7 @@ type (
 	Appl interface {
 		ExternalApiTest()
 		UnderPaint(tileSize int)
+		Scobel()
 	}
 
 	Repo interface{}

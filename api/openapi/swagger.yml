@@ -52,3 +52,19 @@ paths:
                 type: object
         default:
           $ref: '#/definitions/Error'
+  /scobel:
+    get:
+      operationId: scobel
+      description: scobel
+      responses:
+        '200':
+          description: response
+          schema:
+            type: object
+            required:
+              - result
+            properties:
+              result:
+                type: object
+        default:
+          $ref: '#/definitions/Error'
