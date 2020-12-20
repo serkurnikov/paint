@@ -8,15 +8,17 @@ require (
 	github.com/go-openapi/jsonreference v0.19.5 // indirect
 	github.com/go-openapi/loads v0.19.7
 	github.com/go-openapi/runtime v0.19.24
-	github.com/go-openapi/spec v0.19.14
+	github.com/go-openapi/spec v0.19.15
 	github.com/go-openapi/strfmt v0.19.11
 	github.com/go-openapi/swag v0.19.12
-	github.com/go-openapi/validate v0.19.14
+	github.com/go-openapi/validate v0.19.15
+	github.com/go-opencv/go-opencv v0.0.0-20190115070742-a4fe8ec027cc
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/google/go-cmp v0.5.4 // indirect
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/lib/pq v1.8.0
+	github.com/mitchellh/mapstructure v1.4.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/powerman/appcfg v0.5.0
 	github.com/powerman/check v1.3.0
@@ -39,10 +41,10 @@ require (
 	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/tidwall/pretty v1.0.2 // indirect
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
-	golang.org/x/sys v0.0.0-20201126144705-a4b67b81d3d2 // indirect
+	golang.org/x/sys v0.0.0-20201126233918-771906719818 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/genproto v0.0.0-20201119123407-9b1e624d6bc4 // indirect
 	google.golang.org/grpc v1.33.2 // indirect
-	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
+	gopkg.in/check.v1 v1.0.0-20201128035030-22ab2dfb190c // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
