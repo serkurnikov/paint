@@ -1,60 +1,35 @@
 package app
 
-import (
-	"github.com/disintegration/gift"
-	"image"
-	"paint/internal/app/monography"
-	"paint/internal/app/scobel"
-)
-
 const (
-	basePath            = "/Users/sergeykurnikov/Documents/GoProjects/paint/internal/resources/"
-	originalPathImage   = basePath + "image.jpg"
-	resultPathImage     = basePath + "result.jpg"
-	contourPathImage    = basePath + "contour.jpg"
-	scobelPathImage     = basePath + "scobel.jpg"
-	monographyPathImage = basePath + "monography.jpg"
-	thresholdPathImage  = basePath + "threshold.jpg"
-	invertPathImage     = basePath + "invert.jpg"
-	testPathImage       = basePath + "test.jpg"
-	testPathImage2      = basePath + "test2.jpg"
-	testPathImage3      = basePath + "test3.jpg"
+	basePath       = "/Users/sergeykurnikov/Documents/GoProjects/paint/internal/resources/"
+	testPathImage0 = basePath + "test0.jpg"
+	testPathImage1 = basePath + "test1.jpg"
+	testPathImage2 = basePath + "test2.jpg"
+	testPathImage3 = basePath + "test3.jpg"
+	testPathImage4 = basePath + "test4.jpg"
+	testPathImage5 = basePath + "test5.jpg"
+	testPathImage6 = basePath + "test6.jpg"
+	testPathImage7 = basePath + "test7.jpg"
+
+	laplacianPathImage = basePath + "laplacian.jpg"
+	sobelPathImage     = basePath + "sobel.jpg"
+	thresholdPathImage = basePath + "threshold.jpg"
+	erodePathImage     = basePath + "erode.jpg"
+	dilatePathImage    = basePath + "dilate.jpg"
+	resultPathImage    = basePath + "result.jpg"
+	fusionPathImage    = basePath + "fusion.jpg"
 )
 
 func (a App) ExternalApiTest() {}
 
-func (a App) UnderPaint(tileSize int) {
-	src, _ := getImageFromFilePath(originalPathImage)
+func (a App) UnderPaint(tileSize int) {}
 
-	g := gift.New(gift.Median(tileSize, true))
-
-	dst := image.NewNRGBA(g.Bounds(src.Bounds()))
-	g.Draw(dst, src)
-
-	saveImage(resultPathImage, dst)
-}
-
-func Invert() {
-	src, _ := getImageFromFilePath(scobelPathImage)
-
-	g := gift.New(gift.Invert())
-
-	dst := image.NewNRGBA(g.Bounds(src.Bounds()))
-	g.Draw(dst, src)
-
-	saveImage(invertPathImage, dst)
-}
 func (a App) Scobel() {
-	src, _ := getImageFromFilePath(testPathImage2)
-	var edge = sobel.Filter(src)
-	saveImage(scobelPathImage, edge)
 
-	monography.Monograph(scobelPathImage, monographyPathImage, []int{0, 2, 0, 0})
-	monography.Threshold(monographyPathImage, thresholdPathImage)
+	sobel(testPathImage4, sobelPathImage)
+	dilate(sobelPathImage, dilatePathImage)
+	threshold(dilatePathImage, thresholdPathImage)
+	applyMask(testPathImage4, resultPathImage, thresholdPathImage)
 
-	monography.ApplyMask(testPathImage2, resultPathImage, thresholdPathImage)
-
-	CreateCountur(thresholdPathImage, contourPathImage)
-
-	Invert()
+	watershed(testPathImage4, fusionPathImage)
 }
