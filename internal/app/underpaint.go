@@ -10,6 +10,7 @@ const (
 	testPathImage5 = basePath + "test5.jpg"
 	testPathImage6 = basePath + "test6.jpg"
 	testPathImage7 = basePath + "test7.jpg"
+	testPathImage8 = basePath + "test8.jpg"
 
 	laplacianPathImage = basePath + "laplacian.jpg"
 	sobelPathImage     = basePath + "sobel.jpg"
@@ -17,7 +18,10 @@ const (
 	erodePathImage     = basePath + "erode.jpg"
 	dilatePathImage    = basePath + "dilate.jpg"
 	resultPathImage    = basePath + "result.jpg"
-	fusionPathImage    = basePath + "fusion.jpg"
+	watershedPathImage = basePath + "watershed.jpg"
+	meanShiftPathImage = basePath + "meanShift.jpg"
+	contoursPathImage  = basePath + "contours.jpg"
+	pencilPathImage    = basePath + "pencil.jpg"
 )
 
 func (a App) ExternalApiTest() {}
@@ -26,10 +30,18 @@ func (a App) UnderPaint(tileSize int) {}
 
 func (a App) Scobel() {
 
-	sobel(testPathImage4, sobelPathImage)
-	dilate(sobelPathImage, dilatePathImage)
-	threshold(dilatePathImage, thresholdPathImage)
-	applyMask(testPathImage4, resultPathImage, thresholdPathImage)
+	sobel(testPathImage0, sobelPathImage)
+	pencil(sobelPathImage, pencilPathImage)
+	meanShiftFilter(pencilPathImage, meanShiftPathImage, []float64{5, 10})
+	watershed(testPathImage0, watershedPathImage)
+	drawContoursCustom(testPathImage0, contoursPathImage)
 
-	watershed(testPathImage4, fusionPathImage)
+	/*
+		meanShiftFilter(testPathImage2, meanShiftPathImage, []float64{15, 30})
+		sobel(meanShiftPathImage, sobelPathImage)
+		dilate(sobelPathImage, dilatePathImage, 3)
+		threshold(dilatePathImage, thresholdPathImage)
+		applyMask(testPathImage2, resultPathImage, thresholdPathImage)
+		watershed(testPathImage2, watershedPathImage)
+	*/
 }

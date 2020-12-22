@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-func dilate(in, out string) {
+func dilate(in, out string, iterations int) {
 	path := filepath.Join(in)
 	img := gocv.IMRead(path, gocv.IMReadColor)
 	if img.Empty() {
@@ -23,7 +23,7 @@ func dilate(in, out string) {
 	kernel := gocv.GetStructuringElement(gocv.MorphRect, image.Pt(3, 3))
 	defer kernel.Close()
 
-	gocv.Dilate(img, &dest, kernel)
+	gocv.DilateWithParams(img, &dest, kernel, image.Pt(-1, -1), iterations, 0)
 
 	if ok := gocv.IMWrite(out, dest); !ok {
 		fmt.Printf("Failed to write image\n")

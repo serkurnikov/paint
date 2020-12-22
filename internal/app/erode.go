@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-func erode(in, out string) {
+func erode(in, out string, iterations int) {
 	path := filepath.Join(in)
 	img := gocv.IMRead(path, gocv.IMReadColor)
 	if img.Empty() {
@@ -23,7 +23,7 @@ func erode(in, out string) {
 	kernel := gocv.GetStructuringElement(gocv.MorphRect, image.Pt(3, 3))
 	defer kernel.Close()
 
-	gocv.ErodeWithParams(img, &dest, kernel, image.Pt(-1, -1), 2, 0)
+	gocv.ErodeWithParams(img, &dest, kernel, image.Pt(-1, -1), iterations, 0)
 
 	if ok := gocv.IMWrite(out, dest); !ok {
 		fmt.Printf("Failed to write image\n")
