@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func watershed(in, out string) {
+func watershed(in, outF, outW string, nErode, nDilate int) {
 	img := gocv.IMRead(in, gocv.IMReadColor)
 	if img.Empty() {
 		fmt.Printf("Failed to img image: %s\n", in)
@@ -28,11 +28,11 @@ func watershed(in, out string) {
 	kernel := gocv.GetStructuringElement(gocv.MorphRect, image.Pt(3, 3))
 	defer kernel.Close()
 
-	gocv.ErodeWithParams(thresholdMat, &fg, kernel, image.Pt(-1, -1), 2, 0)
+	gocv.ErodeWithParams(thresholdMat, &fg, kernel, image.Pt(-1, -1), nErode, 0)
 
 	bgt := gocv.NewMat()
 	defer bgt.Close()
-	gocv.DilateWithParams(thresholdMat, &bgt, kernel, image.Pt(-1, -1), 3, 0)
+	gocv.DilateWithParams(thresholdMat, &bgt, kernel, image.Pt(-1, -1), nDilate, 0)
 
 	bg := gocv.NewMat()
 	defer bg.Close()
@@ -41,6 +41,11 @@ func watershed(in, out string) {
 	marker := gocv.NewMat()
 	defer marker.Close()
 	gocv.Add(fg, bg, &marker)
+
+	if ok := gocv.IMWrite(outF, marker); !ok {
+		fmt.Printf("Failed to write image\n")
+		os.Exit(1)
+	}
 
 	markerCV32FC1 := gocv.NewMat()
 	defer markerCV32FC1.Close()
@@ -61,7 +66,7 @@ func watershed(in, out string) {
 
 	img.CopyToWithMask(&dest, thresholdMat)
 
-	if ok := gocv.IMWrite(out, thresholdMat); !ok {
+	if ok := gocv.IMWrite(outW, thresholdMat); !ok {
 		fmt.Printf("Failed to write image\n")
 		os.Exit(1)
 	}

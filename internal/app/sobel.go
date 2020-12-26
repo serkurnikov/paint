@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"gocv.io/x/gocv"
+	"image"
 	"os"
 )
 
@@ -16,7 +17,7 @@ func sobel(in, out string) {
 	dest := gocv.NewMat()
 	defer dest.Close()
 
-	//gocv.GaussianBlur(img, &img, image.Pt(3, 3), 0, 0, 4)
+	gocv.GaussianBlur(img, &img, image.Pt(3, 3), 1, 1, 4)
 	gocv.CvtColor(img, &img, gocv.ColorBGRAToGray)
 
 	gradX := gocv.NewMat()
