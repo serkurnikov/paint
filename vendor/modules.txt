@@ -595,6 +595,10 @@ google.golang.org/protobuf/types/known/durationpb
 google.golang.org/protobuf/types/known/timestamppb
 # gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c
 ## explicit
+# gopkg.in/gographics/imagick.v3 v3.3.0
+## explicit
+gopkg.in/gographics/imagick.v3/imagick
+gopkg.in/gographics/imagick.v3/imagick/types
 # gopkg.in/ini.v1 v1.62.0
 ## explicit
 gopkg.in/ini.v1

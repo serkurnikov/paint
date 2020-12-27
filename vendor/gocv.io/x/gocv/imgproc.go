@@ -335,6 +335,33 @@ func DistanceTransform(src Mat, dst *Mat, labels *Mat, distType DistanceTypes, m
 	C.DistanceTransform(src.p, dst.p, labels.p, C.int(distType), C.int(maskSize), C.int(labelType))
 }
 
+func FloodFill(src Mat, m *Mat, sP image.Point, newVal color.RGBA, loDiff color.RGBA, upDiff color.RGBA, flag int) {
+	cSeedPoint := C.struct_Point{
+		x: C.int(sP.X),
+		y: C.int(sP.Y),
+	}
+	cNewVal := C.struct_Scalar{
+		val1: C.double(newVal.B),
+		val2: C.double(newVal.G),
+		val3: C.double(newVal.R),
+		val4: C.double(newVal.A),
+	}
+	cLoDiff := C.struct_Scalar{
+		val1: C.double(loDiff.B),
+		val2: C.double(loDiff.G),
+		val3: C.double(loDiff.R),
+		val4: C.double(loDiff.A),
+	}
+	cUpDiff := C.struct_Scalar{
+		val1: C.double(upDiff.B),
+		val2: C.double(upDiff.G),
+		val3: C.double(upDiff.R),
+		val4: C.double(upDiff.A),
+	}
+
+	C.FloodFill(src.p, m.p, cSeedPoint, cNewVal, cLoDiff, cUpDiff, C.int(flag))
+}
+
 // Erode erodes an image by using a specific structuring element.
 //
 // For further details, please see:

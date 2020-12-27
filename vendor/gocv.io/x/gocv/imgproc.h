@@ -32,6 +32,7 @@ void SqBoxFilter(Mat src, Mat dst, int ddepth, Size ps);
 void Dilate(Mat src, Mat dst, Mat kernel);
 void DilateWithParams(Mat src, Mat dst, Mat kernel, Point anchor, int iterations, int borderType);
 void DistanceTransform(Mat src, Mat dst, Mat labels, int distanceType, int maskSize, int labelType);
+void FloodFill(Mat src, Mat m, Point sP, Scalar newVal, Scalar loDiff, Scalar upDiff, int flag);
 void Erode(Mat src, Mat dst, Mat kernel);
 void ErodeWithParams(Mat src, Mat dst, Mat kernel, Point anchor, int iterations, int borderType);
 void MatchTemplate(Mat image, Mat templ, Mat result, int method, Mat mask);

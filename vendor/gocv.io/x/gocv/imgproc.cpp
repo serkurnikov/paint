@@ -162,12 +162,22 @@ void Dilate(Mat src, Mat dst, Mat kernel) {
 
 void DilateWithParams(Mat src, Mat dst, Mat kernel, Point anchor, int iterations, int borderType) {
     cv::Point pt1(anchor.x, anchor.y);
-
     cv::dilate(*src, *dst, *kernel, pt1, iterations, borderType, cv::morphologyDefaultBorderValue());
 }
 
 void DistanceTransform(Mat src, Mat dst, Mat labels, int distanceType, int maskSize, int labelType) {
     cv::distanceTransform(*src, *dst, *labels, distanceType, maskSize, labelType);
+}
+
+void FloodFill(Mat src, Mat m, Point sP, Scalar newVal, Scalar lDiff, Scalar uDiff, int flag) {
+    cv::Point seedPoint(sP.x, sP.y);
+    cv::Scalar nW = cv::Scalar(newVal.val1, newVal.val2, newVal.val3, newVal.val4);
+
+    cv::Scalar loDiff = cv::Scalar(lDiff.val1, lDiff.val2, lDiff.val3, lDiff.val4);
+    cv::Scalar upDiff = cv::Scalar(uDiff.val1, uDiff.val2, uDiff.val3, uDiff.val4);
+
+
+    cv::floodFill(*src, *m, seedPoint, nW, 0, loDiff, upDiff, flag);
 }
 
 void Erode(Mat src, Mat dst, Mat kernel) {

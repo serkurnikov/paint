@@ -17,7 +17,7 @@ func threshold(in, out string) {
 	gocv.CvtColor(img, &grayImage, gocv.ColorBGRToGray)
 	// binary threshold
 	binImage := gocv.NewMat()
-	gocv.Threshold(img, &binImage, 128, 255, gocv.ThresholdBinary)
+	gocv.Threshold(img, &binImage, 220, 255, gocv.ThresholdBinaryInv)
 	// write img to filesystem
 	if ok := gocv.IMWrite(out, binImage); !ok {
 		fmt.Printf("Failed to write image\n")
