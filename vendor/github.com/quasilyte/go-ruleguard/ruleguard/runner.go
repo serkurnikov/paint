@@ -12,31 +12,44 @@ import (
 	"strings"
 
 	"github.com/quasilyte/go-ruleguard/internal/mvdan.cc/gogrep"
+	"github.com/quasilyte/go-ruleguard/ruleguard/goutil"
 )
 
 type rulesRunner struct {
-	ctx   *Context
-	rules *GoRuleSet
+	state *engineState
+
+	ctx   *RunContext
+	rules *goRuleSet
+
+	importer *goImporter
 
 	filename string
 	src      []byte
 
-	fileFilterParams fileFilterParams
-	nodeFilterParams nodeFilterParams
+	// A slice that is used to do a nodes keys sorting in renderMessage().
+	sortScratch []string
+
+	filterParams filterParams
 }
 
-func newRulesRunner(ctx *Context, rules *GoRuleSet) *rulesRunner {
+func newRulesRunner(ctx *RunContext, state *engineState, rules *goRuleSet) *rulesRunner {
+	importer := newGoImporter(state, goImporterConfig{
+		fset:         ctx.Fset,
+		debugImports: ctx.DebugImports,
+		debugPrint:   ctx.DebugPrint,
+	})
 	rr := &rulesRunner{
-		ctx:   ctx,
-		rules: rules,
-		fileFilterParams: fileFilterParams{
-			ctx: ctx,
+		ctx:      ctx,
+		importer: importer,
+		rules:    rules,
+		filterParams: filterParams{
+			env:      state.env.GetEvalEnv(),
+			importer: importer,
+			ctx:      ctx,
 		},
-		nodeFilterParams: nodeFilterParams{
-			ctx: ctx,
-		},
+		sortScratch: make([]string, 0, 8),
 	}
-	rr.nodeFilterParams.nodeText = rr.nodeText
+	rr.filterParams.nodeText = rr.nodeText
 	return rr
 }
 
@@ -44,7 +57,7 @@ func (rr *rulesRunner) nodeText(n ast.Node) []byte {
 	from := rr.ctx.Fset.Position(n.Pos()).Offset
 	to := rr.ctx.Fset.Position(n.End()).Offset
 	src := rr.fileBytes()
-	if (from >= 0 && int(from) < len(src)) && (to >= 0 && int(to) < len(src)) {
+	if (from >= 0 && from < len(src)) && (to >= 0 && to < len(src)) {
 		return src[from:to]
 	}
 	// Fallback to the printer.
@@ -76,7 +89,7 @@ func (rr *rulesRunner) run(f *ast.File) error {
 	// TODO(quasilyte): run local rules as well.
 
 	rr.filename = rr.ctx.Fset.Position(f.Pos()).Filename
-	rr.fileFilterParams.filename = rr.filename
+	rr.filterParams.filename = rr.filename
 	rr.collectImports(f)
 
 	for _, rule := range rr.rules.universal.uncategorized {
@@ -105,10 +118,6 @@ func (rr *rulesRunner) run(f *ast.File) error {
 }
 
 func (rr *rulesRunner) reject(rule goRule, reason string, m gogrep.MatchData) {
-	// Note: we accept reason and sub args instead of formatted or
-	// concatenated string so it's cheaper for us to call this
-	// function is debugging is not enabled.
-
 	if rule.group != rr.ctx.Debug {
 		return // This rule is not being debugged
 	}
@@ -147,44 +156,22 @@ func (rr *rulesRunner) reject(rule goRule, reason string, m gogrep.MatchData) {
 		if typ != nil {
 			typeString = typ.String()
 		}
-		s := strings.ReplaceAll(sprintNode(rr.ctx.Fset, expr), "\n", `\n`)
+		s := strings.ReplaceAll(goutil.SprintNode(rr.ctx.Fset, expr), "\n", `\n`)
 		rr.ctx.DebugPrint(fmt.Sprintf("  $%s %s: %s", name, typeString, s))
 	}
 }
 
 func (rr *rulesRunner) handleMatch(rule goRule, m gogrep.MatchData) bool {
-	for _, f := range rule.filter.fileFilters {
-		if !f.pred(&rr.fileFilterParams) {
-			rr.reject(rule, f.src, m)
+	if rule.filter.fn != nil {
+		rr.filterParams.values = m.Values
+		filterResult := rule.filter.fn(&rr.filterParams)
+		if !filterResult.Matched() {
+			rr.reject(rule, filterResult.RejectReason(), m)
 			return false
 		}
 	}
 
-	for name, node := range m.Values {
-		var expr ast.Expr
-		switch node := node.(type) {
-		case ast.Expr:
-			expr = node
-		case *ast.ExprStmt:
-			expr = node.X
-		default:
-			continue
-		}
-
-		rr.nodeFilterParams.n = expr
-		for _, f := range rule.filter.subFilters[name] {
-			if !f.pred(&rr.nodeFilterParams) {
-				rr.reject(rule, f.src, m)
-				return false
-			}
-		}
-	}
-
-	prefix := ""
-	if rule.severity != "" {
-		prefix = rule.severity + ": "
-	}
-	message := prefix + rr.renderMessage(rule.msg, m.Node, m.Values, true)
+	message := rr.renderMessage(rule.msg, m.Node, m.Values, true)
 	node := m.Node
 	if rule.location != "" {
 		node = m.Values[rule.location]
@@ -198,20 +185,22 @@ func (rr *rulesRunner) handleMatch(rule goRule, m gogrep.MatchData) bool {
 		}
 	}
 	info := GoRuleInfo{
+		Group:    rule.group,
 		Filename: rule.filename,
+		Line:     rule.line,
 	}
 	rr.ctx.Report(info, node, message, suggestion)
 	return true
 }
 
 func (rr *rulesRunner) collectImports(f *ast.File) {
-	rr.fileFilterParams.imports = make(map[string]struct{}, len(f.Imports))
+	rr.filterParams.imports = make(map[string]struct{}, len(f.Imports))
 	for _, spec := range f.Imports {
 		s, err := strconv.Unquote(spec.Path.Value)
 		if err != nil {
 			continue
 		}
-		rr.fileFilterParams.imports[s] = struct{}{}
+		rr.filterParams.imports[s] = struct{}{}
 	}
 }
 
@@ -224,7 +213,17 @@ func (rr *rulesRunner) renderMessage(msg string, n ast.Node, nodes map[string]as
 	if len(nodes) == 0 {
 		return msg
 	}
-	for name, n := range nodes {
+
+	rr.sortScratch = rr.sortScratch[:0]
+	for name := range nodes {
+		rr.sortScratch = append(rr.sortScratch, name)
+	}
+	sort.Slice(rr.sortScratch, func(i, j int) bool {
+		return len(rr.sortScratch[i]) > len(rr.sortScratch[j])
+	})
+
+	for _, name := range rr.sortScratch {
+		n := nodes[name]
 		key := "$" + name
 		if !strings.Contains(msg, key) {
 			continue

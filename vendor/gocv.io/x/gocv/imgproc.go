@@ -6,6 +6,7 @@ package gocv
 */
 import "C"
 import (
+	"errors"
 	"image"
 	"image/color"
 	"reflect"
@@ -1985,4 +1986,224 @@ func PhaseCorrelate(src1, src2, window Mat) (phaseShift Point2f, response float6
 		X: float32(result.x),
 		Y: float32(result.y),
 	}, float64(responseDouble)
+}
+
+// ToImage converts a Mat to a image.Image.
+func (m *Mat) ToImage() (image.Image, error) {
+	switch m.Type() {
+	case MatTypeCV8UC1:
+		img := image.NewGray(image.Rect(0, 0, m.Cols(), m.Rows()))
+		data, err := m.DataPtrUint8()
+		if err != nil {
+			return nil, err
+		}
+		copy(img.Pix, data[0:])
+		return img, nil
+
+	case MatTypeCV8UC3:
+		dst := NewMat()
+		defer dst.Close()
+
+		C.CvtColor(m.p, dst.p, C.int(ColorBGRToRGBA))
+
+		img := image.NewRGBA(image.Rect(0, 0, m.Cols(), m.Rows()))
+		data, err := dst.DataPtrUint8()
+		if err != nil {
+			return nil, err
+		}
+
+		copy(img.Pix, data[0:])
+		return img, nil
+
+	case MatTypeCV8UC4:
+		dst := NewMat()
+		defer dst.Close()
+
+		C.CvtColor(m.p, dst.p, C.int(ColorBGRAToRGBA))
+
+		img := image.NewNRGBA(image.Rect(0, 0, m.Cols(), m.Rows()))
+		data, err := dst.DataPtrUint8()
+		if err != nil {
+			return nil, err
+		}
+		copy(img.Pix, data[0:])
+		return img, nil
+
+	default:
+		return nil, errors.New("ToImage supports only MatType CV8UC1, CV8UC3 and CV8UC4")
+	}
+}
+
+// ImageToMatRGBA converts image.Image to gocv.Mat,
+// which represents RGBA image having 8bit for each component.
+// Type of Mat is gocv.MatTypeCV8UC4.
+func ImageToMatRGBA(img image.Image) (Mat, error) {
+	bounds := img.Bounds()
+	x := bounds.Dx()
+	y := bounds.Dy()
+
+	var data []uint8
+	switch img.ColorModel() {
+	case color.RGBAModel:
+		m, res := img.(*image.RGBA)
+		if !res {
+			return NewMat(), errors.New("Image color format error")
+		}
+		data = m.Pix
+
+	case color.NRGBAModel:
+		m, res := img.(*image.NRGBA)
+		if !res {
+			return NewMat(), errors.New("Image color format error")
+		}
+		data = m.Pix
+
+	default:
+		data := make([]byte, 0, x*y*3)
+		for j := bounds.Min.Y; j < bounds.Max.Y; j++ {
+			for i := bounds.Min.X; i < bounds.Max.X; i++ {
+				r, g, b, _ := img.At(i, j).RGBA()
+				data = append(data, byte(b>>8), byte(g>>8), byte(r>>8))
+			}
+		}
+		return NewMatFromBytes(y, x, MatTypeCV8UC3, data)
+	}
+
+	// speed up the conversion process of RGBA format
+	cvt, err := NewMatFromBytes(y, x, MatTypeCV8UC4, data)
+	if err != nil {
+		return NewMat(), err
+	}
+
+	defer cvt.Close()
+
+	dst := NewMat()
+	C.CvtColor(cvt.p, dst.p, C.int(ColorBGRAToRGBA))
+	return dst, nil
+}
+
+// ImageToMatRGB converts image.Image to gocv.Mat,
+// which represents RGB image having 8bit for each component.
+// Type of Mat is gocv.MatTypeCV8UC3.
+func ImageToMatRGB(img image.Image) (Mat, error) {
+	bounds := img.Bounds()
+	x := bounds.Dx()
+	y := bounds.Dy()
+
+	var data []uint8
+	switch img.ColorModel() {
+	case color.RGBAModel:
+		m, res := img.(*image.RGBA)
+		if true != res {
+			return NewMat(), errors.New("Image color format error")
+		}
+		data = m.Pix
+		// speed up the conversion process of RGBA format
+		src, err := NewMatFromBytes(y, x, MatTypeCV8UC4, data)
+		if err != nil {
+			return NewMat(), err
+		}
+		defer src.Close()
+
+		dst := NewMat()
+		CvtColor(src, &dst, ColorRGBAToBGR)
+		return dst, nil
+
+	default:
+		data := make([]byte, 0, x*y*3)
+		for j := bounds.Min.Y; j < bounds.Max.Y; j++ {
+			for i := bounds.Min.X; i < bounds.Max.X; i++ {
+				r, g, b, _ := img.At(i, j).RGBA()
+				data = append(data, byte(b>>8), byte(g>>8), byte(r>>8))
+			}
+		}
+		return NewMatFromBytes(y, x, MatTypeCV8UC3, data)
+	}
+}
+
+// ImageGrayToMatGray converts image.Gray to gocv.Mat,
+// which represents grayscale image 8bit.
+// Type of Mat is gocv.MatTypeCV8UC1.
+func ImageGrayToMatGray(img *image.Gray) (Mat, error) {
+	bounds := img.Bounds()
+	x := bounds.Dx()
+	y := bounds.Dy()
+	m, err := NewMatFromBytes(y, x, MatTypeCV8UC1, img.Pix)
+	if err != nil {
+		return NewMat(), err
+	}
+	return m, nil
+}
+
+// Adds the square of a source image to the accumulator image.
+//
+// For further details, please see:
+// https://docs.opencv.org/master/d7/df3/group__imgproc__motion.html#ga1a567a79901513811ff3b9976923b199
+//
+
+func Accumulate(src Mat, dst *Mat) {
+	C.Mat_Accumulate(src.p, dst.p)
+}
+
+// Adds an image to the accumulator image with mask.
+//
+// For further details, please see:
+// https://docs.opencv.org/master/d7/df3/group__imgproc__motion.html#ga1a567a79901513811ff3b9976923b199
+//
+func AccumulateWithMask(src Mat, dst *Mat, mask Mat) {
+	C.Mat_AccumulateWithMask(src.p, dst.p, mask.p)
+}
+
+// Adds the square of a source image to the accumulator image.
+//
+// For further details, please see:
+// https://docs.opencv.org/master/d7/df3/group__imgproc__motion.html#gacb75e7ffb573227088cef9ceaf80be8c
+//
+func AccumulateSquare(src Mat, dst *Mat) {
+	C.Mat_AccumulateSquare(src.p, dst.p)
+}
+
+// Adds the square of a source image to the accumulator image with mask.
+//
+// For further details, please see:
+// https://docs.opencv.org/master/d7/df3/group__imgproc__motion.html#gacb75e7ffb573227088cef9ceaf80be8c
+//
+func AccumulateSquareWithMask(src Mat, dst *Mat, mask Mat) {
+	C.Mat_AccumulateSquareWithMask(src.p, dst.p, mask.p)
+}
+
+// Adds the per-element product of two input images to the accumulator image.
+//
+// For further details, please see:
+// https://docs.opencv.org/master/d7/df3/group__imgproc__motion.html#ga82518a940ecfda49460f66117ac82520
+//
+func AccumulateProduct(src1 Mat, src2 Mat, dst *Mat) {
+	C.Mat_AccumulateProduct(src1.p, src2.p, dst.p)
+}
+
+// Adds the per-element product of two input images to the accumulator image with mask.
+//
+// For further details, please see:
+// https://docs.opencv.org/master/d7/df3/group__imgproc__motion.html#ga82518a940ecfda49460f66117ac82520
+//
+func AccumulateProductWithMask(src1 Mat, src2 Mat, dst *Mat, mask Mat) {
+	C.Mat_AccumulateProductWithMask(src1.p, src2.p, dst.p, mask.p)
+}
+
+// Updates a running average.
+//
+// For further details, please see:
+// https://docs.opencv.org/master/d7/df3/group__imgproc__motion.html#ga4f9552b541187f61f6818e8d2d826bc7
+//
+func AccumulatedWeighted(src Mat, dst *Mat, alpha float64) {
+	C.Mat_AccumulatedWeighted(src.p, dst.p, C.double(alpha))
+}
+
+// Updates a running average with mask.
+//
+// For further details, please see:
+// https://docs.opencv.org/master/d7/df3/group__imgproc__motion.html#ga4f9552b541187f61f6818e8d2d826bc7
+//
+func AccumulatedWeightedWithMask(src Mat, dst *Mat, alpha float64, mask Mat) {
+	C.Mat_AccumulatedWeightedWithMask(src.p, dst.p, C.double(alpha), mask.p)
 }

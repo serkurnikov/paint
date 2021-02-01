@@ -180,6 +180,7 @@ func (net *Net) ForwardLayers(outBlobNames []string) (blobs []Mat) {
 	blobs = make([]Mat, cMats.length)
 	for i := C.int(0); i < cMats.length; i++ {
 		blobs[i].p = C.Mats_get(cMats, i)
+		addMatToProfile(blobs[i].p)
 	}
 	return
 }
@@ -302,6 +303,31 @@ func ReadNetFromTorch(model string) Net {
 	cmodel := C.CString(model)
 	defer C.free(unsafe.Pointer(cmodel))
 	return Net{p: unsafe.Pointer(C.Net_ReadNetFromTorch(cmodel))}
+}
+
+// ReadNetFromONNX reads a network model stored in ONNX framework's format.
+//   check net.Empty() for read failure
+//
+// For further details, please see:
+// https://docs.opencv.org/master/d6/d0f/group__dnn.html#ga7faea56041d10c71dbbd6746ca854197
+//
+func ReadNetFromONNX(model string) Net {
+	cmodel := C.CString(model)
+	defer C.free(unsafe.Pointer(cmodel))
+	return Net{p: unsafe.Pointer(C.Net_ReadNetFromONNX(cmodel))}
+}
+
+// ReadNetFromONNXBytes reads a network model stored in ONNX framework's format.
+//
+// For further details, please see:
+// https://docs.opencv.org/master/d6/d0f/group__dnn.html#ga9198ecaac7c32ddf0aa7a1bcbd359567
+//
+func ReadNetFromONNXBytes(model []byte) (Net, error) {
+	bModel, err := toByteArray(model)
+	if err != nil {
+		return Net{}, err
+	}
+	return Net{p: unsafe.Pointer(C.Net_ReadNetFromONNXBytes(*bModel))}, nil
 }
 
 // BlobFromImage creates 4-dimensional blob from image. Optionally resizes and crops

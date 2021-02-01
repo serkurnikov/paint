@@ -11,6 +11,15 @@ Mat Mat_NewWithSize(int rows, int cols, int type) {
     return new cv::Mat(rows, cols, type, 0.0);
 }
 
+// Mat_NewWithSizes creates a new Mat with specific dimension sizes and number of channels.
+Mat Mat_NewWithSizes(struct IntVector sizes, int type) {
+	std::vector<int> sizess;
+    for (int i = 0; i < sizes.length; ++i) {
+        sizess.push_back(sizes.val[i]);
+    }
+    return new cv::Mat(sizess, type);
+}
+
 // Mat_NewFromScalar creates a new Mat from a Scalar. Intended to be used
 // for Mat comparison operation such as InRange.
 Mat Mat_NewFromScalar(Scalar ar, int type) {
@@ -28,6 +37,42 @@ Mat Mat_NewFromBytes(int rows, int cols, int type, struct ByteArray buf) {
     return new cv::Mat(rows, cols, type, buf.data);
 }
 
+// Mat_NewWithSizesFromScalar creates multidimensional Mat from a scalar
+Mat Mat_NewWithSizesFromScalar(IntVector sizes, int type, Scalar ar) {
+    std::vector<int> _sizes;
+    for (int i = 0, *v = sizes.val; i < sizes.length; ++v, ++i) {
+        _sizes.push_back(*v);
+    }
+
+    cv::Scalar c = cv::Scalar(ar.val1, ar.val2, ar.val3, ar.val4);
+    return new cv::Mat(_sizes, type, c);
+}
+
+// Mat_NewWithSizesFromBytes creates multidimensional Mat from a bytes
+Mat Mat_NewWithSizesFromBytes(IntVector sizes, int type, struct ByteArray buf) {
+    std::vector<int> _sizes;
+    for (int i = 0, *v = sizes.val; i < sizes.length; ++v, ++i) {
+        _sizes.push_back(*v);
+    }
+
+    return new cv::Mat(_sizes, type, buf.data);
+}
+
+Mat Eye(int rows, int cols, int type) {
+    cv::Mat temp = cv::Mat::eye(rows, cols, type);
+    return new cv::Mat(rows, cols, type, temp.data);
+}
+
+Mat Zeros(int rows, int cols, int type) {
+    cv::Mat temp = cv::Mat::zeros(rows, cols, type);
+    return new cv::Mat(rows, cols, type, temp.data);
+}
+
+Mat Ones(int rows, int cols, int type) {
+    cv::Mat temp = cv::Mat::ones(rows, cols, type);
+    return new cv::Mat(rows, cols, type, temp.data);
+}
+
 Mat Mat_FromPtr(Mat m, int rows, int cols, int type, int prow, int pcol) {
     return new cv::Mat(rows, cols, type, m->ptr(prow, pcol));
 }
@@ -40,6 +85,11 @@ void Mat_Close(Mat m) {
 // Mat_Empty tests if a Mat is empty
 int Mat_Empty(Mat m) {
     return m->empty();
+}
+
+// Mat_IsContinuous tests if a Mat is continuous
+bool Mat_IsContinuous(Mat m) {
+    return m->isContinuous();
 }
 
 // Mat_Clone returns a clone of this Mat
@@ -610,6 +660,10 @@ void Mat_Normalize(Mat src, Mat dst, double alpha, double beta, int typ) {
 
 double Norm(Mat src1, int normType) {
     return cv::norm(*src1, normType);
+}
+
+double NormWithMats(Mat src1, Mat src2, int normType) {
+    return cv::norm(*src1, *src2, normType);
 }
 
 void Mat_PerspectiveTransform(Mat src, Mat dst, Mat tm) {

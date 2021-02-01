@@ -178,6 +178,9 @@ var ErrEmptyByteSlice = errors.New("empty byte array")
 //
 type Mat struct {
 	p C.Mat
+
+	// Non-nil if Mat was created with a []byte (using NewMatFromBytes()). Nil otherwise.
+	d []byte
 }
 
 // NewMat returns a new empty Mat.
@@ -188,6 +191,58 @@ func NewMat() Mat {
 // NewMatWithSize returns a new Mat with a specific size and type.
 func NewMatWithSize(rows int, cols int, mt MatType) Mat {
 	return newMat(C.Mat_NewWithSize(C.int(rows), C.int(cols), C.int(mt)))
+}
+
+// NewMatWithSizes returns a new multidimensional Mat with a specific size and type.
+func NewMatWithSizes(sizes []int, mt MatType) Mat {
+	sizesArray := make([]C.int, len(sizes))
+	for i, s := range sizes {
+		sizesArray[i] = C.int(s)
+	}
+
+	sizesIntVector := C.IntVector{
+		val:    (*C.int)(&sizesArray[0]),
+		length: C.int(len(sizes)),
+	}
+	return newMat(C.Mat_NewWithSizes(sizesIntVector, C.int(mt)))
+}
+
+// NewMatWithSizesWithScalar returns a new multidimensional Mat with a specific size, type and scalar value.
+func NewMatWithSizesWithScalar(sizes []int, mt MatType, s Scalar) Mat {
+	csizes := []C.int{}
+	for _, v := range sizes {
+		csizes = append(csizes, C.int(v))
+	}
+	sizesVector := C.struct_IntVector{}
+	sizesVector.val = (*C.int)(&csizes[0])
+	sizesVector.length = (C.int)(len(csizes))
+
+	sVal := C.struct_Scalar{
+		val1: C.double(s.Val1),
+		val2: C.double(s.Val2),
+		val3: C.double(s.Val3),
+		val4: C.double(s.Val4),
+	}
+
+	return newMat(C.Mat_NewWithSizesFromScalar(sizesVector, C.int(mt), sVal))
+}
+
+// NewMatWithSizesWithScalar returns a new multidimensional Mat with a specific size, type and preexisting data.
+func NewMatWithSizesFromBytes(sizes []int, mt MatType, data []byte) (Mat, error) {
+	cBytes, err := toByteArray(data)
+	if err != nil {
+		return Mat{}, err
+	}
+
+	csizes := []C.int{}
+	for _, v := range sizes {
+		csizes = append(csizes, C.int(v))
+	}
+	sizesVector := C.struct_IntVector{}
+	sizesVector.val = (*C.int)(&csizes[0])
+	sizesVector.length = (C.int)(len(csizes))
+
+	return newMat(C.Mat_NewWithSizesFromBytes(sizesVector, C.int(mt), *cBytes)), nil
 }
 
 // NewMatFromScalar returns a new Mat for a specific Scalar value
@@ -221,7 +276,44 @@ func NewMatFromBytes(rows int, cols int, mt MatType, data []byte) (Mat, error) {
 	if err != nil {
 		return Mat{}, err
 	}
-	return newMat(C.Mat_NewFromBytes(C.int(rows), C.int(cols), C.int(mt), *cBytes)), nil
+	mat := newMat(C.Mat_NewFromBytes(C.int(rows), C.int(cols), C.int(mt), *cBytes))
+
+	// Store a reference to the backing data slice. This is needed because we pass the backing
+	// array directly to C code and without keeping a Go reference to it, it might end up
+	// garbage collected which would result in crashes.
+	//
+	// TODO(bga): This could live in newMat() but I wanted to reduce the change surface.
+	// TODO(bga): Code that needs access to the array from Go could use this directly.
+	mat.d = data
+
+	return mat, nil
+}
+
+// Returns an identity matrix of the specified size and type.
+//
+// The method returns a Matlab-style identity matrix initializer, similarly to Mat::zeros. Similarly to Mat::ones.
+// For further details, please see:
+// https://docs.opencv.org/master/d3/d63/classcv_1_1Mat.html#a2cf9b9acde7a9852542bbc20ef851ed2
+func Eye(rows int, cols int, mt MatType) Mat {
+	return newMat(C.Eye(C.int(rows), C.int(cols), C.int(mt)))
+}
+
+// Returns a zero array of the specified size and type.
+//
+// The method returns a Matlab-style zero array initializer.
+// For further details, please see:
+// https://docs.opencv.org/master/d3/d63/classcv_1_1Mat.html#a0b57b6a326c8876d944d188a46e0f556
+func Zeros(rows int, cols int, mt MatType) Mat {
+	return newMat(C.Zeros(C.int(rows), C.int(cols), C.int(mt)))
+}
+
+// Returns an array of all 1's of the specified size and type.
+//
+// The method returns a Matlab-style 1's array initializer
+// For further details, please see:
+// https://docs.opencv.org/master/d3/d63/classcv_1_1Mat.html#a69ae0402d116fc9c71908d8508dc2f09
+func Ones(rows int, cols int, mt MatType) Mat {
+	return newMat(C.Ones(C.int(rows), C.int(cols), C.int(mt)))
 }
 
 // FromPtr returns a new Mat with a specific size and type, initialized from a Mat Ptr.
@@ -238,6 +330,15 @@ func (m *Mat) Ptr() C.Mat {
 func (m *Mat) Empty() bool {
 	isEmpty := C.Mat_Empty(m.p)
 	return isEmpty != 0
+}
+
+// IsContinuous determines if the Mat is continuous.
+//
+// For further details, please see:
+// https://docs.opencv.org/master/d3/d63/classcv_1_1Mat.html#aa90cea495029c7d1ee0a41361ccecdf3
+//
+func (m *Mat) IsContinuous() bool {
+	return bool(C.Mat_IsContinuous(m.p))
 }
 
 // Clone returns a cloned full copy of the Mat.
@@ -325,28 +426,40 @@ func (m *Mat) ToBytes() []byte {
 //
 // The data is no longer valid once the Mat has been closed. Any data that
 // needs to be accessed after the Mat is closed must be copied into Go memory.
-func (m *Mat) DataPtrUint8() []uint8 {
+func (m *Mat) DataPtrUint8() ([]uint8, error) {
+	if !m.IsContinuous() {
+		return nil, errors.New("DataPtrUint8 requires continuous Mat")
+	}
+
 	p := C.Mat_DataPtr(m.p)
 	h := &reflect.SliceHeader{
 		Data: uintptr(unsafe.Pointer(p.data)),
 		Len:  int(p.length),
 		Cap:  int(p.length),
 	}
-	return *(*[]uint8)(unsafe.Pointer(h))
+	return *(*[]uint8)(unsafe.Pointer(h)), nil
 }
 
 // DataPtrInt8 returns a slice that references the OpenCV allocated data.
 //
 // The data is no longer valid once the Mat has been closed. Any data that
 // needs to be accessed after the Mat is closed must be copied into Go memory.
-func (m *Mat) DataPtrInt8() []int8 {
+func (m *Mat) DataPtrInt8() ([]int8, error) {
+	if m.Type()&MatTypeCV8S != MatTypeCV8S {
+		return nil, errors.New("DataPtrInt8 only supports MatTypeCV8S")
+	}
+
+	if !m.IsContinuous() {
+		return nil, errors.New("DataPtrInt8 requires continuous Mat")
+	}
+
 	p := C.Mat_DataPtr(m.p)
 	h := &reflect.SliceHeader{
 		Data: uintptr(unsafe.Pointer(p.data)),
 		Len:  int(p.length),
 		Cap:  int(p.length),
 	}
-	return *(*[]int8)(unsafe.Pointer(h))
+	return *(*[]int8)(unsafe.Pointer(h)), nil
 }
 
 // DataPtrUint16 returns a slice that references the OpenCV allocated data.
@@ -356,6 +469,10 @@ func (m *Mat) DataPtrInt8() []int8 {
 func (m *Mat) DataPtrUint16() ([]uint16, error) {
 	if m.Type()&MatTypeCV16U != MatTypeCV16U {
 		return nil, errors.New("DataPtrUint16 only supports MatTypeCV16U")
+	}
+
+	if !m.IsContinuous() {
+		return nil, errors.New("DataPtrUint16 requires continuous Mat")
 	}
 
 	p := C.Mat_DataPtr(m.p)
@@ -376,6 +493,10 @@ func (m *Mat) DataPtrInt16() ([]int16, error) {
 		return nil, errors.New("DataPtrInt16 only supports MatTypeCV16S")
 	}
 
+	if !m.IsContinuous() {
+		return nil, errors.New("DataPtrInt16 requires continuous Mat")
+	}
+
 	p := C.Mat_DataPtr(m.p)
 	h := &reflect.SliceHeader{
 		Data: uintptr(unsafe.Pointer(p.data)),
@@ -394,6 +515,10 @@ func (m *Mat) DataPtrFloat32() ([]float32, error) {
 		return nil, errors.New("DataPtrFloat32 only supports MatTypeCV32F")
 	}
 
+	if !m.IsContinuous() {
+		return nil, errors.New("DataPtrFloat32 requires continuous Mat")
+	}
+
 	p := C.Mat_DataPtr(m.p)
 	h := &reflect.SliceHeader{
 		Data: uintptr(unsafe.Pointer(p.data)),
@@ -410,6 +535,10 @@ func (m *Mat) DataPtrFloat32() ([]float32, error) {
 func (m *Mat) DataPtrFloat64() ([]float64, error) {
 	if m.Type()&MatTypeCV64F != MatTypeCV64F {
 		return nil, errors.New("DataPtrFloat64 only supports MatTypeCV64F")
+	}
+
+	if !m.IsContinuous() {
+		return nil, errors.New("DataPtrFloat64 requires continuous Mat")
 	}
 
 	p := C.Mat_DataPtr(m.p)
@@ -748,106 +877,6 @@ func (m *Mat) MultiplyMatrix(x Mat) Mat {
 // https://docs.opencv.org/4.1.2/d3/d63/classcv_1_1Mat.html#aaa428c60ccb6d8ea5de18f63dfac8e11
 func (m *Mat) T() Mat {
 	return newMat(C.Mat_T(m.p))
-}
-
-// ToImage converts a Mat to a image.Image.
-func (m *Mat) ToImage() (image.Image, error) {
-	t := m.Type()
-	if t != MatTypeCV8UC1 && t != MatTypeCV8UC3 && t != MatTypeCV8UC4 {
-		return nil, errors.New("ToImage supports only MatType CV8UC1, CV8UC3 and CV8UC4")
-	}
-
-	width := m.Cols()
-	height := m.Rows()
-	step := m.Step()
-	data := m.ToBytes()
-	channels := m.Channels()
-
-	if t == MatTypeCV8UC1 {
-		img := image.NewGray(image.Rect(0, 0, width, height))
-		c := color.Gray{Y: uint8(0)}
-
-		for y := 0; y < height; y++ {
-			for x := 0; x < width; x++ {
-				c.Y = uint8(data[y*step+x])
-				img.SetGray(x, y, c)
-			}
-		}
-
-		return img, nil
-	}
-
-	img := image.NewRGBA(image.Rect(0, 0, width, height))
-	c := color.RGBA{
-		R: uint8(0),
-		G: uint8(0),
-		B: uint8(0),
-		A: uint8(255),
-	}
-
-	for y := 0; y < height; y++ {
-		for x := 0; x < step; x = x + channels {
-			c.B = uint8(data[y*step+x])
-			c.G = uint8(data[y*step+x+1])
-			c.R = uint8(data[y*step+x+2])
-			if channels == 4 {
-				c.A = uint8(data[y*step+x+3])
-			}
-			img.SetRGBA(int(x/channels), y, c)
-		}
-	}
-
-	return img, nil
-}
-
-//ImageToMatRGBA converts image.Image to gocv.Mat,
-//which represents RGBA image having 8bit for each component.
-//Type of Mat is gocv.MatTypeCV8UC4.
-func ImageToMatRGBA(img image.Image) (Mat, error) {
-	bounds := img.Bounds()
-	x := bounds.Dx()
-	y := bounds.Dy()
-	data := make([]byte, 0, x*y*4)
-	for j := bounds.Min.Y; j < bounds.Max.Y; j++ {
-		for i := bounds.Min.X; i < bounds.Max.X; i++ {
-			r, g, b, a := img.At(i, j).RGBA()
-			data = append(data, byte(b>>8), byte(g>>8), byte(r>>8), byte(a>>8))
-		}
-	}
-	return NewMatFromBytes(y, x, MatTypeCV8UC4, data)
-}
-
-//ImageToMatRGB converts image.Image to gocv.Mat,
-//which represents RGB image having 8bit for each component.
-//Type of Mat is gocv.MatTypeCV8UC3.
-func ImageToMatRGB(img image.Image) (Mat, error) {
-	bounds := img.Bounds()
-	x := bounds.Dx()
-	y := bounds.Dy()
-	data := make([]byte, 0, x*y*3)
-	for j := bounds.Min.Y; j < bounds.Max.Y; j++ {
-		for i := bounds.Min.X; i < bounds.Max.X; i++ {
-			r, g, b, _ := img.At(i, j).RGBA()
-			data = append(data, byte(b>>8), byte(g>>8), byte(r>>8))
-		}
-	}
-	return NewMatFromBytes(y, x, MatTypeCV8UC3, data)
-}
-
-//ImageGrayToMatGray converts image.Gray to gocv.Mat,
-//which represents grayscale image 8bit.
-//Type of Mat is gocv.MatTypeCV8UC1.
-func ImageGrayToMatGray(img *image.Gray) (Mat, error) {
-	bounds := img.Bounds()
-	x := bounds.Dx()
-	y := bounds.Dy()
-	data := make([]byte, 0, x*y)
-	for j := bounds.Min.Y; j < bounds.Max.Y; j++ {
-		for i := bounds.Min.X; i < bounds.Max.X; i++ {
-			data = append(data, img.GrayAt(i, j).Y)
-		}
-	}
-	return NewMatFromBytes(y, x, MatTypeCV8UC1, data)
 }
 
 // AbsDiff calculates the per-element absolute difference between two arrays
@@ -1607,6 +1636,15 @@ func Norm(src1 Mat, normType NormType) float64 {
 	return float64(C.Norm(src1.p, C.int(normType)))
 }
 
+// Norm calculates the absolute difference/relative norm of two arrays.
+//
+// For further details, please see:
+// https://docs.opencv.org/master/d2/de8/group__core__array.html#ga7c331fb8dd951707e184ef4e3f21dd33
+//
+func NormWithMats(src1 Mat, src2 Mat, normType NormType) float64 {
+	return float64(C.NormWithMats(src1.p, src2.p, C.int(normType)))
+}
+
 // PerspectiveTransform performs the perspective matrix transformation of vectors.
 //
 // For further details, please see:
@@ -1773,6 +1811,7 @@ func SortIdx(src Mat, dst *Mat, flags SortFlags) {
 }
 
 // Split creates an array of single channel images from a multi-channel image
+// Created images should be closed manualy to avoid memory leaks.
 //
 // For further details, please see:
 // https://docs.opencv.org/master/d2/de8/group__core__array.html#ga0547c7fed86152d7e9d0096029c8518a
@@ -1784,6 +1823,7 @@ func Split(src Mat) (mv []Mat) {
 	mv = make([]Mat, cMats.length)
 	for i := C.int(0); i < cMats.length; i++ {
 		mv[i].p = C.Mats_get(cMats, i)
+		addMatToProfile(mv[i].p)
 	}
 	return
 }
@@ -2006,7 +2046,7 @@ func toGoBytes(b C.struct_ByteArray) []byte {
 // Converts CStrings to a slice of Go strings even when the C strings are not contiguous in memory
 func toGoStrings(strs C.CStrings) []string {
 	length := int(strs.length)
-	tmpslice := (*[1 << 30]*C.char)(unsafe.Pointer(strs.strs))[:length:length]
+	tmpslice := (*[1 << 20]*C.char)(unsafe.Pointer(strs.strs))[:length:length]
 	gostrings := make([]string, length)
 	for i, s := range tmpslice {
 		gostrings[i] = C.GoString(s)

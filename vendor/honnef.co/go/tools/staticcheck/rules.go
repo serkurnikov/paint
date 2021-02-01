@@ -15,6 +15,7 @@ import (
 
 	"honnef.co/go/tools/analysis/code"
 	"honnef.co/go/tools/go/ir"
+	"honnef.co/go/tools/go/ir/irutil"
 	"honnef.co/go/tools/go/types/typeutil"
 
 	"golang.org/x/tools/go/analysis"
@@ -55,25 +56,28 @@ func (arg *Argument) Invalid(msg string) {
 
 type CallCheck func(call *Call)
 
-func extractConsts(v ir.Value) []*ir.Const {
+func extractConstExpectKind(v ir.Value, kind constant.Kind) *ir.Const {
+	k := extractConst(v)
+	if k == nil || k.Value == nil || k.Value.Kind() != kind {
+		return nil
+	}
+	return k
+}
+
+func extractConst(v ir.Value) *ir.Const {
+	v = irutil.Flatten(v)
 	switch v := v.(type) {
 	case *ir.Const:
-		return []*ir.Const{v}
+		return v
 	case *ir.MakeInterface:
-		return extractConsts(v.X)
+		return extractConst(v.X)
 	default:
 		return nil
 	}
 }
 
 func ValidateRegexp(v Value) error {
-	for _, c := range extractConsts(v.Value) {
-		if c.Value == nil {
-			continue
-		}
-		if c.Value.Kind() != constant.String {
-			continue
-		}
+	if c := extractConstExpectKind(v.Value, constant.String); c != nil {
 		s := constant.StringVal(c.Value)
 		if _, err := regexp.Compile(s); err != nil {
 			return err
@@ -83,13 +87,7 @@ func ValidateRegexp(v Value) error {
 }
 
 func ValidateTimeLayout(v Value) error {
-	for _, c := range extractConsts(v.Value) {
-		if c.Value == nil {
-			continue
-		}
-		if c.Value.Kind() != constant.String {
-			continue
-		}
+	if c := extractConstExpectKind(v.Value, constant.String); c != nil {
 		s := constant.StringVal(c.Value)
 		s = strings.Replace(s, "_", " ", -1)
 		s = strings.Replace(s, "Z", "-", -1)
@@ -102,13 +100,7 @@ func ValidateTimeLayout(v Value) error {
 }
 
 func ValidateURL(v Value) error {
-	for _, c := range extractConsts(v.Value) {
-		if c.Value == nil {
-			continue
-		}
-		if c.Value.Kind() != constant.String {
-			continue
-		}
+	if c := extractConstExpectKind(v.Value, constant.String); c != nil {
 		s := constant.StringVal(c.Value)
 		_, err := url.Parse(s)
 		if err != nil {
@@ -119,13 +111,7 @@ func ValidateURL(v Value) error {
 }
 
 func InvalidUTF8(v Value) bool {
-	for _, c := range extractConsts(v.Value) {
-		if c.Value == nil {
-			continue
-		}
-		if c.Value.Kind() != constant.String {
-			continue
-		}
+	if c := extractConstExpectKind(v.Value, constant.String); c != nil {
 		s := constant.StringVal(c.Value)
 		if !utf8.ValidString(s) {
 			return true
@@ -267,13 +253,7 @@ func validatePort(s string) bool {
 }
 
 func ValidHostPort(v Value) bool {
-	for _, k := range extractConsts(v.Value) {
-		if k.Value == nil {
-			continue
-		}
-		if k.Value.Kind() != constant.String {
-			continue
-		}
+	if k := extractConstExpectKind(v.Value, constant.String); k != nil {
 		s := constant.StringVal(k.Value)
 		_, port, err := net.SplitHostPort(s)
 		if err != nil {
@@ -294,17 +274,11 @@ func ConvertedFrom(v Value, typ string) bool {
 }
 
 func UniqueStringCutset(v Value) bool {
-	for _, c := range extractConsts(v.Value) {
-		if c.Value == nil {
-			continue
-		}
-		if c.Value.Kind() != constant.String {
-			continue
-		}
+	if c := extractConstExpectKind(v.Value, constant.String); c != nil {
 		s := constant.StringVal(c.Value)
 		rs := runeSlice(s)
 		if len(rs) < 2 {
-			continue
+			return true
 		}
 		sort.Sort(rs)
 		for i, r := range rs[1:] {

@@ -146,8 +146,22 @@ func prepareNamed(p namedPreparer, query string) (*NamedStmt, error) {
 	}, nil
 }
 
+// convertMapStringInterface attempts to convert v to map[string]interface{}.
+// Unlike v.(map[string]interface{}), this function works on named types that
+// are convertible to map[string]interface{} as well.
+func convertMapStringInterface(v interface{}) (map[string]interface{}, bool) {
+	var m map[string]interface{}
+	mtype := reflect.TypeOf(m)
+	t := reflect.TypeOf(v)
+	if !t.ConvertibleTo(mtype) {
+		return nil, false
+	}
+	return reflect.ValueOf(v).Convert(mtype).Interface().(map[string]interface{}), true
+
+}
+
 func bindAnyArgs(names []string, arg interface{}, m *reflectx.Mapper) ([]interface{}, error) {
-	if maparg, ok := arg.(map[string]interface{}); ok {
+	if maparg, ok := convertMapStringInterface(arg); ok {
 		return bindMapArgs(names, maparg)
 	}
 	return bindArgs(names, arg, m)
@@ -202,7 +216,7 @@ func bindStruct(bindType int, query string, arg interface{}, m *reflectx.Mapper)
 		return "", []interface{}{}, err
 	}
 
-	arglist, err := bindArgs(names, arg, m)
+	arglist, err := bindAnyArgs(names, arg, m)
 	if err != nil {
 		return "", []interface{}{}, err
 	}
@@ -210,7 +224,7 @@ func bindStruct(bindType int, query string, arg interface{}, m *reflectx.Mapper)
 	return bound, arglist, nil
 }
 
-var valueBracketReg = regexp.MustCompile(`\([^(]*\?+[^)]*\)`)
+var valueBracketReg = regexp.MustCompile(`\([^(]*.[^(]\)$`)
 
 func fixBound(bound string, loop int) string {
 	loc := valueBracketReg.FindStringIndex(bound)
@@ -242,9 +256,9 @@ func bindArray(bindType int, query string, arg interface{}, m *reflectx.Mapper) 
 	if arrayLen == 0 {
 		return "", []interface{}{}, fmt.Errorf("length of array is 0: %#v", arg)
 	}
-	var arglist []interface{}
+	var arglist = make([]interface{}, 0, len(names)*arrayLen)
 	for i := 0; i < arrayLen; i++ {
-		elemArglist, err := bindArgs(names, arrayValue.Index(i).Interface(), m)
+		elemArglist, err := bindAnyArgs(names, arrayValue.Index(i).Interface(), m)
 		if err != nil {
 			return "", []interface{}{}, err
 		}
@@ -379,11 +393,16 @@ func Named(query string, arg interface{}) (string, []interface{}, error) {
 }
 
 func bindNamedMapper(bindType int, query string, arg interface{}, m *reflectx.Mapper) (string, []interface{}, error) {
-	if maparg, ok := arg.(map[string]interface{}); ok {
-		return bindMap(bindType, query, maparg)
-	}
-	switch reflect.TypeOf(arg).Kind() {
-	case reflect.Array, reflect.Slice:
+	t := reflect.TypeOf(arg)
+	k := t.Kind()
+	switch {
+	case k == reflect.Map && t.Key().Kind() == reflect.String:
+		m, ok := convertMapStringInterface(arg)
+		if !ok {
+			return "", nil, fmt.Errorf("sqlx.bindNamedMapper: unsupported map type: %T", arg)
+		}
+		return bindMap(bindType, query, m)
+	case k == reflect.Array || k == reflect.Slice:
 		return bindArray(bindType, query, arg, m)
 	default:
 		return bindStruct(bindType, query, arg, m)

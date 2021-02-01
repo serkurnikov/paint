@@ -16,7 +16,6 @@ Your pull requests will be greatly appreciated!
     - [ ] **Basic structures - WORK STARTED**
     - [ ] **Operations on arrays - WORK STARTED**. The following functions still need implementation:
         - [ ] [Mahalanobis](https://docs.opencv.org/master/d2/de8/group__core__array.html#ga4493aee129179459cbfc6064f051aa7d)
-        - [x] [mixChannels](https://docs.opencv.org/master/d2/de8/group__core__array.html#ga51d768c270a1cdd3497255017c4504be)
         - [ ] [mulTransposed](https://docs.opencv.org/master/d2/de8/group__core__array.html#gadc4e49f8f7a155044e3be1b9e3b270ab)
         - [ ] [PCABackProject](https://docs.opencv.org/master/d2/de8/group__core__array.html#gab26049f30ee8e94f7d69d82c124faafc)
         - [ ] [PCACompute](https://docs.opencv.org/master/d2/de8/group__core__array.html#ga4e2073c7311f292a0648f04c37b73781)
@@ -82,7 +81,10 @@ Your pull requests will be greatly appreciated!
         - [ ] [pointPolygonTest](https://docs.opencv.org/master/d3/dc0/group__imgproc__shape.html#ga1a539e8db2135af2566103705d7a5722)
         - [ ] [rotatedRectangleIntersection](https://docs.opencv.org/master/d3/dc0/group__imgproc__shape.html#ga8740e7645628c59d238b0b22c2abe2d4)
 
-    - [ ] Motion Analysis and Object Tracking
+    - [ ] **Motion Analysis and Object Tracking - WORK STARTED** The following functions still need implementation:
+        - [ ] [createHanningWindow](https://docs.opencv.org/master/d7/df3/group__imgproc__motion.html#ga80e5c3de52f6bab3a7c1e60e89308e1b)
+        - [ ] [phaseCorrelate](https://docs.opencv.org/master/d7/df3/group__imgproc__motion.html#ga552420a2ace9ef3fb053cd630fdb4952)
+
     - [ ] **Feature Detection - WORK STARTED** The following functions still need implementation:
         - [ ] [cornerEigenValsAndVecs](https://docs.opencv.org/master/dd/d1a/group__imgproc__feature.html#ga4055896d9ef77dd3cacf2c5f60e13f1c)
         - [ ] [cornerHarris](https://docs.opencv.org/master/dd/d1a/group__imgproc__feature.html#gac1fc3598018010880e370e2f709b4345)
@@ -107,6 +109,7 @@ Your pull requests will be greatly appreciated!
         - [ ] [FarnebackOpticalFlow](https://docs.opencv.org/master/de/d9e/classcv_1_1FarnebackOpticalFlow.html)
         - [ ] [KalmanFilter](https://docs.opencv.org/master/dd/d6a/classcv_1_1KalmanFilter.html)
         - [ ] [SparsePyrLKOpticalFlow](https://docs.opencv.org/master/d7/d08/classcv_1_1SparsePyrLKOpticalFlow.html)
+        - [ ] [GOTURN](https://docs.opencv.org/master/d7/d4c/classcv_1_1TrackerGOTURN.html)
 
 - [ ] **calib3d. Camera Calibration and 3D Reconstruction - WORK STARTED**. The following functions still need implementation:
     - [ ] **Camera Calibration - WORK STARTED** The following functions still need implementation:
@@ -171,22 +174,43 @@ Your pull requests will be greatly appreciated!
 
 - [ ] **features2d. 2D Features Framework - WORK STARTED**
     - [X] **Feature Detection and Description**
-    - [ ] **Descriptor Matchers - WORK STARTED** The following functions still need implementation:
-        - [X] [FlannBasedMatcher](https://docs.opencv.org/master/dc/de2/classcv_1_1FlannBasedMatcher.html)
-    - [ ] **Drawing Function of Keypoints and Matches - WORK STARTED** The following function still needs implementation:
-        - [X] [drawMatches](https://docs.opencv.org/master/d4/d5d/group__features2d__draw.html#ga7421b3941617d7267e3f2311582f49e1)
+    - [X] **Descriptor Matchers**
+    - [X] **Drawing Function of Keypoints and Matches**
     - [ ] Object Categorization
         - [ ] [BOWImgDescriptorExtractor](https://docs.opencv.org/master/d2/d6b/classcv_1_1BOWImgDescriptorExtractor.html)
         - [ ] [BOWKMeansTrainer](https://docs.opencv.org/master/d4/d72/classcv_1_1BOWKMeansTrainer.html)
 
 - [X] **objdetect. Object Detection**
-- [ ] **dnn. Deep Neural Network module - WORK STARTED** The following functions still need implementation:
-    - [X] [NMSBoxes](https://docs.opencv.org/master/d6/d0f/group__dnn.html#ga9d118d70a1659af729d01b10233213ee)
-
+- [X] **dnn. Deep Neural Network module**
 - [ ] ml. Machine Learning
 - [ ] flann. Clustering and Search in Multi-Dimensional Spaces
-- [ ] photo. Computational Photography
+- [ ] **photo. Computational Photography - WORK STARTED** The following functions still need implementation:
+    - [ ] [inpaint](https://docs.opencv.org/master/d7/d8b/group__photo__inpaint.html#gaedd30dfa0214fec4c88138b51d678085)
+    - [ ] [denoise_TVL1](https://docs.opencv.org/master/d1/d79/group__photo__denoise.html#ga7602ed5ae17b7de40152b922227c4e4f)
+    - [ ] [fastNlMeansDenoising](https://docs.opencv.org/master/d1/d79/group__photo__denoise.html#ga4c6b0031f56ea3f98f768881279ffe93)
+    - [ ] [fastNlMeansDenoisingColored](https://docs.opencv.org/master/d1/d79/group__photo__denoise.html#ga03aa4189fc3e31dafd638d90de335617)
+    - [ ] [fastNlMeansDenoisingColoredMulti](https://docs.opencv.org/master/d1/d79/group__photo__denoise.html#gaa501e71f52fb2dc17ff8ca5e7d2d3619)
+    - [ ] [fastNlMeansDenoisingMulti](https://docs.opencv.org/master/d1/d79/group__photo__denoise.html#gaf4421bf068c4d632ea7f0aa38e0bf172)
+    - [ ] [createAlignMTB](https://docs.opencv.org/master/d6/df5/group__photo__hdr.html#ga2f1fafc885a5d79dbfb3542e08db0244)
+    - [ ] [createCalibrateDebevec](https://docs.opencv.org/master/d6/df5/group__photo__hdr.html#ga7fed9707ad5f2cc0e633888867109f90)
+    - [ ] [createCalibrateRobertson](https://docs.opencv.org/master/d6/df5/group__photo__hdr.html#gae77813a21cd351a596619e5ff013be5d)
+    - [ ] [createMergeDebevec](https://docs.opencv.org/master/d6/df5/group__photo__hdr.html#gaa8eab36bc764abb2a225db7c945f87f9)
+    - [ ] [createMergeMertens](https://docs.opencv.org/master/d6/df5/group__photo__hdr.html#ga79d59aa3cb3a7c664e59a4b5acc1ccb6)
+    - [ ] [createMergeRobertson](https://docs.opencv.org/master/d6/df5/group__photo__hdr.html#ga460d4a1df1a7e8cdcf7445bb87a8fb78)
+    - [ ] [createTonemap](https://docs.opencv.org/master/d6/df5/group__photo__hdr.html#gabcbd653140b93a1fa87ccce94548cd0d)
+    - [ ] [createTonemapDrago](https://docs.opencv.org/master/d6/df5/group__photo__hdr.html#ga72bf92bb6b8653ee4be650ac01cf50b6)
+    - [ ] [createTonemapMantiuk](https://docs.opencv.org/master/d6/df5/group__photo__hdr.html#ga3b3f3bf083b7515802f039a6a70f2d21)
+    - [ ] [createTonemapReinhard](https://docs.opencv.org/master/d6/df5/group__photo__hdr.html#gadabe7f6bf1fa96ad0fd644df9182c2fb)
+    - [ ] [decolor](https://docs.opencv.org/master/d4/d32/group__photo__decolor.html#ga4864d4c007bda5dacdc5e9d4ed7e222c)
+    - [ ] [detailEnhance](https://docs.opencv.org/master/df/dac/group__photo__render.html#ga0de660cb6f371a464a74c7b651415975)
+    - [ ] [edgePreservingFilter](https://docs.opencv.org/master/df/dac/group__photo__render.html#gafaee2977597029bc8e35da6e67bd31f7)
+    - [ ] [pencilSketch](https://docs.opencv.org/master/df/dac/group__photo__render.html#gae5930dd822c713b36f8529b21ddebd0c)
+    - [ ] [stylization](https://docs.opencv.org/master/df/dac/group__photo__render.html#gacb0f7324017df153d7b5d095aed53206)
+
 - [ ] stitching. Images stitching
+
+## CUDA
+
 - [ ] **cudaarithm. Operations on Matrices - WORK STARTED** The following functions still need implementation:
     - [ ] [cv::cuda::abs](https://docs.opencv.org/master/d8/d34/group__cudaarithm__elem.html#ga54a72bd772494ab34d05406fd76df2b6)
     - [ ] [cv::cuda::absdiff](https://docs.opencv.org/master/d8/d34/group__cudaarithm__elem.html#gac062b283cf46ee90f74a773d3382ab54)
@@ -214,17 +238,14 @@ Your pull requests will be greatly appreciated!
     - [ ] [cv::cuda::sqr](https://docs.opencv.org/master/d8/d34/group__cudaarithm__elem.html#ga8aae233da90ce0ffe309ab8004342acb)
     - [ ] [cv::cuda::sqrt](https://docs.opencv.org/master/d8/d34/group__cudaarithm__elem.html#ga09303680cb1a5521a922b6d392028d8c)
     - [ ] [cv::cuda::subtract](https://docs.opencv.org/master/d8/d34/group__cudaarithm__elem.html#ga6eab60fc250059e2fda79c5636bd067f)
-    - [X] [cv::cuda::threshold](https://docs.opencv.org/master/d8/d34/group__cudaarithm__elem.html#ga40f1c94ae9a9456df3cad48e3cb008e1)
 
 - [X] **cudabgsegm. Background Segmentation**
 - [ ] cudacodec. Video Encoding/Decoding
 - [ ] cudafeatures2d. Feature Detection and Description
 - [ ] cudafilters. Image Filtering
 - [ ] **cudaimgproc. Image Processing - WORK STARTED** The following functions still need implementation:
-    - [X] [cv::cuda::CannyEdgeDetector](https://docs.opencv.org/master/d0/d43/classcv_1_1cuda_1_1CannyEdgeDetector.html)
     - [ ] [cv::cuda::TemplateMatching](https://docs.opencv.org/master/d2/d58/classcv_1_1cuda_1_1TemplateMatching.html)
     - [ ] [cv::cuda::alphaComp](https://docs.opencv.org/master/db/d8c/group__cudaimgproc__color.html#ga08a698700458d9311390997b57fbf8dc)
-    - [X] [cv::cuda::cvtColor](https://docs.opencv.org/master/db/d8c/group__cudaimgproc__color.html#ga48d0f208181d5ca370d8ff6b62cbe826)
     - [ ] [cv::cuda::demosaicing](https://docs.opencv.org/master/db/d8c/group__cudaimgproc__color.html#ga7fb153572b573ebd2d7610fcbe64166e)
     - [ ] [cv::cuda::gammaCorrection](https://docs.opencv.org/master/db/d8c/group__cudaimgproc__color.html#gaf4195a8409c3b8fbfa37295c2b2c4729)
     - [ ] [cv::cuda::swapChannels](https://docs.opencv.org/master/db/d8c/group__cudaimgproc__color.html#ga75a29cc4a97cde0d43ea066b01de927e)
@@ -261,13 +282,10 @@ Your pull requests will be greatly appreciated!
 - [ ] cudastereo. Stereo Correspondence
 - [X] **cudawarping. Image Warping**
 - [ ] cudev. Device layer
-- [ ] shape. Shape Distance and Matching
-- [ ] superres. Super Resolution
-- [ ] videostab. Video Stabilization
-- [ ] viz. 3D Visualizer
 
 ## Contrib modules list
 
+- [ ] alphamat. Alpha Matting
 - [ ] aruco. ArUco Marker Detection
 - [X] **bgsegm. Improved Background-Foreground Segmentation Methods - WORK STARTED**
 - [ ] bioinspired. Biologically inspired vision models and derivated tools
@@ -276,26 +294,36 @@ Your pull requests will be greatly appreciated!
 - [ ] cvv. GUI for Interactive Visual Debugging of Computer Vision Programs
 - [ ] datasets. Framework for working with different datasets
 - [ ] dnn_modern. Deep Learning Modern Module
+- [ ] dnn_objdetect. DNN used for object detection
+- [ ] dnn_superres. DNN used for super resolution
 - [ ] dpm. Deformable Part-based Models
 - [ ] **face. Face Recognition - WORK STARTED**
 - [ ] freetype. Drawing UTF-8 strings with freetype/harfbuzz
 - [ ] fuzzy. Image processing based on fuzzy mathematics
 - [ ] hdf. Hierarchical Data Format I/O routines
+- [ ] hfs. Hierarchical Feature Selection for Efficient Image Segmentation
 - [X] **img_hash. The module brings implementations of different image hashing algorithms.**
+- [ ] intensity_transform. The module brings implementations of intensity transformation algorithms to adjust image contrast.
 - [ ] line_descriptor. Binary descriptors for lines extracted from an image
+- [ ] mcc. Macbeth Chart module
 - [ ] matlab. MATLAB Bridge
 - [ ] optflow. Optical Flow Algorithms
+- [ ] ovis. OGRE 3D Visualiser
 - [ ] phase_unwrapping. Phase Unwrapping API
 - [ ] plot. Plot function for Mat data
 - [ ] reg. Image Registration
 - [ ] rgbd. RGB-Depth Processing
 - [ ] saliency. Saliency API
 - [ ] sfm. Structure From Motion
+- [ ] shape. Shape Distance and Matching
 - [ ] stereo. Stereo Correspondance Algorithms
 - [ ] structured_light. Structured Light API
+- [ ] superres. Super Resolution
 - [ ] surface_matching. Surface Matching
 - [ ] text. Scene Text Detection and Recognition
 - [ ] **tracking. Tracking API - WORK STARTED**
+- [ ] videostab. Video Stabilization
+- [ ] viz. 3D Visualizer
 - [ ] **xfeatures2d. Extra 2D Features Framework - WORK STARTED**
 - [ ] ximgproc. Extended Image Processing
 - [ ] xobjdetect. Extended object detection
