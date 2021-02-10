@@ -1,7 +1,9 @@
 package app
 
 const (
-	basePath        = "C:\\Users\\master\\Documents\\programming\\goland\\paint\\internal\\resources"
+	//change your directory for saving results
+
+	basePath        = "D:\\Sergey\\projects\\Go Projects\\paint\\internal\\resources"
 	testPathImage0  = basePath + "\\test0.jpg"
 	testPathImage1  = basePath + "\\test1.jpg"
 	testPathImage2  = basePath + "\\test2.jpg"
@@ -31,21 +33,28 @@ const (
 	floodFillPathImage = basePath + "\\floodFill.jpg"
 	palettePathImage = basePath + "\\palette.jpg"
 
-	morphPathClose    = basePath + "morphClose.jpg"
-	morphPathOpen     = basePath + "morphOpen.jpg"
-	morphPathGradient = basePath + "morphGradient.jpg"
+	morphPathClose    = basePath + "\\morphClose.jpg"
+	morphPathOpen     = basePath + "\\morphOpen.jpg"
+	morphPathGradient = basePath + "\\morphGradient.jpg"
 )
 
 func (a App) ExternalApiTest() {}
 
-func (a App) UnderPaint(tileSize int) {}
+func (a App) UnderPaint(tileSize int) {
+	meanShiftFilter(testPathImage0, meanShiftPathImage, []float64{30, 60})
+	drawCustomContours(meanShiftPathImage, contoursPathImageC)
 
-func (a App) Scobel() {
-	//meanShiftFilter(testPathImage0, meanShiftPathImage, []float64{30, 60})
-	//drawCustomContours(meanShiftPathImage, contoursPathImageC)
+	sobel(testPathImage0, sobelPathImage)
+	drawCustomContours(meanShiftPathImage, contoursPathImageC)
 
-	//threshold(testPathImage10, thresholdPathImage)
-	//floodFill(testPathImage0, floodFillPathImage)
+	dilate(sobelPathImage, dilatePathImage, 3)
+	erode(sobelPathImage, erodePathImage, 1)
 
-	buildPalette(testPathImage4, palettePathImage)
+	watershed(testPathImage0, fusionPathImage, watershedPathImage, 1, 1)
+	pencil(sobelPathImage, pencilPathImage)
+
+	threshold(dilatePathImage, thresholdPathImage)
+	applyMask(testPathImage0, resultPathImage, watershedPathImage)
 }
+
+func (a App) Scobel() {}
