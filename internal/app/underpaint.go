@@ -1,5 +1,9 @@
 package app
 
+import (
+	"paint/internal/app/prominentcolor"
+)
+
 const (
 	//change your directory for saving results
 
@@ -44,17 +48,7 @@ func (a App) UnderPaint(tileSize int) {
 	meanShiftFilter(testPathImage0, meanShiftPathImage, []float64{30, 60})
 	drawCustomContours(meanShiftPathImage, contoursPathImageC)
 
-	sobel(testPathImage0, sobelPathImage)
-	drawCustomContours(meanShiftPathImage, contoursPathImageC)
-
-	dilate(sobelPathImage, dilatePathImage, 3)
-	erode(sobelPathImage, erodePathImage, 1)
-
-	watershed(testPathImage0, fusionPathImage, watershedPathImage, 1, 1)
-	pencil(sobelPathImage, pencilPathImage)
-
-	threshold(dilatePathImage, thresholdPathImage)
-	applyMask(testPathImage0, resultPathImage, watershedPathImage)
+	prominentcolor.BuildP(meanShiftPathImage, palettePathImage, 5)
 }
 
 func (a App) Scobel() {}
