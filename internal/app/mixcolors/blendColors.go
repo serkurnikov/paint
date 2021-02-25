@@ -52,10 +52,53 @@ func BlendCombination(combinationElements []string) *gabs.Container {
 		if i == 0 {
 			/*
 			result := BlendColors(combinationElements[0], combinationElements[1], DefaultNumberOfShades)
-			combinationElements[0] / combinationElements[1]
-			result {1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
-			for (< result/Count) {
-				BlendMainColorsWithShades()
+			output {1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
+
+			result2 := BlendMainColorsWithShades(combinationElements[2], result)
+
+			outPut colorMainS {
+				arrayOfSecondaryColorsShades[1] {
+					{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
+				}
+
+				arrayOfSecondaryColorsShades[2] {
+					{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
+				}
+			}
+
+			BlendMainColorsWithMapOfShades(combinationElements[2], result2)
+			//create Methods witch allow you to create nesterMaps
+
+			outPut colorMainS {
+				arrayOfSecondaryColorsShades[1] {
+					{1, "#124" {
+							{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
+						}
+					},
+					{2, "#124" {
+								{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
+							}
+					},
+					{3, "#124" {
+									{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
+								}
+					},
+				}
+
+				arrayOfSecondaryColorsShades[2] {
+						{1, "#124" {
+								{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
+							}
+						},
+						{2, "#124" {
+									{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
+								}
+						},
+						{3, "#124" {
+										{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
+									}
+						},
+				}
 			}
 			*/
 		} else {
