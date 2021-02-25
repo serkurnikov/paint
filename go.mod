@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/Djarvur/go-err113 v0.1.0 // indirect
+	github.com/Jeffail/gabs/v2 v2.6.0
 	github.com/alexkohler/prealloc v1.0.0 // indirect
 	github.com/ashanbrown/forbidigo v1.1.0 // indirect
 	github.com/bombsimon/wsl/v3 v3.2.0 // indirect

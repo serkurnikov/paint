@@ -5,6 +5,9 @@ github.com/BurntSushi/toml
 # github.com/Djarvur/go-err113 v0.1.0
 ## explicit
 github.com/Djarvur/go-err113
+# github.com/Jeffail/gabs/v2 v2.6.0
+## explicit
+github.com/Jeffail/gabs/v2
 # github.com/Masterminds/semver v1.5.0
 github.com/Masterminds/semver
 # github.com/OpenPeeDeeP/depguard v1.0.1
