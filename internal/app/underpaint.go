@@ -51,7 +51,7 @@ func (a App) UnderPaint(tileSize int) {
 	prominentcolor.BuildP(meanShiftPathImage, palettePathImage, 5)
 	colorsDataS := []string{"#ff007f", "#7fff00", "#00ff00"}
 
-	mixcolors.BlendCombination(colorsDataS, mixcolors.DefaultNumberOfShades)
+	mixcolors.GetAllMixColors(colorsDataS, mixcolors.DefaultNumberOfShades)
 }
 
 func (a App) Scobel() {}

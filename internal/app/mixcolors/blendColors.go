@@ -25,9 +25,9 @@ func BlendColors(colorS1, colorS2 string, numberOfShades int) *gabs.Container {
 func BlendMainColorsWithArrayOfColors(colorMainS string, arrayOfColors []string, numberOfShades int) *gabs.Container {
 	jsonObj := gabs.New()
 	for i := 0; i < len(arrayOfColors); i++ {
-		if !jsonObj.Exists(colorMainS+arrayOfColors[i]) {
+		if !jsonObj.Exists(arrayOfColors[i]) {
 			result := BlendColors(colorMainS, arrayOfColors[i], numberOfShades)
-			jsonObj.Set(result, colorMainS+arrayOfColors[i])
+			jsonObj.Set(result, arrayOfColors[i])
 		}
 	}
 	return jsonObj
@@ -37,18 +37,17 @@ func BlendCombination(combinationElements []string, numberOfShades int) *gabs.Co
 	jsonObj := gabs.New()
 	result := BlendMainColorsWithArrayOfColors(combinationElements[0], combinationElements[1:], numberOfShades)
 	jsonObj.Set(result, combinationElements[0])
-	println(jsonObj.String())
 	return jsonObj
 }
 
 func GetAllMixColors(colorsDataS []string, numberOfShades int) *gabs.Container {
 	jsonObj := gabs.New()
-	jsonObj.Array(MixedColors)
 
 	subsets := All(colorsDataS)
 	for i := 0; i < len(subsets); i++ {
 		result := BlendCombination(subsets[i], numberOfShades)
-		jsonObj.ArrayAppend(result, MixedColors)
+		jsonObj.Set(result, string(i))
 	}
+	println(jsonObj.String())
 	return jsonObj
 }
