@@ -4,6 +4,7 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	"github.com/lucasb-eyer/go-colorful"
 	"strconv"
+	"strings"
 )
 
 const MixedColors = "MixedColors"
@@ -35,8 +36,10 @@ func BlendMainColorsWithArrayOfColors(colorMainS string, arrayOfColors []string,
 
 func BlendCombination(combinationElements []string, numberOfShades int) *gabs.Container {
 	jsonObj := gabs.New()
-	result := BlendMainColorsWithArrayOfColors(combinationElements[0], combinationElements[1:], numberOfShades)
-	jsonObj.Set(result, combinationElements[0])
+	for i := 0; i < len(combinationElements)-1; i++ {
+		result := BlendMainColorsWithArrayOfColors(combinationElements[i], combinationElements[i+1:], numberOfShades)
+		jsonObj.Set(result, combinationElements[i])
+	}
 	return jsonObj
 }
 
@@ -46,7 +49,7 @@ func GetAllMixColors(colorsDataS []string, numberOfShades int) *gabs.Container {
 	subsets := All(colorsDataS)
 	for i := 0; i < len(subsets); i++ {
 		result := BlendCombination(subsets[i], numberOfShades)
-		jsonObj.Set(result, string(i))
+		jsonObj.Set(result, strings.Join(subsets[i], ""))
 	}
 	println(jsonObj.String())
 	return jsonObj

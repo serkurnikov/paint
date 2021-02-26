@@ -50,8 +50,7 @@ func (a App) UnderPaint(tileSize int) {
 	//drawCustomContours(meanShiftPathImage, contoursPathImageC)
 	prominentcolor.BuildP(meanShiftPathImage, palettePathImage, 5)
 	colorsDataS := []string{"#ff007f", "#7fff00", "#00ff00"}
-
-	mixcolors.GetAllMixColors(colorsDataS, mixcolors.DefaultNumberOfShades)
+	mixcolors.GetAllMixColors(colorsDataS, 10)
 }
 
 func (a App) Scobel() {}
