@@ -292,6 +292,15 @@ func Dilate(src Mat, dst *Mat, kernel Mat) {
 	C.Dilate(src.p, dst.p, kernel.p)
 }
 
+func DilateWithParams(src Mat, dst *Mat, kernel Mat, anchor image.Point, iterations, borderType int) {
+	cAnchor := C.struct_Point{
+		x: C.int(anchor.X),
+		y: C.int(anchor.Y),
+	}
+
+	C.DilateWithParams(src.p, dst.p, kernel.p, cAnchor, C.int(iterations), C.int(borderType))
+}
+
 // DistanceTransformLabelTypes are the types of the DistanceTransform algorithm flag
 type DistanceTransformLabelTypes int
 
@@ -325,6 +334,33 @@ const (
 //
 func DistanceTransform(src Mat, dst *Mat, labels *Mat, distType DistanceTypes, maskSize DistanceTransformMasks, labelType DistanceTransformLabelTypes) {
 	C.DistanceTransform(src.p, dst.p, labels.p, C.int(distType), C.int(maskSize), C.int(labelType))
+}
+
+func FloodFill(src Mat, m *Mat, sP image.Point, newVal color.RGBA, loDiff color.RGBA, upDiff color.RGBA, flag int) {
+	cSeedPoint := C.struct_Point{
+		x: C.int(sP.X),
+		y: C.int(sP.Y),
+	}
+	cNewVal := C.struct_Scalar{
+		val1: C.double(newVal.B),
+		val2: C.double(newVal.G),
+		val3: C.double(newVal.R),
+		val4: C.double(newVal.A),
+	}
+	cLoDiff := C.struct_Scalar{
+		val1: C.double(loDiff.B),
+		val2: C.double(loDiff.G),
+		val3: C.double(loDiff.R),
+		val4: C.double(loDiff.A),
+	}
+	cUpDiff := C.struct_Scalar{
+		val1: C.double(upDiff.B),
+		val2: C.double(upDiff.G),
+		val3: C.double(upDiff.R),
+		val4: C.double(upDiff.A),
+	}
+
+	C.FloodFill(src.p, m.p, cSeedPoint, cNewVal, cLoDiff, cUpDiff, C.int(flag))
 }
 
 // Erode erodes an image by using a specific structuring element.
@@ -751,6 +787,10 @@ func PyrUp(src Mat, dst *Mat, ksize image.Point, borderType BorderType) {
 		width:  C.int(ksize.Y),
 	}
 	C.PyrUp(src.p, dst.p, pSize, C.int(borderType))
+}
+
+func PyrMeanShiftFiltering(src Mat, dst *Mat, sp float64, sr float64, maxLevel int) {
+	C.PyrMeanShiftFiltering(src.p, dst.p, C.double(sp), C.double(sr), C.int(maxLevel))
 }
 
 // MorphologyDefaultBorder returns "magic" border value for erosion and dilation.

@@ -3,114 +3,52 @@ package mixcolors
 import (
 	"github.com/Jeffail/gabs/v2"
 	"github.com/lucasb-eyer/go-colorful"
+	"strconv"
 )
 
-const P = "."
+const MixedColors = "MixedColors"
 const DefaultNumberOfShades = 5
 
-func BlendColors(colorS1, colorS2 string, numberOfShades int) map[float64]colorful.Color {
-
-	colors := make(map[float64]colorful.Color)
+func BlendColors(colorS1, colorS2 string, numberOfShades int) *gabs.Container {
+	jsonObj := gabs.New()
 
 	c1, _ := colorful.Hex(colorS1)
 	c2, _ := colorful.Hex(colorS2)
 
 	for i := 0; i < numberOfShades; i++ {
 		portion := float64(i) / float64(numberOfShades-1)
-		colors[portion] = c1.BlendLuv(c2, portion)
-	}
-
-	/*{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}*/
-
-	return colors
-}
-
-func BlendMainColorsWithShades(colorMainS string, arrayOfSecondaryColorsShades []string) *gabs.Container {
-	jsonObj := gabs.New()
-	jsonObj.ArrayOfSize(len(arrayOfSecondaryColorsShades), colorMainS)
-
-	for i := 0; i < len(arrayOfSecondaryColorsShades); i++ {
-		result := BlendColors(colorMainS, arrayOfSecondaryColorsShades[i], DefaultNumberOfShades)
-		jsonObj.SetP(result, colorMainS+P+arrayOfSecondaryColorsShades[i])
-		/* colorMainS {
-				arrayOfSecondaryColorsShades[1] {
-					{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
-				}
-
-				arrayOfSecondaryColorsShades[2] {
-					{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
-				}
-		*/
+		jsonObj.Set(c1.BlendLuv(c2, portion).Hex(), strconv.FormatFloat(portion, 'f', 6, 64))
 	}
 	return jsonObj
 }
 
-func BlendCombination(combinationElements []string) *gabs.Container {
+func BlendMainColorsWithArrayOfColors(colorMainS string, arrayOfColors []string, numberOfShades int) *gabs.Container {
 	jsonObj := gabs.New()
-
-	for i := 0; i < len(combinationElements)-1; i++ {
-		if i == 0 {
-			/*
-			result := BlendColors(combinationElements[0], combinationElements[1], DefaultNumberOfShades)
-			output {1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
-
-			result2 := BlendMainColorsWithShades(combinationElements[2], result)
-
-			outPut colorMainS {
-				arrayOfSecondaryColorsShades[1] {
-					{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
-				}
-
-				arrayOfSecondaryColorsShades[2] {
-					{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
-				}
-			}
-
-			BlendMainColorsWithMapOfShades(combinationElements[2], result2)
-			//create Methods witch allow you to create nesterMaps
-
-			outPut colorMainS {
-				arrayOfSecondaryColorsShades[1] {
-					{1, "#124" {
-							{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
-						}
-					},
-					{2, "#124" {
-								{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
-							}
-					},
-					{3, "#124" {
-									{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
-								}
-					},
-				}
-
-				arrayOfSecondaryColorsShades[2] {
-						{1, "#124" {
-								{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
-							}
-						},
-						{2, "#124" {
-									{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
-								}
-						},
-						{3, "#124" {
-										{1, "#124"}, {2, "#124"}, {3, "#124"}, {4, "#124"}, {5, "#124"}
-									}
-						},
-				}
-			}
-			*/
-		} else {
-
+	for i := 0; i < len(arrayOfColors); i++ {
+		if !jsonObj.Exists(colorMainS+arrayOfColors[i]) {
+			result := BlendColors(colorMainS, arrayOfColors[i], numberOfShades)
+			jsonObj.Set(result, colorMainS+arrayOfColors[i])
 		}
 	}
 	return jsonObj
 }
 
-func mixColors(colorsDataS []string) {
+func BlendCombination(combinationElements []string, numberOfShades int) *gabs.Container {
+	jsonObj := gabs.New()
+	result := BlendMainColorsWithArrayOfColors(combinationElements[0], combinationElements[1:], numberOfShades)
+	jsonObj.Set(result, combinationElements[0])
+	println(jsonObj.String())
+	return jsonObj
+}
+
+func GetAllMixColors(colorsDataS []string, numberOfShades int) *gabs.Container {
+	jsonObj := gabs.New()
+	jsonObj.Array(MixedColors)
+
 	subsets := All(colorsDataS)
 	for i := 0; i < len(subsets); i++ {
-		BlendCombination(subsets[i])
+		result := BlendCombination(subsets[i], numberOfShades)
+		jsonObj.ArrayAppend(result, MixedColors)
 	}
+	return jsonObj
 }

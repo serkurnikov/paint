@@ -30,11 +30,12 @@ type Palette interface {
 type MixColors interface {
 	Blend
 	Palette
-	displayMixColors(colors []color.Color, out string)
+	DisplayMixColors(colors []color.Color, out string)
+	GetAllMixColors(colorsDataS []string, numberOfShades int) *gabs.Container
 }
 
 
-func displayMixColors(colors []color.Color, out string) {
+func DisplayMixColors(colors []color.Color, out string) {
 	result := image.NewRGBA(image.Rect(0, 0, HEIGHT, WEIGHT))
 
 	h := HEIGHT / len(colors)

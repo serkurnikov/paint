@@ -1,6 +1,7 @@
 package app
 
 import (
+	"paint/internal/app/mixcolors"
 	"paint/internal/app/prominentcolor"
 )
 
@@ -35,7 +36,7 @@ const (
 	contoursPathImageC = basePath + "\\contoursC.jpg"
 	pencilPathImage    = basePath + "\\pencil.jpg"
 	floodFillPathImage = basePath + "\\floodFill.jpg"
-	palettePathImage = basePath + "\\palette.jpg"
+	palettePathImage   = basePath + "\\palette.jpg"
 
 	morphPathClose    = basePath + "\\morphClose.jpg"
 	morphPathOpen     = basePath + "\\morphOpen.jpg"
@@ -45,10 +46,12 @@ const (
 func (a App) ExternalApiTest() {}
 
 func (a App) UnderPaint(tileSize int) {
-	meanShiftFilter(testPathImage0, meanShiftPathImage, []float64{30, 60})
-	drawCustomContours(meanShiftPathImage, contoursPathImageC)
-
+	//meanShiftFilter(testPathImage0, meanShiftPathImage, []float64{30, 60})
+	//drawCustomContours(meanShiftPathImage, contoursPathImageC)
 	prominentcolor.BuildP(meanShiftPathImage, palettePathImage, 5)
+	colorsDataS := []string{"#ff007f", "#7fff00", "#00ff00"}
+
+	mixcolors.BlendCombination(colorsDataS, mixcolors.DefaultNumberOfShades)
 }
 
 func (a App) Scobel() {}

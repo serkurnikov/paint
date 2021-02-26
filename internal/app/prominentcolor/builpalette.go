@@ -36,7 +36,6 @@ func BuildP(in, out string, clusters int) {
 		return
 	}
 	cols, err := KmeansWithAll(5, img, ArgumentDebugImage, DefaultSize, GetDefaultMasks())
-	println(len(cols))
 	if err != nil {
 		log.Println(err)
 		return

@@ -64,8 +64,8 @@ func (c *ColorItem) AsString() string {
 	return fmt.Sprintf("%.2X%.2X%.2X", c.Color.R, c.Color.G, c.Color.B)
 }
 
-// createColor returns ColorItem struct unless it was a transparent color
-func createColor(c color.Color) (ColorItem, bool) {
+// CreateColor returns ColorItem struct unless it was a transparent color
+func CreateColor(c color.Color) (ColorItem, bool) {
 	r, g, b, a := c.RGBA()
 
 	if a == 0 {
@@ -281,7 +281,7 @@ func extractColors(img image.Image) (map[string]ColorItem, int) {
 	for x := data.Min.X; x < data.Max.X; x++ {
 		for y := data.Min.Y; y < data.Max.Y; y++ {
 			colorAt := img.At(x, y)
-			colorItem, ignore := createColor(colorAt)
+			colorItem, ignore := CreateColor(colorAt)
 			if ignore {
 				continue
 			}
