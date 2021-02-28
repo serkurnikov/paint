@@ -400,7 +400,7 @@ func (s *Server) Listen() error {
 	return nil
 }
 
-// Shutdown server and clean up resources
+// Shutdown server and clean up assets
 func (s *Server) Shutdown() error {
 	if atomic.CompareAndSwapInt32(&s.shuttingDown, 0, 1) {
 		close(s.shutdown)

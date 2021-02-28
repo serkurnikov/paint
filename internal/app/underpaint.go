@@ -2,13 +2,12 @@ package app
 
 import (
 	"paint/internal/app/mixcolors"
-	"paint/internal/app/prominentcolor"
 )
 
 const (
 	//change your directory for saving results
 
-	basePath        = "D:\\Sergey\\projects\\Go Projects\\paint\\internal\\resources"
+	basePath        = "C:\\Users\\master\\go\\src\\projects\\paint\\assets"
 	testPathImage0  = basePath + "\\test0.jpg"
 	testPathImage1  = basePath + "\\test1.jpg"
 	testPathImage2  = basePath + "\\test2.jpg"
@@ -46,11 +45,7 @@ const (
 func (a App) ExternalApiTest() {}
 
 func (a App) UnderPaint(tileSize int) {
-	//meanShiftFilter(testPathImage0, meanShiftPathImage, []float64{30, 60})
-	//drawCustomContours(meanShiftPathImage, contoursPathImageC)
-	prominentcolor.BuildP(meanShiftPathImage, palettePathImage, 5)
-	colorsDataS := []string{"#ff007f", "#7fff00", "#00ff00"}
-	mixcolors.GetAllMixColors(colorsDataS, 10)
+	mixcolors.FindAdditiveColors("#ff007f")
 }
 
 func (a App) Scobel() {}

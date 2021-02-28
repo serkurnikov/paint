@@ -23,6 +23,7 @@ require (
 	github.com/go-opencv/go-opencv v0.0.0-20190115070742-a4fe8ec027cc // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/go-toolsmith/pkgload v1.0.1 // indirect
+	github.com/golang/protobuf v1.4.3
 	github.com/golangci/golangci-lint v1.37.1 // indirect
 	github.com/golangci/misspell v0.3.5 // indirect
 	github.com/google/go-cmp v0.5.4 // indirect
@@ -30,6 +31,7 @@ require (
 	github.com/gopherjs/gopherjs v0.0.0-20210202160940-bed99a852dfe // indirect
 	github.com/gostaticanalysis/analysisutil v0.6.1 // indirect
 	github.com/jessevdk/go-flags v1.4.0
+	github.com/jgautheron/goconst v1.4.0 // indirect
 	github.com/jingyugao/rowserrcheck v0.0.0-20210130005344-c6a0c12dd98d // indirect
 	github.com/jirfag/go-printf-func-name v0.0.0-20200119135958-7558a9eaa5af // indirect
 	github.com/jmoiron/sqlx v1.3.1
@@ -39,8 +41,9 @@ require (
 	github.com/magefile/mage v1.11.0 // indirect
 	github.com/magiconair/properties v1.8.4 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/matoous/godox v0.0.0-20200801072554-4fb83dc2941e // indirect
+	github.com/matoous/godox v0.0.0-20210227103229-6504466cf951 // indirect
 	github.com/mattn/go-runewidth v0.0.10 // indirect
+	github.com/mattn/goveralls v0.0.8 // indirect
 	github.com/mbilski/exhaustivestruct v1.2.0 // indirect
 	github.com/nbutton23/zxcvbn-go v0.0.0-20210217022336-fa2cb2858354 // indirect
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
@@ -64,7 +67,7 @@ require (
 	github.com/powerman/structlog v0.7.1
 	github.com/pressly/goose v2.7.0+incompatible
 	github.com/prometheus/client_golang v1.9.0
-	github.com/prometheus/common v0.17.0 // indirect
+	github.com/prometheus/common v0.18.0 // indirect
 	github.com/prometheus/procfs v0.6.0 // indirect
 	github.com/quasilyte/go-ruleguard v0.3.1 // indirect
 	github.com/quasilyte/regex/syntax v0.0.0-20200805063351-8f842688393c // indirect
@@ -87,11 +90,13 @@ require (
 	github.com/tomarrell/wrapcheck v0.0.0-20201130113247-1683564d9756 // indirect
 	gocv.io/x/gocv v0.26.0
 	golang.org/x/mod v0.4.1 // indirect
-	golang.org/x/net v0.0.0-20210224082022-3d97a244fca7
-	golang.org/x/sys v0.0.0-20210223212115-eede4237b368 // indirect
+	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
+	golang.org/x/sys v0.0.0-20210227040730-b0d1d43c014d // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	google.golang.org/genproto v0.0.0-20210223151946-22b48be4551b // indirect
-	google.golang.org/grpc v1.35.0 // indirect
+	google.golang.org/genproto v0.0.0-20210226172003-ab064af71705 // indirect
+	google.golang.org/grpc v1.36.0
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0 // indirect
+	google.golang.org/protobuf v1.25.0
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/gographics/imagick.v3 v3.3.0 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect

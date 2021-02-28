@@ -35,12 +35,14 @@ func BuildP(in, out string, clusters int) {
 		log.Printf("Error: failed loading %s\n", in)
 		return
 	}
-	cols, err := KmeansWithAll(5, img, ArgumentDebugImage, DefaultSize, GetDefaultMasks())
+	cols, err := KmeansWithAll(clusters, img, ArgumentAverageMean, DefaultSize, GetDefaultMasks())
 	if err != nil {
 		log.Println(err)
 		return
 	}
-
+	for i := 0; i < len(cols); i++ {
+		println("#"+cols[i].AsString())
+	}
 	displayColors(img, cols, out)
 }
 

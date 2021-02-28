@@ -65,6 +65,8 @@ var (
 	shallow       = flag.Bool("shallow", false, "Shallow coveralls internal server errors")
 	ignore        = flag.String("ignore", "", "Comma separated files to ignore")
 	insecure      = flag.Bool("insecure", false, "Set insecure to skip verification of certificates")
+	uploadSource  = flag.Bool("uploadsource", true, "Read local source and upload it to coveralls")
+	allowGitFetch = flag.Bool("allowgitfetch", true, "Perform a 'git fetch' when the reference is different than HEAD; used for GitHub Actions integration")
 	show          = flag.Bool("show", false, "Show which package is being tested")
 	customJobID   = flag.String("jobid", "", "Custom set job token")
 	jobNumber     = flag.String("jobnumber", "", "Custom set job number")
@@ -79,8 +81,7 @@ func init() {
 
 // usage supplants package flag's Usage variable
 var usage = func() {
-	cmd := os.Args[0]
-	// fmt.Fprintf(os.Stderr, "Usage of %s:\n", cmd)
+	cmd := filepath.Base(os.Args[0])
 	s := "Usage: %s [options]\n"
 	fmt.Fprintf(os.Stderr, s, cmd)
 	flag.PrintDefaults()
@@ -251,6 +252,13 @@ func processParallelFinish(jobID, token string) error {
 	params.Set("payload[build_num]", jobID)
 	params.Set("payload[status]", "done")
 	res, err := http.PostForm(*endpoint+"/webhook", params)
+	if *debug {
+		if token != "" {
+			params.Set("repo_token", "*******")
+		}
+		log.Printf("Posted webhook data: %q", params.Encode())
+	}
+
 	if err != nil {
 		return err
 	}
@@ -291,7 +299,7 @@ func process() error {
 	flag.Parse()
 	if len(flag.Args()) > 0 {
 		flag.Usage()
-		os.Exit(1)
+		os.Exit(2)
 	}
 
 	//
@@ -346,6 +354,8 @@ func process() error {
 		jobID = codeshipjobID
 	} else if githubRunID := os.Getenv("GITHUB_RUN_ID"); githubRunID != "" {
 		jobID = githubRunID
+	} else if gitlabRunID := os.Getenv("CI_PIPELINE_ID"); gitlabRunID != "" {
+		jobID = gitlabRunID
 	}
 
 	if *repotoken == "" && *repotokenfile != "" {
@@ -371,9 +381,6 @@ func process() error {
 		pullRequest = prNumber
 	} else if prNumber := os.Getenv("TRAVIS_PULL_REQUEST"); prNumber != "" && prNumber != "false" {
 		pullRequest = prNumber
-	} else if prURL := os.Getenv("CI_PULL_REQUEST"); prURL != "" {
-		// for Circle CI
-		pullRequest = regexp.MustCompile(`[0-9]+$`).FindString(prURL)
 	} else if prNumber := os.Getenv("APPVEYOR_PULL_REQUEST_NUMBER"); prNumber != "" {
 		pullRequest = prNumber
 	} else if prNumber := os.Getenv("PULL_REQUEST_NUMBER"); prNumber != "" {
@@ -386,6 +393,15 @@ func process() error {
 		pullRequest = prNumber
 	} else if prNumber := os.Getenv("CI_PR_NUMBER"); prNumber != "" {
 		pullRequest = prNumber
+	} else if prNumber := os.Getenv("CHANGE_ID"); prNumber != "" {
+		// for Jenkins multibranch projects
+		pullRequest = prNumber
+	} else if prURL := os.Getenv("CHANGE_URL"); prURL != "" {
+		// for Jenkins multibranch projects
+		pullRequest = regexp.MustCompile(`[0-9]+$`).FindString(prURL)
+	} else if prURL := os.Getenv("CI_PULL_REQUEST"); prURL != "" {
+		// for Circle CI
+		pullRequest = regexp.MustCompile(`[0-9]+$`).FindString(prURL)
 	} else if os.Getenv("GITHUB_EVENT_NAME") == "pull_request" {
 		number := githubEvent["number"].(float64)
 		pullRequest = strconv.Itoa(int(number))
@@ -393,6 +409,11 @@ func process() error {
 		ghPR := githubEvent["pull_request"].(map[string]interface{})
 		ghHead := ghPR["head"].(map[string]interface{})
 		head = ghHead["sha"].(string)
+	} else if prNumber := os.Getenv("CI_MERGE_REQUEST_IID"); prNumber != "" {
+		// pull request id from GitHub when building on GitLab
+		pullRequest = prNumber
+	} else if prNumber := os.Getenv("CI_EXTERNAL_PULL_REQUEST_IID"); prNumber != "" {
+		pullRequest = prNumber
 	}
 
 	if *service == "" && os.Getenv("TRAVIS_JOB_ID") != "" {
@@ -404,12 +425,17 @@ func process() error {
 		return err
 	}
 
+	gitInfo, err := collectGitInfo(head)
+	if err != nil {
+		return err
+	}
+
 	j := Job{
 		RunAt:              time.Now(),
 		RepoToken:          repotoken,
 		ServicePullRequest: pullRequest,
 		Parallel:           parallel,
-		Git:                collectGitInfo(head),
+		Git:                gitInfo,
 		SourceFiles:        sourceFiles,
 		ServiceName:        *service,
 		FlagName:           *flagName,
@@ -447,6 +473,11 @@ func process() error {
 	}
 
 	if *debug {
+		j := j
+		if j.RepoToken != nil && *j.RepoToken != "" {
+			s := "*******"
+			j.RepoToken = &s
+		}
 		b, err := json.MarshalIndent(j, "", "  ")
 		if err != nil {
 			return err
