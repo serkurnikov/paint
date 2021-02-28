@@ -1,11 +1,9 @@
 package mixcolors
 
 import (
-	"fmt"
 	"github.com/lucasb-eyer/go-colorful"
 	"math"
 	"sort"
-	"strconv"
 )
 
 /*
@@ -131,10 +129,10 @@ import (
    Шахназарская красная
 */
 
-const Difference = "Difference"
-const DefaultValues = 5
+const DefaultCountOfColors = 5
+const DefaultChannels = 3
 
-type ColorAdditive struct {
+type ColorAdditiveLUV struct {
 	hex        string
 	difference []float64
 }
@@ -599,16 +597,17 @@ func getAdditivePaletteColors() []string {
 	}
 }
 
-func FindAdditiveColors(mainColorS string) {
-	sortAdditiveColors := getSortAdditiveColorsByDifferenceLUV(mainColorS, getAdditivePaletteColors(), DefaultValues)
-	for key, value := range sortAdditiveColors {
-		fmt.Printf("%s value is %v\n", key, value)
+func FindAdditiveColorsLUV(mainColorS string) {
+	sortAdditiveColors := make(map[int][]ColorAdditiveLUV)
+	for i := 0; i < DefaultChannels; i++ {
+		sortAdditiveColors[i] = getSortAdditiveColorsByChanelLUV(mainColorS, getAdditivePaletteColors(), i, DefaultCountOfColors)
 	}
+
+	//Blending
 }
 
-func getSortAdditiveColorsByDifferenceLUV(mainColorS string, additiveColors []string, values int) map[string][]ColorAdditive {
-	result := make(map[string][]ColorAdditive)
-	params := make([]ColorAdditive, 0)
+func getSortAdditiveColorsByChanelLUV(mainColorS string, additiveColors []string, channel, count int) []ColorAdditiveLUV {
+	params := make([]ColorAdditiveLUV, 0)
 
 	cMain, _ := colorful.Hex(mainColorS)
 	l, u, v := cMain.Luv()
@@ -617,15 +616,12 @@ func getSortAdditiveColorsByDifferenceLUV(mainColorS string, additiveColors []st
 		cAdditive, _ := colorful.Hex(additiveColors[i])
 		li, ui, vi := cAdditive.Luv()
 
-		params = append(params, ColorAdditive{
+		params = append(params, ColorAdditiveLUV{
 			hex:        cAdditive.Hex(),
 			difference: []float64{math.Abs(l - li), math.Abs(u - ui), math.Abs(v - vi)},
 		})
 	}
 
-	for k := 0; k < len(params[0].difference); k++ {
-		sort.Slice(params, func(i, j int) bool { return params[i].difference[k] < params[j].difference[k] })
-		result[Difference+strconv.Itoa(k)] = params[:values]
-	}
-	return result
+	sort.Slice(params, func(i, j int) bool { return params[i].difference[channel] < params[j].difference[channel] })
+	return params[:count]
 }

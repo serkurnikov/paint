@@ -45,7 +45,7 @@ const (
 func (a App) ExternalApiTest() {}
 
 func (a App) UnderPaint(tileSize int) {
-	mixcolors.FindAdditiveColors("#ff007f")
+	mixcolors.FindAdditiveColorsLUV("#ff007f")
 }
 
 func (a App) Scobel() {}
