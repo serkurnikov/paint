@@ -28,6 +28,7 @@ require (
 	github.com/golangci/misspell v0.3.5 // indirect
 	github.com/google/go-cmp v0.5.4 // indirect
 	github.com/google/uuid v1.2.0 // indirect
+	github.com/gookit/color v1.3.6
 	github.com/gopherjs/gopherjs v0.0.0-20210202160940-bed99a852dfe // indirect
 	github.com/gostaticanalysis/analysisutil v0.6.1 // indirect
 	github.com/jessevdk/go-flags v1.4.0

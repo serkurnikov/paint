@@ -45,7 +45,6 @@ func BlendCombination(combinationElements []string, numberOfShades int) *gabs.Co
 
 func GetAllMixColors(colorsDataS []string, numberOfShades int) *gabs.Container {
 	jsonObj := gabs.New()
-
 	subsets := All(colorsDataS)
 	for i := 0; i < len(subsets); i++ {
 		result := BlendCombination(subsets[i], numberOfShades)

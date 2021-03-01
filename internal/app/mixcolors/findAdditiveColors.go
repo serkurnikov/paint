@@ -130,7 +130,7 @@ import (
 */
 
 const DefaultCountOfColors = 5
-const DefaultChannels = 3
+const DefaultChannelsLUV = 3
 
 type ColorAdditiveLUV struct {
 	hex        string
@@ -597,13 +597,34 @@ func getAdditivePaletteColors() []string {
 	}
 }
 
-func FindAdditiveColorsLUV(mainColorS string) {
+func FindAdditiveColorsLUV(mainColorS string) []ColorAdditiveLUV {
 	sortAdditiveColors := make(map[int][]ColorAdditiveLUV)
-	for i := 0; i < DefaultChannels; i++ {
+	for i := 0; i < DefaultChannelsLUV; i++ {
 		sortAdditiveColors[i] = getSortAdditiveColorsByChanelLUV(mainColorS, getAdditivePaletteColors(), i, DefaultCountOfColors)
 	}
 
-	//Blending
+	blendAdditiveColorsLUV(sortAdditiveColors)
+
+	return nil
+}
+
+func blendAdditiveColorsLUV(additiveColors map[int][]ColorAdditiveLUV) []ColorAdditiveLUV {
+	colors := make([]string, 0)
+
+	for _, value := range additiveColors {
+		for i := 0; i < len(value); i++ {
+			colors = append(colors, value[i].hex)
+		}
+	}
+
+	//check isElementsFromOtherLists
+	combinations := Combinations(colors, DefaultChannelsLUV)
+
+	for i := 0; i < len(combinations); i++ {
+		BlendCombination(combinations[i], DefaultNumberOfShades)
+	}
+
+	return nil
 }
 
 func getSortAdditiveColorsByChanelLUV(mainColorS string, additiveColors []string, channel, count int) []ColorAdditiveLUV {
@@ -624,4 +645,8 @@ func getSortAdditiveColorsByChanelLUV(mainColorS string, additiveColors []string
 
 	sort.Slice(params, func(i, j int) bool { return params[i].difference[channel] < params[j].difference[channel] })
 	return params[:count]
+}
+
+func checkCombination(elements []string) bool{
+	return false
 }

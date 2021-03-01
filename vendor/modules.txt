@@ -221,6 +221,9 @@ github.com/google/go-cmp/cmp/internal/function
 github.com/google/go-cmp/cmp/internal/value
 # github.com/google/uuid v1.2.0
 ## explicit
+# github.com/gookit/color v1.3.6
+## explicit
+github.com/gookit/color
 # github.com/gopherjs/gopherjs v0.0.0-20210202160940-bed99a852dfe
 ## explicit
 # github.com/gostaticanalysis/analysisutil v0.6.1
