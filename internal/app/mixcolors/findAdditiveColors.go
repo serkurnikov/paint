@@ -1,9 +1,13 @@
 package mixcolors
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/lucasb-eyer/go-colorful"
 	"math"
 	"sort"
+	"strconv"
+	"strings"
 )
 
 /*
@@ -131,10 +135,16 @@ import (
 
 const DefaultCountOfColors = 5
 const DefaultChannelsLUV = 3
+const P = "."
 
 type ColorAdditiveLUV struct {
 	hex        string
 	difference []float64
+}
+
+type SimilarColor struct {
+	hex        string
+	difference float64
 }
 
 func getAdditivePaletteColors() []string {
@@ -603,27 +613,47 @@ func FindAdditiveColorsLUV(mainColorS string) []ColorAdditiveLUV {
 		sortAdditiveColors[i] = getSortAdditiveColorsByChanelLUV(mainColorS, getAdditivePaletteColors(), i, DefaultCountOfColors)
 	}
 
-	blendAdditiveColorsLUV(sortAdditiveColors)
+	getSimilarColorsLUV(mainColorS, sortAdditiveColors)
 
 	return nil
 }
 
-func blendAdditiveColorsLUV(additiveColors map[int][]ColorAdditiveLUV) []ColorAdditiveLUV {
+func getSimilarColorsLUV(mainColorS string, additiveColors map[int][]ColorAdditiveLUV) []string {
 	colors := make([]string, 0)
+	resultColors := make([]string, 0)
 
-	for _, value := range additiveColors {
+	for k, value := range additiveColors {
 		for i := 0; i < len(value); i++ {
-			colors = append(colors, value[i].hex)
+			if !contains(colors, value[i].hex) {
+				colors = append(colors, fmt.Sprintf(value[i].hex+P+strconv.Itoa(k)))
+			}
 		}
 	}
 
-	//check isElementsFromOtherLists
 	combinations := Combinations(colors, DefaultChannelsLUV)
 
 	for i := 0; i < len(combinations); i++ {
-		BlendCombination(combinations[i], DefaultNumberOfShades)
-	}
+		if isCombinationRight(combinations[i]) {
+			blendResult := Blend3Colors(Color3{
+				C1: strings.Split(combinations[i][0], P)[0],
+				C2: strings.Split(combinations[i][1], P)[0],
+				C3: strings.Split(combinations[i][2], P)[0]}, DefaultNumberOfShades)
 
+			for _, child := range blendResult.S(strings.Split(combinations[i][0], P)[0]).Children() {
+				for _, value := range child.Children() {
+					var blendColors map[string]interface{}
+					json.Unmarshal([]byte(value.String()), &blendColors)
+
+					for _, v := range blendColors {
+						if !contains(resultColors, v.(string)) {
+							resultColors = append(resultColors, v.(string))
+						}
+					}
+				}
+			}
+		}
+	}
+	test(mainColorS, resultColors)
 	return nil
 }
 
@@ -647,6 +677,56 @@ func getSortAdditiveColorsByChanelLUV(mainColorS string, additiveColors []string
 	return params[:count]
 }
 
-func checkCombination(elements []string) bool{
+func test (mainColorS string, colors []string) []SimilarColor {
+	result := make([]SimilarColor, 0)
+
+	for i := 0; i < len(colors); i++ {
+		result = append(result, SimilarColor{
+			hex:        colors[i],
+			difference: DistanceLuv(mainColorS, colors[i]),
+		})
+	}
+
+	sort.Slice(result, func(i, j int) bool { return result[i].difference < result[j].difference })
+	println(result[:5])
+	return result[:5]
+}
+
+func DistanceLuv(colorS1, colorS2 string) float64 {
+	c1, _ := colorful.Hex(colorS1)
+	c2, _ := colorful.Hex(colorS2)
+
+	l1, u1, v1 := c1.Luv()
+	l2, u2, v2 := c2.Luv()
+
+	return math.Sqrt(sq(l1-l2) + sq(u1-u2) + sq(v1-v2))
+}
+
+func isCombinationRight(elements []string) bool {
+	channels := make([]string, 0)
+	for i := 0; i < len(elements); i++ {
+		channels = append(channels, strings.Split(elements[i], P)[1])
+	}
+
+	for i := 0; i < len(channels); i++ {
+		if !contains(channels, strconv.Itoa(i)) {
+			return false
+		}
+	}
+	return true
+}
+
+//:TODO refactoring - move method from this package
+func contains(arr []string, str string) bool {
+	for _, a := range arr {
+		if a == str {
+			return true
+		}
+	}
 	return false
+}
+
+//:TODO refactoring - move method from this package
+func sq(v float64) float64 {
+	return v * v
 }

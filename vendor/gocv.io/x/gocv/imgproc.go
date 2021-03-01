@@ -762,6 +762,10 @@ func PyrUp(src Mat, dst *Mat, ksize image.Point, borderType BorderType) {
 	C.PyrUp(src.p, dst.p, pSize, C.int(borderType))
 }
 
+func PyrMeanShiftFiltering(src Mat, dst *Mat, sp float64, sr float64, maxLevel int) {
+	C.PyrMeanShiftFiltering(src.p, dst.p, C.double(sp), C.double(sr), C.int(maxLevel))
+}
+
 // MorphologyDefaultBorder returns "magic" border value for erosion and dilation.
 // It is automatically transformed to Scalar::all(-DBL_MAX) for dilation.
 //

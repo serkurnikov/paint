@@ -5,9 +5,7 @@ import (
 )
 
 const (
-	//change your directory for saving results
-
-	basePath        = "C:\\Users\\master\\go\\src\\projects\\paint\\assets"
+	basePath        = "D:\\Sergey\\projects\\Go Projects\\paint\\assets"
 	testPathImage0  = basePath + "\\test0.jpg"
 	testPathImage1  = basePath + "\\test1.jpg"
 	testPathImage2  = basePath + "\\test2.jpg"
@@ -45,7 +43,7 @@ const (
 func (a App) ExternalApiTest() {}
 
 func (a App) UnderPaint(tileSize int) {
-	mixcolors.FindAdditiveColorsLUV("#ff007f")
+	mixcolors.FindAdditiveColorsLUV("#FFFAFA")
 }
 
 func (a App) Scobel() {}
