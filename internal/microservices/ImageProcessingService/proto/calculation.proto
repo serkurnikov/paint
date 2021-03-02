@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "paint/internal/microservice/proto";
+option java_multiple_files = true;
+option java_package = "io.grpc.paint.calculation";
+option java_outer_classname = "CalculationProto";
+
+package promo;
+
+
+service Calculation {
+  rpc GetCalculationParams (CalculationParams) returns (CalculationResult) {}
+}
+
+message CalculationResult {
+  string result = 1;
+}
+
+
+message CalculationParams {
+  string message = 1;
+}

@@ -5,18 +5,9 @@ import (
 )
 
 const (
-	basePath        = "D:\\Sergey\\projects\\Go Projects\\paint\\assets"
+	basePath        = "D:\\Sergey\\projects\\Go Projects\\paint\\examples\\assets"
 	testPathImage0  = basePath + "\\test0.jpg"
-	testPathImage1  = basePath + "\\test1.jpg"
 	testPathImage2  = basePath + "\\test2.jpg"
-	testPathImage3  = basePath + "\\test3.jpg"
-	testPathImage4  = basePath + "\\test4.jpg"
-	testPathImage5  = basePath + "\\test5.jpg"
-	testPathImage6  = basePath + "\\test6.jpg"
-	testPathImage7  = basePath + "\\test7.jpg"
-	testPathImage8  = basePath + "\\test8.jpg"
-	testPathImage9  = basePath + "\\test9.jpg"
-	testPathImage10 = basePath + "\\test10.jpg"
 
 	laplacianPathImage = basePath + "\\laplacian.jpg"
 	sobelPathImage     = basePath + "\\sobel.jpg"
