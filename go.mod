@@ -3,6 +3,7 @@ module paint
 go 1.15
 
 require (
+	github.com/ChimeraCoder/gojson v1.1.0
 	github.com/Djarvur/go-err113 v0.1.0 // indirect
 	github.com/Jeffail/gabs/v2 v2.6.0
 	github.com/alexkohler/prealloc v1.0.0 // indirect
@@ -28,7 +29,7 @@ require (
 	github.com/golangci/misspell v0.3.5 // indirect
 	github.com/google/go-cmp v0.5.4 // indirect
 	github.com/google/uuid v1.2.0 // indirect
-	github.com/gookit/color v1.3.6
+	github.com/gookit/color v1.3.6 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20210202160940-bed99a852dfe // indirect
 	github.com/gostaticanalysis/analysisutil v0.6.1 // indirect
 	github.com/jessevdk/go-flags v1.4.0

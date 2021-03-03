@@ -2,6 +2,9 @@
 4d63.com/gochecknoglobals/checknoglobals
 # github.com/BurntSushi/toml v0.3.1
 github.com/BurntSushi/toml
+# github.com/ChimeraCoder/gojson v1.1.0
+## explicit
+github.com/ChimeraCoder/gojson
 # github.com/Djarvur/go-err113 v0.1.0
 ## explicit
 github.com/Djarvur/go-err113
@@ -223,7 +226,6 @@ github.com/google/go-cmp/cmp/internal/value
 ## explicit
 # github.com/gookit/color v1.3.6
 ## explicit
-github.com/gookit/color
 # github.com/gopherjs/gopherjs v0.0.0-20210202160940-bed99a852dfe
 ## explicit
 # github.com/gostaticanalysis/analysisutil v0.6.1

@@ -1,0 +1,5 @@
+package mixcolors
+
+func initColors(){
+
+}

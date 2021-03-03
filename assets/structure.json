@@ -1,0 +1,1074 @@
+{
+  "assets": [
+    {
+      "colors_fabric": {
+        "masters_colors": {
+          "ararat_green": [
+            {
+              "Name": "ararat_green.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ararat_green\\ararat_green.jpg"
+            },
+            {
+              "Name": "ararat_green_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ararat_green\\ararat_green_2.jpg"
+            }
+          ],
+          "belila_titan": [
+            {
+              "Name": "belila_titan.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\belila_titan\\belila_titan.jpg"
+            }
+          ],
+          "belila_zink": [
+            {
+              "Name": "belila_zink.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\belila_zink\\belila_zink.jpg"
+            }
+          ],
+          "berlin_azur": [
+            {
+              "Name": "berlin_azur.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\berlin_azur\\berlin_azur.jpg"
+            },
+            {
+              "Name": "berlin_azur_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\berlin_azur\\berlin_azur_2.jpg"
+            }
+          ],
+          "black_travertine": [
+            {
+              "Name": "black_travertine.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\black_travertine\\black_travertine.jpg"
+            },
+            {
+              "Name": "black_travertine_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\black_travertine\\black_travertine_2.jpg"
+            }
+          ],
+          "blue": [
+            {
+              "Name": "blue.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\blue\\blue.jpg"
+            },
+            {
+              "Name": "blue_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\blue\\blue_2.jpg"
+            }
+          ],
+          "burnt_bone": [
+            {
+              "Name": "burnt_bone.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\burnt_bone\\burnt_bone.jpg"
+            },
+            {
+              "Name": "burnt_bone_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\burnt_bone\\burnt_bone_2.jpg"
+            }
+          ],
+          "burnt_sienna": [
+            {
+              "Name": "burnt_sienna.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\burnt_sienna\\burnt_sienna.jpg"
+            },
+            {
+              "Name": "burnt_sienna_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\burnt_sienna\\burnt_sienna_2.jpg"
+            }
+          ],
+          "burnt_umber": [
+            {
+              "Name": "burnt_umber.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\burnt_umber\\burnt_umber.jpg"
+            },
+            {
+              "Name": "burnt_umber_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\burnt_umber\\burnt_umber_2.jpg"
+            }
+          ],
+          "cadmin_lemon": [
+            {
+              "Name": "cadmin_lemon.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmin_lemon\\cadmin_lemon.jpg"
+            },
+            {
+              "Name": "cadmin_lemon_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmin_lemon\\cadmin_lemon_2.jpg"
+            }
+          ],
+          "cadmin_orange": [
+            {
+              "Name": "cadmin_orange.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmin_orange\\cadmin_orange.jpg"
+            },
+            {
+              "Name": "cadmin_orange_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmin_orange\\cadmin_orange_2.jpg"
+            }
+          ],
+          "cadmin_red_dark": [
+            {
+              "Name": "cadmin_red_dark.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmin_red_dark\\cadmin_red_dark.jpg"
+            },
+            {
+              "Name": "cadmin_red_dark_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmin_red_dark\\cadmin_red_dark_2.jpg"
+            }
+          ],
+          "cadmin_red_light": [
+            {
+              "Name": "cadmin_red_light.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmin_red_light\\cadmin_red_light.jpg"
+            },
+            {
+              "Name": "cadmin_red_light_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmin_red_light\\cadmin_red_light_2.jpg"
+            }
+          ],
+          "cadmin_yellow_dark": [
+            {
+              "Name": "cadmin_yellow_dark.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmin_yellow_dark\\cadmin_yellow_dark.jpg"
+            },
+            {
+              "Name": "cadmin_yellow_dark_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmin_yellow_dark\\cadmin_yellow_dark_2.jpg"
+            }
+          ],
+          "cadmin_yellow_light": [
+            {
+              "Name": "cadmin_yellow_light.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmin_yellow_light\\cadmin_yellow_light.jpg"
+            },
+            {
+              "Name": "cadmin_yellow_light_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmin_yellow_light\\cadmin_yellow_light_2.jpg"
+            }
+          ],
+          "cadmin_yellow_medium": [
+            {
+              "Name": "cadmin_yellow_medium.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmin_yellow_medium\\cadmin_yellow_medium.jpg"
+            },
+            {
+              "Name": "cadmin_yellow_medium_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmin_yellow_medium\\cadmin_yellow_medium_2.jpg"
+            }
+          ],
+          "cadmium_yellow_waik": [
+            {
+              "Name": "cadmium_yellow_waik.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmium_yellow_waik\\cadmium_yellow_waik.jpg"
+            },
+            {
+              "Name": "cadmium_yellow_waik_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cadmium_yellow_waik\\cadmium_yellow_waik_2.jpg"
+            }
+          ],
+          "caput_mortuum_dark": [
+            {
+              "Name": "caput_mortuum_dark.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\caput_mortuum_dark\\caput_mortuum_dark.jpg"
+            },
+            {
+              "Name": "caput_mortuum_dark_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\caput_mortuum_dark\\caput_mortuum_dark_2.jpg"
+            }
+          ],
+          "carbon_black_gas": [
+            {
+              "Name": "carbon_black_gas.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\carbon_black_gas\\carbon_black_gas.jpg"
+            },
+            {
+              "Name": "carbon_black_gas_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\carbon_black_gas\\carbon_black_gas_2.jpg"
+            }
+          ],
+          "ceruleum_blue": [
+            {
+              "Name": "ceruleum_blue.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ceruleum_blue\\ceruleum_blue.jpg"
+            },
+            {
+              "Name": "ceruleum_blue_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ceruleum_blue\\ceruleum_blue_2.jpg"
+            }
+          ],
+          "cherry_marcar": [
+            {
+              "Name": "cherry_marcar.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cherry_marcar\\cherry_marcar.jpg"
+            },
+            {
+              "Name": "cherry_marcar_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cherry_marcar\\cherry_marcar_2.jpg"
+            }
+          ],
+          "cherry_tavush": [
+            {
+              "Name": "cherry_tavush.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cherry_tavush\\cherry_tavush.jpg"
+            },
+            {
+              "Name": "cherry_tavush_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cherry_tavush\\cherry_tavush_2.jpg"
+            }
+          ],
+          "chrome_cobalt_blue_green": [
+            {
+              "Name": "chrome_cobalt_blue_green.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\chrome_cobalt_blue_green\\chrome_cobalt_blue_green.jpg"
+            },
+            {
+              "Name": "chrome_cobalt_blue_green_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\chrome_cobalt_blue_green\\chrome_cobalt_blue_green_2.jpg"
+            }
+          ],
+          "chrome_cobalt_green_blue": [
+            {
+              "Name": "chrome_cobalt_green_blue.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\chrome_cobalt_green_blue\\chrome_cobalt_green_blue.jpg"
+            },
+            {
+              "Name": "chrome_cobalt_green_blue_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\chrome_cobalt_green_blue\\chrome_cobalt_green_blue_2.jpg"
+            }
+          ],
+          "cinnabar": [
+            {
+              "Name": "cinnabar.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cinnabar\\cinnabar.jpg"
+            },
+            {
+              "Name": "cinnabar_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cinnabar\\cinnabar_2.jpg"
+            }
+          ],
+          "cinnabar_yellow_green": [
+            {
+              "Name": "cinnabar_yellow_green.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cinnabar_yellow_green\\cinnabar_yellow_green.jpg"
+            }
+          ],
+          "cobalt_blue_medium": [
+            {
+              "Name": "cobalt_blue_medium.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cobalt_blue_medium\\cobalt_blue_medium.jpg"
+            },
+            {
+              "Name": "cobalt_blue_medium_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cobalt_blue_medium\\cobalt_blue_medium_2.jpg"
+            }
+          ],
+          "cobalt_blue_spectral": [
+            {
+              "Name": "cobalt_blue_spectral.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cobalt_blue_spectral\\cobalt_blue_spectral.jpg"
+            },
+            {
+              "Name": "cobalt_blue_spectral_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cobalt_blue_spectral\\cobalt_blue_spectral_2.jpg"
+            }
+          ],
+          "cobalt_green_dark": [
+            {
+              "Name": "cobalt_green_dark.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cobalt_green_dark\\cobalt_green_dark.jpg"
+            },
+            {
+              "Name": "cobalt_green_dark_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cobalt_green_dark\\cobalt_green_dark_2.jpg"
+            }
+          ],
+          "cobalt_green_light": [
+            {
+              "Name": "cobalt_green_light.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cobalt_green_light\\cobalt_green_light.jpg"
+            },
+            {
+              "Name": "cobalt_green_light_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cobalt_green_light\\cobalt_green_light_2.jpg"
+            }
+          ],
+          "cobalt_violet_dark": [
+            {
+              "Name": "cobalt_violet_dark.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cobalt_violet_dark\\cobalt_violet_dark.jpg"
+            },
+            {
+              "Name": "cobalt_violet_dark_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cobalt_violet_dark\\cobalt_violet_dark_2.jpg"
+            }
+          ],
+          "cobalt_violet_light": [
+            {
+              "Name": "cobalt_violet_light.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cobalt_violet_light\\cobalt_violet_light.jpg"
+            },
+            {
+              "Name": "cobalt_violet_light_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\cobalt_violet_light\\cobalt_violet_light_2.jpg"
+            }
+          ],
+          "coral_pink": [
+            {
+              "Name": "coral_pink.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\coral_pink\\coral_pink.jpg"
+            },
+            {
+              "Name": "coral_pink_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\coral_pink\\coral_pink_2.jpg"
+            }
+          ],
+          "dark_ochre_kotayk": [
+            {
+              "Name": "dark_ochre_kotayk.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\dark_ochre_kotayk\\dark_ochre_kotayk.jpg"
+            },
+            {
+              "Name": "dark_ochre_kotayk_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\dark_ochre_kotayk\\dark_ochre_kotayk_2.jpg"
+            }
+          ],
+          "emerald": [
+            {
+              "Name": "emerald.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\emerald\\emerald.jpg"
+            },
+            {
+              "Name": "emerald_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\emerald\\emerald_2.jpg"
+            }
+          ],
+          "english_green_dark": [
+            {
+              "Name": "english_green_dark.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\english_green_dark\\english_green_dark.jpg"
+            },
+            {
+              "Name": "english_green_dark_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\english_green_dark\\english_green_dark_2.jpg"
+            }
+          ],
+          "english_green_light": [
+            {
+              "Name": "english_green_light.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\english_green_light\\english_green_light.jpg"
+            },
+            {
+              "Name": "english_green_light_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\english_green_light\\english_green_light_2.jpg"
+            }
+          ],
+          "english_red": [
+            {
+              "Name": "english_red.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\english_red\\english_red.jpg"
+            }
+          ],
+          "geranium_red": [
+            {
+              "Name": "geranium_red.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\geranium_red\\geranium_red.jpg"
+            }
+          ],
+          "glauconite": [
+            {
+              "Name": "glauconite.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\glauconite\\glauconite.jpg"
+            },
+            {
+              "Name": "glauconite_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\glauconite\\glauconite_2.jpg"
+            }
+          ],
+          "golden_arzakan": [
+            {
+              "Name": "golden_arzakan.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\golden_arzakan\\golden_arzakan.jpg"
+            },
+            {
+              "Name": "golden_arzakan_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\golden_arzakan\\golden_arzakan_2.jpg"
+            }
+          ],
+          "golden_yellow": [
+            {
+              "Name": "golden_yellow.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\golden_yellow\\golden_yellow.jpg"
+            }
+          ],
+          "grass_green": [
+            {
+              "Name": "grass_green.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\grass_green\\grass_green.jpg"
+            },
+            {
+              "Name": "grass_green_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\grass_green\\grass_green_2.jpg"
+            }
+          ],
+          "green_FC": [
+            {
+              "Name": "green_FC.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\green_FC\\green_FC.jpg"
+            },
+            {
+              "Name": "green_FC_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\green_FC\\green_FC_2.jpg"
+            }
+          ],
+          "green_bzhni": [
+            {
+              "Name": "green_bzhni.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\green_bzhni\\green_bzhni.jpg"
+            },
+            {
+              "Name": "green_bzhni_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\green_bzhni\\green_bzhni_2.jpg"
+            }
+          ],
+          "green_tavush": [
+            {
+              "Name": "green_tavush.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\green_tavush\\green_tavush.jpg"
+            },
+            {
+              "Name": "green_tavush_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\green_tavush\\green_tavush_2.jpg"
+            }
+          ],
+          "gutangira_purple": [
+            {
+              "Name": "gutangira_purple.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\gutangira_purple\\gutangira_purple.jpg"
+            },
+            {
+              "Name": "gutangira_purple_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\gutangira_purple\\gutangira_purple_2.jpg"
+            }
+          ],
+          "gutangira_raspberry": [
+            {
+              "Name": "gutangira_raspberry.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\gutangira_raspberry\\gutangira_raspberry.jpg"
+            },
+            {
+              "Name": "gutangira_raspberry_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\gutangira_raspberry\\gutangira_raspberry_2.jpg"
+            }
+          ],
+          "indanthrene_blue": [
+            {
+              "Name": "indanthrene_blue.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\indanthrene_blue\\indanthrene_blue.jpg"
+            }
+          ],
+          "indian_red": [
+            {
+              "Name": "indian_red.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\indian_red\\indian_red.jpg"
+            },
+            {
+              "Name": "indian_red_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\indian_red\\indian_red_2.jpg"
+            }
+          ],
+          "indian_yellow": [
+            {
+              "Name": "indian_yellow.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\indian_yellow\\indian_yellow.jpg"
+            },
+            {
+              "Name": "indian_yellow_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\indian_yellow\\indian_yellow_2.jpg"
+            }
+          ],
+          "indigo": [
+            {
+              "Name": "indigo.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\indigo\\indigo.jpg"
+            },
+            {
+              "Name": "indigo_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\indigo\\indigo_2.jpg"
+            }
+          ],
+          "irgazin_yellow": [
+            {
+              "Name": "irgazin_yellow.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\irgazin_yellow\\irgazin_yellow.jpg"
+            }
+          ],
+          "kraplak_pink_solid": [
+            {
+              "Name": "kraplak_pink_solid.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\kraplak_pink_solid\\kraplak_pink_solid.jpg"
+            },
+            {
+              "Name": "kraplak_pink_solid_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\kraplak_pink_solid\\kraplak_pink_solid_2.jpg"
+            }
+          ],
+          "kraplak_purple_durable": [
+            {
+              "Name": "kraplak_purple_durable.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\kraplak_purple_durable\\kraplak_purple_durable.jpg"
+            },
+            {
+              "Name": "kraplak_purple_durable_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\kraplak_purple_durable\\kraplak_purple_durable_2.jpg"
+            }
+          ],
+          "light_malachite": [
+            {
+              "Name": "light_malachite.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\light_malachite\\light_malachite.jpg"
+            },
+            {
+              "Name": "light_malachite_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\light_malachite\\light_malachite_2.jpg"
+            }
+          ],
+          "lilac_hinacridon": [
+            {
+              "Name": "lilac_hinacridon.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\lilac_hinacridon\\lilac_hinacridon.jpg"
+            }
+          ],
+          "manganese_violet_light": [
+            {
+              "Name": "manganese_violet_light.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\manganese_violet_light\\manganese_violet_light.jpg"
+            },
+            {
+              "Name": "manganese_violet_light_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\manganese_violet_light\\manganese_violet_light_2.jpg"
+            }
+          ],
+          "mars_black": [
+            {
+              "Name": "mars_black.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\mars_black\\mars_black.jpg"
+            },
+            {
+              "Name": "mars_black_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\mars_black\\mars_black_2.jpg"
+            }
+          ],
+          "mars_black_warm": [
+            {
+              "Name": "mars_black_warm.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\mars_black_warm\\mars_black_warm.jpg"
+            },
+            {
+              "Name": "mars_black_warm_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\mars_black_warm\\mars_black_warm_2.jpg"
+            }
+          ],
+          "mars_brown_dark": [
+            {
+              "Name": "mars_brown_dark.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\mars_brown_dark\\mars_brown_dark.jpg"
+            },
+            {
+              "Name": "mars_brown_dark_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\mars_brown_dark\\mars_brown_dark_2.jpg"
+            }
+          ],
+          "mars_brown_dark_transparent": [
+            {
+              "Name": "mars_brown_dark_transparent.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\mars_brown_dark_transparent\\mars_brown_dark_transparent.jpg"
+            },
+            {
+              "Name": "mars_brown_dark_transparent_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\mars_brown_dark_transparent\\mars_brown_dark_transparent_2.jpg"
+            }
+          ],
+          "mars_brown_light": [
+            {
+              "Name": "mars_brown_light.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\mars_brown_light\\mars_brown_light.jpg"
+            },
+            {
+              "Name": "mars_brown_light_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\mars_brown_light\\mars_brown_light_2.jpg"
+            }
+          ],
+          "mars_orange_transparent": [
+            {
+              "Name": "mars_orange_transparent.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\mars_orange_transparent\\mars_orange_transparent.jpg"
+            },
+            {
+              "Name": "mars_orange_transparent_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\mars_orange_transparent\\mars_orange_transparent_2.jpg"
+            }
+          ],
+          "mars_yellow_transparent": [
+            {
+              "Name": "mars_yellow_transparent.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\mars_yellow_transparent\\mars_yellow_transparent.jpg"
+            },
+            {
+              "Name": "mars_yellow_transparent_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\mars_yellow_transparent\\mars_yellow_transparent_2.jpg"
+            }
+          ],
+          "may_green": [
+            {
+              "Name": "may_green.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\may_green\\may_green.jpg"
+            }
+          ],
+          "natural_umber": [
+            {
+              "Name": "natural_umber.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\natural_umber\\natural_umber.jpg"
+            }
+          ],
+          "neapolitan_corporeal": [
+            {
+              "Name": "neapolitan_corporeal.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\neapolitan_corporeal\\neapolitan_corporeal.jpg"
+            },
+            {
+              "Name": "neapolitan_corporeal_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\neapolitan_corporeal\\neapolitan_corporeal_2.jpg"
+            }
+          ],
+          "neapolitan_pink": [
+            {
+              "Name": "neapolitan_pink.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\neapolitan_pink\\neapolitan_pink.jpg"
+            },
+            {
+              "Name": "neapolitan_pink_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\neapolitan_pink\\neapolitan_pink_2.jpg"
+            }
+          ],
+          "neapolitan_yellow_fawn": [
+            {
+              "Name": "neapolitan_yellow_fawn.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\neapolitan_yellow_fawn\\neapolitan_yellow_fawn.jpg"
+            },
+            {
+              "Name": "neapolitan_yellow_fawn_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\neapolitan_yellow_fawn\\neapolitan_yellow_fawn_2.jpg"
+            }
+          ],
+          "neopolitan_yellow": [
+            {
+              "Name": "neopolitan_yellow.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\neopolitan_yellow\\neopolitan_yellow.jpg"
+            },
+            {
+              "Name": "neopolitan_yellow_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\neopolitan_yellow\\neopolitan_yellow_2.jpg"
+            }
+          ],
+          "ochre_golden": [
+            {
+              "Name": "ochre_golden.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ochre_golden\\ochre_golden.jpg"
+            },
+            {
+              "Name": "ochre_golden_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ochre_golden\\ochre_golden_2.jpg"
+            }
+          ],
+          "ochre_light": [
+            {
+              "Name": "ochre_light.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ochre_light\\ochre_light.jpg"
+            },
+            {
+              "Name": "ochre_light_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ochre_light\\ochre_light_2.jpg"
+            }
+          ],
+          "ochre_red": [
+            {
+              "Name": "ochre_red.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ochre_red\\ochre_red.jpg"
+            },
+            {
+              "Name": "ochre_red_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ochre_red\\ochre_red_2.jpg"
+            }
+          ],
+          "ochre_yellow": [
+            {
+              "Name": "ochre_yellow.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ochre_yellow\\ochre_yellow.jpg"
+            },
+            {
+              "Name": "ochre_yellow_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ochre_yellow\\ochre_yellow_2.jpg"
+            }
+          ],
+          "ochre_yellow_marcar": [
+            {
+              "Name": "ochre_yellow_marcar.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ochre_yellow_marcar\\ochre_yellow_marcar.jpg"
+            },
+            {
+              "Name": "ochre_yellow_marcar_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ochre_yellow_marcar\\ochre_yellow_marcar_2.jpg"
+            }
+          ],
+          "olive": [
+            {
+              "Name": "olive.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\olive\\olive.jpg"
+            },
+            {
+              "Name": "olive_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\olive\\olive_2.jpg"
+            }
+          ],
+          "olive_arzakan": [
+            {
+              "Name": "olive_arzakan.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\olive_arzakan\\olive_arzakan.jpg"
+            },
+            {
+              "Name": "olive_arzakan_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\olive_arzakan\\olive_arzakan_2.jpg"
+            }
+          ],
+          "orange": [
+            {
+              "Name": "orange.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\orange\\orange.jpg"
+            }
+          ],
+          "orange_travertine": [
+            {
+              "Name": "orange_travertine.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\orange_travertine\\orange_travertine.jpg"
+            },
+            {
+              "Name": "orange_travertine_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\orange_travertine\\orange_travertine_2.jpg"
+            }
+          ],
+          "oxide_of_chromium": [
+            {
+              "Name": "oxide_of_chromium.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\oxide_of_chromium\\oxide_of_chromium.jpg"
+            },
+            {
+              "Name": "oxide_of_chromium_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\oxide_of_chromium\\oxide_of_chromium_2.jpg"
+            }
+          ],
+          "payne_grey": [
+            {
+              "Name": "payne_grey.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\payne_grey\\payne_grey.jpg"
+            },
+            {
+              "Name": "payne_grey_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\payne_grey\\payne_grey_2.jpg"
+            }
+          ],
+          "pink_hinacridon": [
+            {
+              "Name": "pink_hinacridon.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\pink_hinacridon\\pink_hinacridon.jpg"
+            }
+          ],
+          "purple_brown_sevan": [
+            {
+              "Name": "purple_brown_sevan.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\purple_brown_sevan\\purple_brown_sevan.jpg"
+            },
+            {
+              "Name": "purple_brown_sevan_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\purple_brown_sevan\\purple_brown_sevan_2.jpg"
+            }
+          ],
+          "purple_dark_hinacridon": [
+            {
+              "Name": "purple_dark_hinacridon.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\purple_dark_hinacridon\\purple_dark_hinacridon.jpg"
+            }
+          ],
+          "purple_gray_lori": [
+            {
+              "Name": "purple_gray_lori.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\purple_gray_lori\\purple_gray_lori.jpg"
+            },
+            {
+              "Name": "purple_gray_lori_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\purple_gray_lori\\purple_gray_lori_2.jpg"
+            }
+          ],
+          "red_brown_sevan": [
+            {
+              "Name": "red_brown_sevan.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\red_brown_sevan\\red_brown_sevan.jpg"
+            },
+            {
+              "Name": "red_brown_sevan_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\red_brown_sevan\\red_brown_sevan_2.jpg"
+            }
+          ],
+          "red_brown_waik": [
+            {
+              "Name": "red_brown_waik.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\red_brown_waik\\red_brown_waik.jpg"
+            },
+            {
+              "Name": "red_brown_waik_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\red_brown_waik\\red_brown_waik_2.jpg"
+            }
+          ],
+          "red_hinacridon": [
+            {
+              "Name": "red_hinacridon.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\red_hinacridon\\red_hinacridon.jpg"
+            }
+          ],
+          "royal_blue": [
+            {
+              "Name": "royal_blue.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\royal_blue\\royal_blue.jpg"
+            },
+            {
+              "Name": "royal_blue_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\royal_blue\\royal_blue_2.jpg"
+            }
+          ],
+          "shakhnazarskaya_red": [
+            {
+              "Name": "shakhnazarskaya_red.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\shakhnazarskaya_red\\shakhnazarskaya_red.jpg"
+            },
+            {
+              "Name": "shakhnazarskaya_red_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\shakhnazarskaya_red\\shakhnazarskaya_red_2.jpg"
+            }
+          ],
+          "sienna_natural": [
+            {
+              "Name": "sienna_natural.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\sienna_natural\\sienna_natural.jpg"
+            },
+            {
+              "Name": "sienna_natural_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\sienna_natural\\sienna_natural_2.jpg"
+            }
+          ],
+          "sky_blue": [
+            {
+              "Name": "sky_blue.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\sky_blue\\sky_blue.jpg"
+            },
+            {
+              "Name": "sky_blue_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\sky_blue\\sky_blue_2.jpg"
+            }
+          ],
+          "st_petersburg_gray": [
+            {
+              "Name": "st_petersburg_gray.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\st_petersburg_gray\\st_petersburg_gray.jpg"
+            },
+            {
+              "Name": "st_petersburg_gray_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\st_petersburg_gray\\st_petersburg_gray_2.jpg"
+            }
+          ],
+          "st_petersburg_pink": [
+            {
+              "Name": "st_petersburg_pink.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\st_petersburg_pink\\st_petersburg_pink.jpg"
+            },
+            {
+              "Name": "st_petersburg_pink_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\st_petersburg_pink\\st_petersburg_pink_2.jpg"
+            }
+          ],
+          "st_petersburg_purple": [
+            {
+              "Name": "st_petersburg_purple.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\st_petersburg_purple\\st_petersburg_purple.jpg"
+            },
+            {
+              "Name": "st_petersburg_purple_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\st_petersburg_purple\\st_petersburg_purple_2.jpg"
+            }
+          ],
+          "strontium_yellow": [
+            {
+              "Name": "strontium_yellow.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\strontium_yellow\\strontium_yellow.jpg"
+            },
+            {
+              "Name": "strontium_yellow_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\strontium_yellow\\strontium_yellow_2.jpg"
+            }
+          ],
+          "tiondigo_pink": [
+            {
+              "Name": "tiondigo_pink.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\tiondigo_pink\\tiondigo_pink.jpg"
+            }
+          ],
+          "turkish_blue": [
+            {
+              "Name": "turkish_blue.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\turkish_blue\\turkish_blue.jpg"
+            },
+            {
+              "Name": "turkish_blue_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\turkish_blue\\turkish_blue_2.jpg"
+            }
+          ],
+          "turkish_green": [
+            {
+              "Name": "turkish_green.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\turkish_green\\turkish_green.jpg"
+            },
+            {
+              "Name": "turkish_green_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\turkish_green\\turkish_green_2.jpg"
+            }
+          ],
+          "turquoise": [
+            {
+              "Name": "turquoise.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\turquoise\\turquoise.jpg"
+            },
+            {
+              "Name": "turquoise_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\turquoise\\turquoise_2.jpg"
+            }
+          ],
+          "ultramarine_dark": [
+            {
+              "Name": "ultramarine_dark.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ultramarine_dark\\ultramarine_dark.jpg"
+            },
+            {
+              "Name": "ultramarine_dark_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ultramarine_dark\\ultramarine_dark_2.jpg"
+            }
+          ],
+          "ultramarine_light": [
+            {
+              "Name": "ultramarine_light.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ultramarine_light\\ultramarine_light.jpg"
+            },
+            {
+              "Name": "ultramarine_light_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ultramarine_light\\ultramarine_light_2.jpg"
+            }
+          ],
+          "ultramarine_pink": [
+            {
+              "Name": "ultramarine_pink.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ultramarine_pink\\ultramarine_pink.jpg"
+            },
+            {
+              "Name": "ultramarine_pink_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ultramarine_pink\\ultramarine_pink_2.jpg"
+            }
+          ],
+          "ultramarine_purple": [
+            {
+              "Name": "ultramarine_purple.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ultramarine_purple\\ultramarine_purple.jpg"
+            },
+            {
+              "Name": "ultramarine_purple_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\ultramarine_purple\\ultramarine_purple_2.jpg"
+            }
+          ],
+          "van_dik_brown": [
+            {
+              "Name": "van_dik_brown.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\van_dik_brown\\van_dik_brown.jpg"
+            },
+            {
+              "Name": "van_dik_brown_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\van_dik_brown\\van_dik_brown_2.jpg"
+            }
+          ],
+          "venetian_purple": [
+            {
+              "Name": "venetian_purple.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\venetian_purple\\venetian_purple.jpg"
+            },
+            {
+              "Name": "venetian_purple_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\venetian_purple\\venetian_purple_2.jpg"
+            }
+          ],
+          "venetian_red": [
+            {
+              "Name": "venetian_red.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\venetian_red\\venetian_red.jpg"
+            },
+            {
+              "Name": "venetian_red_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\venetian_red\\venetian_red_2.jpg"
+            }
+          ],
+          "viridian_green": [
+            {
+              "Name": "viridian_green.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\viridian_green\\viridian_green.jpg"
+            },
+            {
+              "Name": "viridian_green_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\viridian_green\\viridian_green_2.jpg"
+            }
+          ],
+          "volchonskoite": [
+            {
+              "Name": "volchonskoite.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\volchonskoite\\volchonskoite.jpg"
+            },
+            {
+              "Name": "volchonskoite_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\volchonskoite\\volchonskoite_2.jpg"
+            }
+          ],
+          "yellow_travertine": [
+            {
+              "Name": "yellow_travertine.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\yellow_travertine\\yellow_travertine.jpg"
+            },
+            {
+              "Name": "yellow_travertine_2.jpg",
+              "Path": "assets\\colors_fabric\\masters_colors\\yellow_travertine\\yellow_travertine_2.jpg"
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "Name": "test0.jpg",
+          "Path": "assets\\examples\\test0.jpg"
+        },
+        {
+          "Name": "test1.jpg",
+          "Path": "assets\\examples\\test1.jpg"
+        }
+      ]
+    },
+    {
+      "Name": "generate.go",
+      "Path": "assets\\generate.go"
+    },
+    {
+      "Name": "structure.json",
+      "Path": "assets\\structure.json"
+    }
+  ]
+}

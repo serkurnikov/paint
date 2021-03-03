@@ -1,13 +1,13 @@
 package app
 
 import (
-	"paint/internal/app/mixcolors"
+	"paint/assets"
 )
 
 const (
 	basePath        = "D:\\Sergey\\projects\\Go Projects\\paint\\examples\\assets"
 	testPathImage0  = basePath + "\\test0.jpg"
-	testPathImage2  = basePath + "\\test2.jpg"
+	testPathImage2  = basePath + "\\test1.jpg"
 
 	laplacianPathImage = basePath + "\\laplacian.jpg"
 	sobelPathImage     = basePath + "\\sobel.jpg"
@@ -34,7 +34,7 @@ const (
 func (a App) ExternalApiTest() {}
 
 func (a App) UnderPaint(tileSize int) {
-	mixcolors.FindAdditiveColorsLUV("#FFFAFA")
+	assets.Init()
 }
 
 func (a App) Scobel() {}
