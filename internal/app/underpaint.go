@@ -1,7 +1,7 @@
 package app
 
 import (
-	"paint/assets"
+	"paint/internal/app/mixcolors"
 )
 
 const (
@@ -34,7 +34,7 @@ const (
 func (a App) ExternalApiTest() {}
 
 func (a App) UnderPaint(tileSize int) {
-	assets.Init()
+	mixcolors.InitColors()
 }
 
 func (a App) Scobel() {}

@@ -1,6 +1,6 @@
 package assets
 
-type assets struct {
+type Assets struct {
 	Assets []struct {
 		Name         string `json:"Name"`
 		Path         string `json:"Path"`

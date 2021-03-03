@@ -39,14 +39,22 @@ func GetListingDirectoryInfo(root string) ([]Info, error) {
 	return information, err
 }
 
-func WriteFile(data []byte, path string){
+func WriteFile(data []byte, path string) {
 	err := ioutil.WriteFile(path, data, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
+
+func ReadFile(path string) ([]byte, error) {
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return b, nil
+}
+
 func ParsePath(info Info) []string {
 	result := strings.Split(info.Path, "\\")
 	return result
 }
-
