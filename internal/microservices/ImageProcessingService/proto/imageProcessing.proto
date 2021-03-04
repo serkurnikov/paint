@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "paint/internal/microservice/proto";
+option java_multiple_files = true;
+option java_package = "io.grpc.paint.image.processing.service";
+option java_outer_classname = "ImageProcessingService";
+
+package promo;
+
+
+service ImageProcessingService {
+  rpc PyrMeanShiftFilter (PyrMeanShiftFilterParams) returns (PyrMeanShiftFilterResult) {}
+}
+
+message PyrMeanShiftFilterParams {
+  string result = 1;
+}
+
+
+message PyrMeanShiftFilterResult {
+  string message = 1;
+}

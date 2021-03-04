@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"github.com/Jeffail/gabs/v2"
 	"log"
-	"paint/internal/utils/filesmanager"
+	"paint/internal/utils"
 	"strings"
 )
 
@@ -17,10 +17,10 @@ type File struct {
 
 func Init() {
 	jsonObj := gabs.New()
-	information, _ := filesmanager.GetListingDirectoryInfo("assets")
+	information, _ := utils.GetListingDirectoryInfo("assets")
 
 	for _, info := range information {
-		path := filesmanager.ParsePath(info)
+		path := utils.ParsePath(info)
 
 		if !info.IsDir {
 			hierarchy := strings.Join(path[:len(path)-1], ".")
@@ -39,6 +39,6 @@ func Init() {
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	filesmanager.WriteFile(d, "assets/structure.json")
+	utils.WriteFile(d, "assets/structure.json")
 	println(jsonObj.String())
 }

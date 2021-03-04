@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"paint/internal/app/prominentcolor"
-	"paint/internal/utils/filesmanager"
+	"paint/internal/utils"
 	"strings"
 )
 import "paint/assets"
@@ -17,7 +17,7 @@ const Path = "Path"
 //https://www.imgonline.com.ua/
 func getMastersColors() map[string]string {
 	return map[string]string{
-		"ararat_green ":               "#322c26",
+		"ararat_green":                "#322c26",
 		"belila_titan":                "#e3e4e8",
 		"belila_zink":                 "#e9e8e9",
 		"berlin_azur":                 "#253455",
@@ -142,7 +142,7 @@ func InitColors() []ColorAsset {
 	data := GetAssetsData()
 
 	for _, a := range data.Assets {
-		mastersColors, _ := filesmanager.StructToMap(a.ColorsFabric.MastersColors)
+		mastersColors, _ := utils.StructToMap(a.ColorsFabric.MastersColors)
 
 		for colorName, images := range mastersColors {
 

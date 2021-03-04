@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/lucasb-eyer/go-colorful"
 	"math"
+	"paint/internal/utils"
 	"sort"
 	"strconv"
 	"strings"
@@ -625,7 +626,7 @@ func getSimilarColorsLUV(mainColorS string, additiveColors map[int][]ColorAdditi
 
 	for k, value := range additiveColors {
 		for i := 0; i < len(value); i++ {
-			if !contains(colors, value[i].hex) {
+			if !utils.Contains(colors, value[i].hex) {
 				colors = append(colors, fmt.Sprintf(value[i].hex+P+strconv.Itoa(k)))
 			}
 		}
@@ -646,7 +647,7 @@ func getSimilarColorsLUV(mainColorS string, additiveColors map[int][]ColorAdditi
 					json.Unmarshal([]byte(value.String()), &blendColors)
 
 					for _, v := range blendColors {
-						if !contains(resultColors, v.(string)) {
+						if !utils.Contains(resultColors, v.(string)) {
 							resultColors = append(resultColors, v.(string))
 						}
 					}
@@ -700,7 +701,7 @@ func DistanceLuv(colorS1, colorS2 string) float64 {
 	l1, u1, v1 := c1.Luv()
 	l2, u2, v2 := c2.Luv()
 
-	return math.Sqrt(sq(l1-l2) + sq(u1-u2) + sq(v1-v2))
+	return math.Sqrt(utils.Sq(l1-l2) + utils.Sq(u1-u2) + utils.Sq(v1-v2))
 }
 
 func isCombinationRight(elements []string) bool {
@@ -710,24 +711,9 @@ func isCombinationRight(elements []string) bool {
 	}
 
 	for i := 0; i < len(channels); i++ {
-		if !contains(channels, strconv.Itoa(i)) {
+		if !utils.Contains(channels, strconv.Itoa(i)) {
 			return false
 		}
 	}
 	return true
-}
-
-//:TODO refactoring - move method from this package
-func contains(arr []string, str string) bool {
-	for _, a := range arr {
-		if a == str {
-			return true
-		}
-	}
-	return false
-}
-
-//:TODO refactoring - move method from this package
-func sq(v float64) float64 {
-	return v * v
 }

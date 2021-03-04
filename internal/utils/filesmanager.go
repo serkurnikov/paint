@@ -1,4 +1,4 @@
-package filesmanager
+package utils
 
 import (
 	"io/ioutil"

@@ -30,7 +30,7 @@ const (
 func (a App) ExternalApiTest() {}
 
 func (a App) UnderPaint(tileSize int) {
-	//mixcolors.InitColors()
+
 }
 
 func (a App) Scobel() {}
