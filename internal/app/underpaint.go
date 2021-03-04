@@ -1,4 +1,5 @@
 package app
+//https://github.com/golang-standards/project-layout
 
 const (
 	basePath        = "D:\\Sergey\\projects\\Go Projects\\paint\\examples\\assets"

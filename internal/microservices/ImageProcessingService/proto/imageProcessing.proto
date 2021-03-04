@@ -7,6 +7,7 @@ option java_outer_classname = "ImageProcessingService";
 
 package promo;
 
+//https://bitbucket.org/blog/writing-a-microservice-in-golang-which-communicates-over-grpc
 
 service ImageProcessingService {
   rpc PyrMeanShiftFilter (PyrMeanShiftFilterParams) returns (PyrMeanShiftFilterResult) {}
