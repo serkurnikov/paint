@@ -1,13 +1,9 @@
 package app
 
-import (
-	"paint/internal/app/prominentcolor"
-)
-
 const (
 	basePath        = "D:\\Sergey\\projects\\Go Projects\\paint\\examples\\assets"
 	testPathImage0  = basePath + "\\test0.jpg"
-	testPathImage2  = basePath + "\\test1.jpg"
+	testPathImage1  = basePath + "\\test1.jpg"
 
 	laplacianPathImage = basePath + "\\laplacian.jpg"
 	sobelPathImage     = basePath + "\\sobel.jpg"
@@ -35,7 +31,6 @@ func (a App) ExternalApiTest() {}
 
 func (a App) UnderPaint(tileSize int) {
 	//mixcolors.InitColors()
-	prominentcolor.BuildP("D:\\Sergey\\projects\\Go Projects\\paint\\assets\\colors_fabric\\masters_colors\\ararat_green\\palette.png",5)
 }
 
 func (a App) Scobel() {}
