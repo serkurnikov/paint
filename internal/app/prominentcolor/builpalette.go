@@ -28,22 +28,22 @@ func loadImage(fileInput string) (image.Image, error) {
 // Process images in a directory, for each image it picks out the dominant color and
 // prints out an imagemagick call to resize image and use the dominant color as padding for the background
 // it saves tmp files in /tmp/ with the masked bit marked as pink
-func BuildP(in, out string, clusters int) {
+func BuildP(in string, clusters int) (image.Image, []ColorItem) {
 	img, err := loadImage(in)
 	if nil != err {
 		log.Println(err)
 		log.Printf("Error: failed loading %s\n", in)
-		return
+		return nil, nil
 	}
 	cols, err := KmeansWithAll(clusters, img, ArgumentAverageMean, DefaultSize, GetDefaultMasks())
 	if err != nil {
 		log.Println(err)
-		return
+		return nil, nil
 	}
 	for i := 0; i < len(cols); i++ {
-		println("#"+cols[i].AsString())
+		println("#" + cols[i].AsString())
 	}
-	displayColors(img, cols, out)
+	return img, cols
 }
 
 func displayColors(img image.Image, colors []ColorItem, out string) {
@@ -52,7 +52,6 @@ func displayColors(img image.Image, colors []ColorItem, out string) {
 
 	h := img.Bounds().Max.X / len(colors)
 	w := img.Bounds().Max.Y
-
 
 	for i := 0; i < len(colors); i++ {
 		currentColor := color.RGBA{R: uint8(colors[i].Color.R), G: uint8(colors[i].Color.G), B: uint8(colors[i].Color.B), A: 255}
@@ -67,4 +66,9 @@ func displayColors(img image.Image, colors []ColorItem, out string) {
 		log.Fatalf("failed create file: %s", err)
 	}
 	png.Encode(file, result)
+}
+
+func DisplayPalette(in, out string, clusters int) {
+	img, cols := BuildP(in, clusters)
+	displayColors(img, cols, out)
 }
