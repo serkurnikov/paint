@@ -3,7 +3,7 @@ module paint
 go 1.15
 
 require (
-	github.com/ChimeraCoder/gojson v1.1.0
+	github.com/ChimeraCoder/gojson v1.1.0 // indirect
 	github.com/Djarvur/go-err113 v0.1.0 // indirect
 	github.com/Jeffail/gabs/v2 v2.6.0
 	github.com/alexkohler/prealloc v1.0.0 // indirect

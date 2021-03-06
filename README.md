@@ -160,12 +160,12 @@ convenience only.
 ```sh
 dc up -d --remove-orphans               # (re)start all project's services
 dc logs -f -t                           # view logs of all services
-dc logs -f SERVICENAME                  # view logs of some service
+dc logs -f SERVICENAME                  # view logs of some imageProcessingService
 dc ps                                   # status of all services
 dc restart SERVICENAME
 dc exec SERVICENAME COMMAND             # run command in given container
 dc stop && dc rm -f                     # stop the project
-docker volume rm PROJECT_SERVICENAME    # remove some service's data
+docker volume rm PROJECT_SERVICENAME    # remove some imageProcessingService's data
 ```
 
 It's recommended to avoid `docker-compose down` - this command will also

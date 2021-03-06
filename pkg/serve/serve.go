@@ -26,7 +26,7 @@ type OpenAPIServer interface {
 	Shutdown() error
 }
 
-// OpenAPI starts HTTP/HTTPS server using srv logged as service.
+// OpenAPI starts HTTP/HTTPS server using srv logged as imageProcessingService.
 // It runs until failed or ctx.Done.
 func OpenAPI(ctx Ctx, srv OpenAPIServer, service string) error {
 	log := structlog.FromContext(ctx, nil).New(def.LogServer, service)
@@ -52,7 +52,7 @@ func OpenAPI(ctx Ctx, srv OpenAPIServer, service string) error {
 	return nil
 }
 
-// HTTP starts HTTP server on addr using handler logged as service.
+// HTTP starts HTTP server on addr using handler logged as imageProcessingService.
 // It runs until failed or ctx.Done.
 func HTTP(ctx Ctx, addr netx.Addr, handler http.Handler, service string) error {
 	log := structlog.FromContext(ctx, nil).New(def.LogServer, service)

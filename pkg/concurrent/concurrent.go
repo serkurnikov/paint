@@ -55,10 +55,10 @@ func Setup(ctx Ctx, vars map[interface{}]SetupFunc) error {
 }
 
 // Serve runs given services in parallel until either ctx.Done or any
-// service exits, then it call cancel and wait until all services will
+// imageProcessingService exits, then it call cancel and wait until all services will
 // exit.
 //
-// Returns error of first service which returned non-nil error, if any.
+// Returns error of first imageProcessingService which returned non-nil error, if any.
 func Serve(ctx Ctx, cancel func(), services ...func(Ctx) error) (err error) {
 	errc := make(chan error)
 	for _, service := range services {
