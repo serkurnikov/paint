@@ -1,4 +1,4 @@
-package app
+package imageFilterProcessing
 
 import (
 	"github.com/disintegration/gift"

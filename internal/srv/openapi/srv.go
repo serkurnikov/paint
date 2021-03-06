@@ -9,6 +9,7 @@ import (
 	"paint/api/openapi/restapi"
 	"paint/api/openapi/restapi/op"
 	"paint/internal/app"
+	"paint/internal/gRPC/imageProcessingService"
 	"paint/pkg/def"
 	"paint/pkg/netx"
 
@@ -29,6 +30,7 @@ type (
 		Addr        netx.Addr
 		BasePath    string
 	}
+
 	server struct {
 		app app.Appl
 		cfg Config
@@ -58,6 +60,8 @@ func NewServer(appl app.Appl) (*restapi.Server, error) {
 	server.Host = "localhost"
 	server.Port = 9000
 
+	_ = NewImageProcessingServer()
+
 	// The middleware executes before anything.
 	api.UseSwaggerUI()
 	globalMiddlewares := func(handler http.Handler) http.Handler {
@@ -77,6 +81,10 @@ func NewServer(appl app.Appl) (*restapi.Server, error) {
 	log := structlog.New()
 	log.Info("OpenAPI protocol", "version", swaggerSpec.Spec().Info.Version)
 	return server, nil
+}
+
+func NewImageProcessingServer() error {
+	return imageProcessingService.RunImageProcessingServer()
 }
 
 func fromRequest(r *http.Request) (Ctx, Log) {

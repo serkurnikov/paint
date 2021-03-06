@@ -1,4 +1,4 @@
-package app
+package morphProcessing
 
 import (
 	"fmt"
@@ -8,7 +8,9 @@ import (
 	"path/filepath"
 )
 
-func dilate(in, out string, iterations int) {
+
+func Gradient(in, out string) {
+
 	path := filepath.Join(in)
 	img := gocv.IMRead(path, gocv.IMReadColor)
 	if img.Empty() {
@@ -17,16 +19,18 @@ func dilate(in, out string, iterations int) {
 	}
 	defer img.Close()
 
-	dest := gocv.NewMat()
-	defer dest.Close()
-
-	kernel := gocv.GetStructuringElement(gocv.MorphRect, image.Pt(3, 3))
+	morph := gocv.NewMat()
+	kernel := gocv.GetStructuringElement(gocv.MorphEllipse, image.Pt(11, 11))
 	defer kernel.Close()
 
-	gocv.DilateWithParams(img, &dest, kernel, image.Pt(-1, -1), iterations, 0)
+	gocv.MorphologyEx(img, &morph, gocv.MorphGradient, kernel)
 
-	if ok := gocv.IMWrite(out, dest); !ok {
+	defer morph.Close()
+
+	if ok := gocv.IMWrite(out, morph); !ok {
 		fmt.Printf("Failed to write image\n")
 		os.Exit(1)
 	}
 }
+
+

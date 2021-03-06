@@ -1,4 +1,4 @@
-package app
+package imageFilterProcessing
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func meanShiftFilter(in, out string, params []float64) {
+func PyrMeanShiftFiltering(in, out string, params []float64) {
 	img := gocv.IMRead(in, gocv.IMReadColor)
 	if img.Empty() {
 		fmt.Printf("Failed to img image: %s\n", in)

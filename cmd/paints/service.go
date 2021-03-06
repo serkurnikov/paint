@@ -8,6 +8,7 @@ import (
 	"paint/internal/app"
 	"paint/internal/config"
 	"paint/internal/dal"
+	"paint/internal/gRPC/imageProcessingService"
 	"paint/internal/srv/openapi"
 	"paint/pkg/concurrent"
 	"paint/pkg/serve"
@@ -35,7 +36,8 @@ func (s *service) runServe(ctxStartup, ctxShutdown Ctx, shutdown func()) (err er
 
 	alphaApi := apiexternal.NewAlphaVantage()
 	repo := dal.New(db)
-	appl := app.NewAppl(repo, alphaApi)
+	client := imageProcessingService.NewImageProcessingClient()
+	appl := app.NewAppl(repo, alphaApi, client)
 	s.srv, err = openapi.NewServer(appl)
 	if err != nil {
 		return log.Err("failed to openapi.NewServer", "err", err)

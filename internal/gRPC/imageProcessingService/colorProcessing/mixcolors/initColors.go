@@ -5,7 +5,7 @@ import (
 	"image"
 	"io/ioutil"
 	"log"
-	"paint/internal/app/prominentcolor"
+	"paint/internal/gRPC/imageProcessingService/colorProcessing/prominentcolor"
 	"paint/internal/utils"
 	"strings"
 )

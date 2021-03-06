@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "paint/internal/service/imageProcessingService/service";
+
+package service;
+
+//protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative image-processing-service.proto
+
+service ImageProcessingService {
+  rpc PyrMeanShiftFiltering (PyrMeanShiftFilteringRequest) returns (PyrMeanShiftFilteringReply) {}
+}
+
+message PyrMeanShiftFilteringRequest {
+  string in = 1;
+}
+
+message PyrMeanShiftFilteringReply {
+  string message = 1;
+}

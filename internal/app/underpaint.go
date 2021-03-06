@@ -1,10 +1,16 @@
 package app
+
+import (
+	"log"
+	pb "paint/internal/gRPC/imageProcessingService/service"
+)
+
 //https://github.com/golang-standards/project-layout
 
 const (
-	basePath        = "D:\\Sergey\\projects\\Go Projects\\paint\\examples\\assets"
-	testPathImage0  = basePath + "\\test0.jpg"
-	testPathImage1  = basePath + "\\test1.jpg"
+	basePath       = "D:\\Sergey\\projects\\Go Projects\\paint\\examples\\assets"
+	testPathImage0 = basePath + "\\test0.jpg"
+	testPathImage1 = basePath + "\\test1.jpg"
 
 	laplacianPathImage = basePath + "\\laplacian.jpg"
 	sobelPathImage     = basePath + "\\sobel.jpg"
@@ -30,8 +36,12 @@ const (
 
 func (a App) ExternalApiTest() {}
 
-func (a App) UnderPaint(tileSize int) {
-
+func (a App) Render(ctx Ctx) {
+	r, err := a.imageProcessingClient.PyrMeanShiftFiltering(ctx, &pb.PyrMeanShiftFilteringRequest{In: testPathImage0})
+	if err != nil {
+		log.Fatalf("could not PyrMeanShiftFiltering: %v", err)
+	}
+	log.Printf("PyrMeanShiftFiltering: %s", r.GetMessage())
 }
 
 func (a App) Scobel() {}

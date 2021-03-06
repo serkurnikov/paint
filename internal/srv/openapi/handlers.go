@@ -5,8 +5,8 @@ import (
 )
 
 func (srv *server) RenderHandlerFunc(params op.RenderParams) op.RenderResponder {
-	//ctx, _ := fromRequest(params.HTTPRequest)
-	srv.app.UnderPaint(30)
+	ctx, _ := fromRequest(params.HTTPRequest)
+	srv.app.Render(ctx)
 
 	return op.NewRenderOK().WithPayload(&op.RenderOKBody{Result: "render finished"})
 }

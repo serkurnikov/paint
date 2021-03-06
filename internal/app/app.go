@@ -6,6 +6,7 @@ package app
 import (
 	"context"
 	"paint/internal/apiexternal"
+	"paint/internal/gRPC/imageProcessingService/service"
 )
 
 type (
@@ -13,21 +14,23 @@ type (
 
 	Appl interface {
 		ExternalApiTest()
-		UnderPaint(tileSize int)
+		Render(ctx Ctx)
 		Scobel()
 	}
 
 	Repo interface{}
 
 	App struct {
-		repo     Repo
-		alphaApi apiexternal.Api
+		repo                  Repo
+		alphaApi              apiexternal.Api
+		imageProcessingClient service.ImageProcessingServiceClient
 	}
 )
 
-func NewAppl(repo Repo, api apiexternal.Api) Appl {
+func NewAppl(repo Repo, api apiexternal.Api, client service.ImageProcessingServiceClient) Appl {
 	return &App{
 		repo:     repo,
 		alphaApi: api,
+		imageProcessingClient: client,
 	}
 }
