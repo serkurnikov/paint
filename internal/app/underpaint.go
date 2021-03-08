@@ -2,6 +2,7 @@ package app
 
 import (
 	"log"
+	"os"
 	pb "paint/internal/gRPC/imageProcessingService/service"
 )
 
@@ -37,7 +38,13 @@ const (
 func (a App) ExternalApiTest() {}
 
 func (a App) Render(ctx Ctx) {
-	r, err := a.imageProcessingClient.PyrMeanShiftFiltering(ctx, &pb.PyrMeanShiftFilteringRequest{In: testPathImage0})
+
+	name := testPathImage0
+	if len(os.Args) > 1 {
+		name = os.Args[1]
+	}
+
+	r, err := a.imageProcessingClient.PyrMeanShiftFiltering(ctx, &pb.PyrRequest{Name: name})
 	if err != nil {
 		log.Fatalf("could not PyrMeanShiftFiltering: %v", err)
 	}

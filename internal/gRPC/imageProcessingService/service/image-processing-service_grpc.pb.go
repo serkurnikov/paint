@@ -18,7 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ImageProcessingServiceClient interface {
-	PyrMeanShiftFiltering(ctx context.Context, in *PyrMeanShiftFilteringRequest, opts ...grpc.CallOption) (*PyrMeanShiftFilteringReply, error)
+	// Sends a greeting
+	PyrMeanShiftFiltering(ctx context.Context, in *PyrRequest, opts ...grpc.CallOption) (*PyrReply, error)
 }
 
 type imageProcessingServiceClient struct {
@@ -29,8 +30,8 @@ func NewImageProcessingServiceClient(cc grpc.ClientConnInterface) ImageProcessin
 	return &imageProcessingServiceClient{cc}
 }
 
-func (c *imageProcessingServiceClient) PyrMeanShiftFiltering(ctx context.Context, in *PyrMeanShiftFilteringRequest, opts ...grpc.CallOption) (*PyrMeanShiftFilteringReply, error) {
-	out := new(PyrMeanShiftFilteringReply)
+func (c *imageProcessingServiceClient) PyrMeanShiftFiltering(ctx context.Context, in *PyrRequest, opts ...grpc.CallOption) (*PyrReply, error) {
+	out := new(PyrReply)
 	err := c.cc.Invoke(ctx, "/service.ImageProcessingService/PyrMeanShiftFiltering", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -42,7 +43,8 @@ func (c *imageProcessingServiceClient) PyrMeanShiftFiltering(ctx context.Context
 // All implementations must embed UnimplementedImageProcessingServiceServer
 // for forward compatibility
 type ImageProcessingServiceServer interface {
-	PyrMeanShiftFiltering(context.Context, *PyrMeanShiftFilteringRequest) (*PyrMeanShiftFilteringReply, error)
+	// Sends a greeting
+	PyrMeanShiftFiltering(context.Context, *PyrRequest) (*PyrReply, error)
 	mustEmbedUnimplementedImageProcessingServiceServer()
 }
 
@@ -50,7 +52,7 @@ type ImageProcessingServiceServer interface {
 type UnimplementedImageProcessingServiceServer struct {
 }
 
-func (UnimplementedImageProcessingServiceServer) PyrMeanShiftFiltering(context.Context, *PyrMeanShiftFilteringRequest) (*PyrMeanShiftFilteringReply, error) {
+func (UnimplementedImageProcessingServiceServer) PyrMeanShiftFiltering(context.Context, *PyrRequest) (*PyrReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PyrMeanShiftFiltering not implemented")
 }
 func (UnimplementedImageProcessingServiceServer) mustEmbedUnimplementedImageProcessingServiceServer() {
@@ -68,7 +70,7 @@ func RegisterImageProcessingServiceServer(s grpc.ServiceRegistrar, srv ImageProc
 }
 
 func _ImageProcessingService_PyrMeanShiftFiltering_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PyrMeanShiftFilteringRequest)
+	in := new(PyrRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -80,7 +82,7 @@ func _ImageProcessingService_PyrMeanShiftFiltering_Handler(srv interface{}, ctx 
 		FullMethod: "/service.ImageProcessingService/PyrMeanShiftFiltering",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ImageProcessingServiceServer).PyrMeanShiftFiltering(ctx, req.(*PyrMeanShiftFilteringRequest))
+		return srv.(ImageProcessingServiceServer).PyrMeanShiftFiltering(ctx, req.(*PyrRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

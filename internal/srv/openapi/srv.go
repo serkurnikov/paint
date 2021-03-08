@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"os"
 	"paint/api/openapi/restapi"
 	"paint/api/openapi/restapi/op"
 	"paint/internal/app"
-	"paint/internal/gRPC/imageProcessingService"
 	"paint/pkg/def"
 	"paint/pkg/netx"
 
@@ -17,6 +17,11 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/powerman/structlog"
 	"github.com/sebest/xff"
+)
+
+var (
+	MaxWorker = os.Getenv("MAX_WORKERS")
+	MaxQueue  = os.Getenv("MAX_QUEUE")
 )
 
 type (
@@ -60,7 +65,8 @@ func NewServer(appl app.Appl) (*restapi.Server, error) {
 	server.Host = "localhost"
 	server.Port = 9000
 
-	_ = NewImageProcessingServer()
+	//dispatcher := highload.NewDispatcher(100)
+	//dispatcher.Run()
 
 	// The middleware executes before anything.
 	api.UseSwaggerUI()
@@ -81,10 +87,6 @@ func NewServer(appl app.Appl) (*restapi.Server, error) {
 	log := structlog.New()
 	log.Info("OpenAPI protocol", "version", swaggerSpec.Spec().Info.Version)
 	return server, nil
-}
-
-func NewImageProcessingServer() error {
-	return imageProcessingService.RunImageProcessingServer()
 }
 
 func fromRequest(r *http.Request) (Ctx, Log) {

@@ -6,7 +6,7 @@ package app
 import (
 	"context"
 	"paint/internal/apiexternal"
-	"paint/internal/gRPC/imageProcessingService/service"
+	pb "paint/internal/gRPC/imageProcessingService/service"
 )
 
 type (
@@ -23,11 +23,11 @@ type (
 	App struct {
 		repo                  Repo
 		alphaApi              apiexternal.Api
-		imageProcessingClient service.ImageProcessingServiceClient
+		imageProcessingClient pb.ImageProcessingServiceClient
 	}
 )
 
-func NewAppl(repo Repo, api apiexternal.Api, client service.ImageProcessingServiceClient) Appl {
+func NewAppl(repo Repo, api apiexternal.Api, client pb.ImageProcessingServiceClient) Appl {
 	return &App{
 		repo:     repo,
 		alphaApi: api,

@@ -37,6 +37,7 @@ func (s *service) runServe(ctxStartup, ctxShutdown Ctx, shutdown func()) (err er
 	alphaApi := apiexternal.NewAlphaVantage()
 	repo := dal.New(db)
 	client := imageProcessingService.NewImageProcessingClient()
+
 	appl := app.NewAppl(repo, alphaApi, client)
 	s.srv, err = openapi.NewServer(appl)
 	if err != nil {
