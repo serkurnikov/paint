@@ -18,7 +18,6 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ImageProcessingServiceClient interface {
-	// Sends a greeting
 	PyrMeanShiftFiltering(ctx context.Context, in *PyrRequest, opts ...grpc.CallOption) (*PyrReply, error)
 }
 
@@ -43,7 +42,6 @@ func (c *imageProcessingServiceClient) PyrMeanShiftFiltering(ctx context.Context
 // All implementations must embed UnimplementedImageProcessingServiceServer
 // for forward compatibility
 type ImageProcessingServiceServer interface {
-	// Sends a greeting
 	PyrMeanShiftFiltering(context.Context, *PyrRequest) (*PyrReply, error)
 	mustEmbedUnimplementedImageProcessingServiceServer()
 }

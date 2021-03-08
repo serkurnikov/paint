@@ -15,6 +15,5 @@ func NewImageProcessingClient() pb.ImageProcessingServiceClient {
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
-	//defer conn.Close()
 	return pb.NewImageProcessingServiceClient(conn)
 }
