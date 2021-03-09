@@ -5,6 +5,7 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"paint/internal/app"
 	"paint/internal/gRPC/imageProcessingService/imageFilterProcessing"
 	pb "paint/internal/gRPC/imageProcessingService/service"
 )
@@ -18,9 +19,13 @@ type server struct {
 }
 
 func (s *server) PyrMeanShiftFiltering(ctx context.Context, in *pb.PyrRequest) (*pb.PyrReply, error) {
-	log.Printf("PyrMeanShiftFiltering: %v", in.PathPicture)
-	result := imageFilterProcessing.PyrMeanShiftFiltering(in.PathPicture, in.Sp, in.Sr, in.MaxLevel)
-	return &pb.PyrReply{OutPicture: "Result placed in " + result}, nil
+	imageFilterProcessing.PyrMeanShiftFiltering(in.PathPicture, in.Sp, in.Sr, in.MaxLevel)
+	return &pb.PyrReply{OutPicture: ""}, nil
+}
+
+func (s *server) DrawCountours(ctx context.Context, in *pb.CountourRequest) (*pb.CountourReply, error) {
+	app.FindingMatchingGeometricShapes(in.PathPicture)
+	return &pb.CountourReply{OutPicture: ""}, nil
 }
 
 func main() {

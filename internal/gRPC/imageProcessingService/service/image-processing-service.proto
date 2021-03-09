@@ -8,6 +8,7 @@ package service;
 
 service ImageProcessingService {
   rpc PyrMeanShiftFiltering (PyrRequest) returns (PyrReply) {}
+  rpc DrawCountours (CountourRequest) returns (CountourReply) {}
 }
 
 message PyrRequest {
@@ -18,5 +19,13 @@ message PyrRequest {
 }
 
 message PyrReply {
+  string OutPicture = 1;
+}
+
+message CountourRequest {
+  string pathPicture = 1;
+}
+
+message CountourReply {
   string OutPicture = 1;
 }

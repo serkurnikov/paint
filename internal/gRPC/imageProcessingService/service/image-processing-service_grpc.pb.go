@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ImageProcessingServiceClient interface {
 	PyrMeanShiftFiltering(ctx context.Context, in *PyrRequest, opts ...grpc.CallOption) (*PyrReply, error)
+	DrawCountours(ctx context.Context, in *CountourRequest, opts ...grpc.CallOption) (*CountourReply, error)
 }
 
 type imageProcessingServiceClient struct {
@@ -38,11 +39,21 @@ func (c *imageProcessingServiceClient) PyrMeanShiftFiltering(ctx context.Context
 	return out, nil
 }
 
+func (c *imageProcessingServiceClient) DrawCountours(ctx context.Context, in *CountourRequest, opts ...grpc.CallOption) (*CountourReply, error) {
+	out := new(CountourReply)
+	err := c.cc.Invoke(ctx, "/service.ImageProcessingService/DrawCountours", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ImageProcessingServiceServer is the server API for ImageProcessingService service.
 // All implementations must embed UnimplementedImageProcessingServiceServer
 // for forward compatibility
 type ImageProcessingServiceServer interface {
 	PyrMeanShiftFiltering(context.Context, *PyrRequest) (*PyrReply, error)
+	DrawCountours(context.Context, *CountourRequest) (*CountourReply, error)
 	mustEmbedUnimplementedImageProcessingServiceServer()
 }
 
@@ -52,6 +63,9 @@ type UnimplementedImageProcessingServiceServer struct {
 
 func (UnimplementedImageProcessingServiceServer) PyrMeanShiftFiltering(context.Context, *PyrRequest) (*PyrReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PyrMeanShiftFiltering not implemented")
+}
+func (UnimplementedImageProcessingServiceServer) DrawCountours(context.Context, *CountourRequest) (*CountourReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DrawCountours not implemented")
 }
 func (UnimplementedImageProcessingServiceServer) mustEmbedUnimplementedImageProcessingServiceServer() {
 }
@@ -85,6 +99,24 @@ func _ImageProcessingService_PyrMeanShiftFiltering_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ImageProcessingService_DrawCountours_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CountourRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ImageProcessingServiceServer).DrawCountours(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/service.ImageProcessingService/DrawCountours",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ImageProcessingServiceServer).DrawCountours(ctx, req.(*CountourRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ImageProcessingService_ServiceDesc is the grpc.ServiceDesc for ImageProcessingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -95,6 +127,10 @@ var ImageProcessingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PyrMeanShiftFiltering",
 			Handler:    _ImageProcessingService_PyrMeanShiftFiltering_Handler,
+		},
+		{
+			MethodName: "DrawCountours",
+			Handler:    _ImageProcessingService_DrawCountours_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

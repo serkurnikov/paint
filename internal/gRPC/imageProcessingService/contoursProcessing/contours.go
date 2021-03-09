@@ -11,6 +11,11 @@ import (
 	"sort"
 )
 
+const (
+	basePath           = "D:\\Sergey\\projects\\Go Projects\\paint\\assets\\examples"
+	contoursPathImage  = basePath + "\\contours.jpg"
+)
+
 type CustomContour struct {
 	c     [][]image.Point
 	index int
@@ -34,8 +39,8 @@ func (cc CustomContour) Swap(i, j int) {
 	cc.c[i], cc.c[j] = cc.c[j], cc.c[i]
 }
 
-func drawDefaultContours(in, out string) {
-	red := color.RGBA{255, 0, 0, 255}
+func DrawDefaultContours(in string) {
+	colorCountours := color.RGBA{R: 255, G: 255, B: 255, A: 255}
 
 	path := filepath.Join(in)
 	img := gocv.IMRead(path, gocv.IMReadGrayScale)
@@ -52,16 +57,16 @@ func drawDefaultContours(in, out string) {
 	contours := gocv.FindContours(matCanny, gocv.RetrievalExternal, gocv.ChainApproxSimple)
 	gocv.CvtColor(img, &img, gocv.ColorGrayToBGR)
 
-	gocv.DrawContours(&img, contours, -1, red, 2)
+	gocv.DrawContours(&img, contours, -1, colorCountours, 2)
 
-	if ok := gocv.IMWrite(out, img); !ok {
+	if ok := gocv.IMWrite(contoursPathImage, img); !ok {
 		fmt.Printf("Failed to write image\n")
 		os.Exit(1)
 	}
 }
 
-func drawLines(in, out string) {
-	red := color.RGBA{255, 0, 0, 255}
+func DrawLines(in, out string) {
+	colorCountours := color.RGBA{R: 255, G: 255, B: 255, A: 255}
 
 	path := filepath.Join(in)
 	img := gocv.IMRead(path, gocv.IMReadGrayScale)
@@ -89,7 +94,7 @@ func drawLines(in, out string) {
 		pt2 := image.Pt(int(matLines.GetVeciAt(index, 0)[2]),
 			int(matLines.GetVeciAt(index, 0)[3]))
 
-		gocv.Line(&img, pt1, pt2, red, 2)
+		gocv.Line(&img, pt1, pt2, colorCountours, 2)
 	}
 
 	if ok := gocv.IMWrite(out, img); !ok {
@@ -98,7 +103,7 @@ func drawLines(in, out string) {
 	}
 }
 
-func drawCircles(in, out string) {
+func DrawCircles(in, out string) {
 	red := color.RGBA{255, 0, 0, 255}
 
 	path := filepath.Join(in)
@@ -138,7 +143,7 @@ func drawCircles(in, out string) {
 	}
 }
 
-func drawCustomContours(in, out string) {
+func DrawCustomContours(in string) [][]image.Point {
 	path := filepath.Join(in)
 	img := gocv.IMRead(path, gocv.IMReadColor)
 	if img.Empty() {
@@ -186,7 +191,7 @@ func drawCustomContours(in, out string) {
 	*/
 
 	//finally detect edges
-	gocv.Canny(morph, &edges, 50, 100)
+	gocv.Canny(morph, &edges, 100, 200)
 	//possibly instead of canny, use threshold?: threshold (gray, bw, 0, 255, THRESH_BINARY|THRESH_OTSU);
 
 	contours := gocv.FindContours(edges, gocv.RetrievalExternal, gocv.ChainApproxSimple)
@@ -196,7 +201,7 @@ func drawCustomContours(in, out string) {
 	//find the contour with the largest area
 	sort.Sort(CustomContour(toSort))
 
-	statusColor := color.RGBA{255, 0, 0, 0}
+	statusColor := color.RGBA{R: 255, G: 255, B: 255}
 
 	if len(toSort.c) > 0 {
 		gocv.FillPoly(&img, toSort.c, statusColor)
@@ -223,13 +228,15 @@ func drawCustomContours(in, out string) {
 		gocv.BoxPoints(rect, &pts)
 	}
 
-	if ok := gocv.IMWrite(out, img); !ok {
+	if ok := gocv.IMWrite(contoursPathImage, img); !ok {
 		fmt.Printf("Failed to write image\n")
 		os.Exit(1)
 	}
+
+	return toSort.c
 }
 
-func getHoles(in, out string) {
+func GetHoles(in, out string) {
 	path := filepath.Join(in)
 	img := gocv.IMRead(path, gocv.IMReadColor)
 	if img.Empty() {
@@ -265,7 +272,7 @@ func getHoles(in, out string) {
 	}
 }
 
-func grabCut(in string) {
+func GrabCut(in string) {
 	img := gocv.IMRead(in, gocv.IMReadGrayScale)
 	if img.Empty() {
 		fmt.Printf("Failed to read image\n")
