@@ -8,7 +8,11 @@ import (
 	"path/filepath"
 )
 
-func Open(in, out string) {
+const (
+	openPath = "open.jpg"
+)
+
+func Open(in string, kernelSize int) {
 
 	path := filepath.Join(in)
 	img := gocv.IMRead(path, gocv.IMReadColor)
@@ -19,12 +23,15 @@ func Open(in, out string) {
 	defer img.Close()
 
 	morph := gocv.NewMat()
-	kernel := gocv.GetStructuringElement(gocv.MorphEllipse, image.Pt(11, 11))
+	kernel := gocv.GetStructuringElement(gocv.MorphEllipse, image.Pt(kernelSize, kernelSize))
 	defer kernel.Close()
 
 	gocv.MorphologyEx(img, &morph, gocv.MorphOpen, kernel)
 
 	defer morph.Close()
+
+	out := basePath + fmt.Sprintf("\\kernelSize_%v_%s",
+		kernelSize, openPath)
 
 	if ok := gocv.IMWrite(out, morph); !ok {
 		fmt.Printf("Failed to write image\n")

@@ -58,3 +58,11 @@ func ParsePath(info Info) []string {
 	result := strings.Split(info.Path, "\\")
 	return result
 }
+
+func GetFileAbsPath() string {
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return dir
+}

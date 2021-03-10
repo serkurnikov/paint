@@ -7,8 +7,18 @@ package service;
 //protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative image-processing-service.proto
 
 service ImageProcessingService {
-  rpc PyrMeanShiftFiltering (PyrRequest) returns (PyrReply) {}
-  rpc DrawCountours (CountourRequest) returns (CountourReply) {}
+  rpc PyrMeanShiftFiltering (PyrRequest) returns (DefaultReply) {}
+
+  rpc DrawDefaultContours (ContoursRequest) returns (DefaultReply) {}
+  rpc DrawCustomContours (ContoursRequest) returns (DefaultReply) {}
+  rpc DrawHoughLinesWithParams (HoughLinesWithPRequest) returns (DefaultReply) {}
+  rpc DrawHoughCircles (HoughCirclesRequest) returns (DefaultReply) {}
+
+  rpc Threshold (ThresholdRequest) returns (DefaultReply) {}
+  rpc Watershed (WatershedRequest) returns (DefaultReply) {}
+
+  rpc Open (OpenRequest) returns (DefaultReply) {}
+  rpc Close (CloseRequest) returns (DefaultReply) {}
 }
 
 message PyrRequest {
@@ -18,14 +28,53 @@ message PyrRequest {
   int32 maxLevel = 4;
 }
 
-message PyrReply {
-  string OutPicture = 1;
-}
-
-message CountourRequest {
+message ContoursRequest {
   string pathPicture = 1;
+  float t1 = 2;
+  float t2 = 3;
 }
 
-message CountourReply {
+message HoughLinesWithPRequest {
+  string pathPicture = 1;
+  float rho = 2;
+  float theta = 3;
+  int32 threshold = 4;
+  float minLineLength = 5;
+  float maxLineGap = 6;
+}
+
+message HoughCirclesRequest {
+  string pathPicture = 1;
+  float dp = 2;
+  float minDist = 3;
+  float p1 = 4;
+  float p2 = 5;
+  int32 minR = 6;
+  int32 maxR = 7;
+}
+
+message ThresholdRequest {
+  string pathPicture = 1;
+  float thresh = 2;
+  float maxvalue = 3;
+}
+
+message WatershedRequest {
+  string pathPicture = 1;
+  int32 nErode = 2;
+  int32 nDilate = 3;
+}
+
+message CloseRequest {
+  string pathPicture = 1;
+  int32 kernelSize = 2;
+}
+
+message OpenRequest {
+  string pathPicture = 1;
+  int32 kernelSize = 2;
+}
+
+message DefaultReply {
   string OutPicture = 1;
 }

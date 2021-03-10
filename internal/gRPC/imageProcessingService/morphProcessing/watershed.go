@@ -7,7 +7,12 @@ import (
 	"os"
 )
 
-func watershed(in, outF, outW string, nErode, nDilate int) {
+const (
+	fusionPath    = "fusion.jpg"
+	watershedPath = "watershed.jpg"
+)
+
+func Watershed(in string, nErode, nDilate int) {
 	img := gocv.IMRead(in, gocv.IMReadColor)
 	if img.Empty() {
 		fmt.Printf("Failed to img image: %s\n", in)
@@ -42,10 +47,13 @@ func watershed(in, outF, outW string, nErode, nDilate int) {
 	defer marker.Close()
 	gocv.Add(fg, bg, &marker)
 
+	/*outF := basePath + fmt.Sprintf("\\e_%v_d_%v_%s",
+		nErode, nDilate, fusionPath)
+
 	if ok := gocv.IMWrite(outF, marker); !ok {
 		fmt.Printf("Failed to write image\n")
 		os.Exit(1)
-	}
+	}*/
 
 	markerCV32FC1 := gocv.NewMat()
 	defer markerCV32FC1.Close()
@@ -65,6 +73,9 @@ func watershed(in, outF, outW string, nErode, nDilate int) {
 	defer dest.Close()
 
 	img.CopyToWithMask(&dest, thresholdMat)
+
+	outW := basePath + fmt.Sprintf("\\e_%v_d_%v_%s",
+		nErode, nDilate, watershedPath)
 
 	if ok := gocv.IMWrite(outW, thresholdMat); !ok {
 		fmt.Printf("Failed to write image\n")

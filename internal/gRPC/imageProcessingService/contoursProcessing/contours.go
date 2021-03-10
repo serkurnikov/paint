@@ -5,16 +5,21 @@ import (
 	"gocv.io/x/gocv"
 	"image"
 	"image/color"
-	"math"
 	"os"
 	"path/filepath"
 	"sort"
 )
 
 const (
-	basePath           = "D:\\Sergey\\projects\\Go Projects\\paint\\assets\\examples"
-	contoursPathImage  = basePath + "\\contours.jpg"
+	basePath             = "D:\\Sergey\\projects\\Go Projects\\paint\\assets\\examples"
+	defaultContour       = "defaultContour.jpg"
+	customContours       = "customContours.jpg"
+	houghLinesWithParams = "houghLinesWithParams.jpg"
+	houghCircles         = "houghCircles.jpg"
+	holes                = "holes.jpg"
 )
+
+var colorCountours = color.RGBA{R: 255, G: 0, B: 0, A: 255}
 
 type CustomContour struct {
 	c     [][]image.Point
@@ -39,8 +44,7 @@ func (cc CustomContour) Swap(i, j int) {
 	cc.c[i], cc.c[j] = cc.c[j], cc.c[i]
 }
 
-func DrawDefaultContours(in string) {
-	colorCountours := color.RGBA{R: 255, G: 255, B: 255, A: 255}
+func DrawDefaultContours(in string, t1 float32, t2 float32) {
 
 	path := filepath.Join(in)
 	img := gocv.IMRead(path, gocv.IMReadGrayScale)
@@ -53,20 +57,21 @@ func DrawDefaultContours(in string) {
 	matCanny := gocv.NewMat()
 	defer matCanny.Close()
 
-	gocv.Canny(img, &matCanny, 50, 100)
+	gocv.Canny(img, &matCanny, t1, t2)
 	contours := gocv.FindContours(matCanny, gocv.RetrievalExternal, gocv.ChainApproxSimple)
 	gocv.CvtColor(img, &img, gocv.ColorGrayToBGR)
 
 	gocv.DrawContours(&img, contours, -1, colorCountours, 2)
 
-	if ok := gocv.IMWrite(contoursPathImage, img); !ok {
+	out := basePath + fmt.Sprintf("\\t1_%f_t2_%f_%s", t1, t2, defaultContour)
+
+	if ok := gocv.IMWrite(out, img); !ok {
 		fmt.Printf("Failed to write image\n")
 		os.Exit(1)
 	}
 }
 
-func DrawLines(in, out string) {
-	colorCountours := color.RGBA{R: 255, G: 255, B: 255, A: 255}
+func DrawHoughLinesWithParams(in string, rho float32, theta float32, threshold int, minLineLength float32, maxLineGap float32) {
 
 	path := filepath.Join(in)
 	img := gocv.IMRead(path, gocv.IMReadGrayScale)
@@ -78,12 +83,12 @@ func DrawLines(in, out string) {
 
 	matCanny := gocv.NewMat()
 	defer matCanny.Close()
-	gocv.Canny(img, &matCanny, 50, 100)
+	gocv.Canny(img, &matCanny, 100, 200)
 
 	matLines := gocv.NewMat()
 	defer matLines.Close()
 
-	gocv.HoughLinesP(matCanny, &matLines, 0.5, math.Pi/360, 20)
+	gocv.HoughLinesPWithParams(matCanny, &matLines, rho, theta, threshold, minLineLength, maxLineGap)
 
 	gocv.CvtColor(img, &img, gocv.ColorGrayToBGR)
 
@@ -97,14 +102,16 @@ func DrawLines(in, out string) {
 		gocv.Line(&img, pt1, pt2, colorCountours, 2)
 	}
 
+	out := basePath + fmt.Sprintf("\\rho_%f_theta_%f_threshold_%v_minL_%f_maxG_%f_%s",
+		rho, theta, threshold, minLineLength, maxLineGap, houghLinesWithParams)
+
 	if ok := gocv.IMWrite(out, img); !ok {
 		fmt.Printf("Failed to write image\n")
 		os.Exit(1)
 	}
 }
 
-func DrawCircles(in, out string) {
-	red := color.RGBA{255, 0, 0, 255}
+func DrawHoughCircles(in string, method gocv.HoughMode, dp, minDist, param1, param2 float64, minRadius, maxRadius int) {
 
 	path := filepath.Join(in)
 	img := gocv.IMRead(path, gocv.IMReadGrayScale)
@@ -120,10 +127,8 @@ func DrawCircles(in, out string) {
 
 	matCircles := gocv.NewMat()
 	defer matCircles.Close()
-	gocv.HoughCirclesWithParams(matCanny, &matCircles, gocv.HoughGradient, 2,
-		float64(img.Rows()/8), 100, 100, img.Rows()/50, img.Rows()/4)
-
-	//gocv.HoughCircles(matCanny, &matCircles, 3, 2, float64(img.Rows()/4))
+	gocv.HoughCirclesWithParams(matCanny, &matCircles, method, dp,
+		minDist, param1, param2, minRadius, maxRadius)
 
 	gocv.CvtColor(img, &img, gocv.ColorGrayToBGR)
 
@@ -134,8 +139,11 @@ func DrawCircles(in, out string) {
 			int(matCircles.GetVecfAt(0, index)[1]))
 
 		radius := int(matCircles.GetVecfAt(0, index)[2])
-		gocv.Circle(&img, point, radius, red, 1)
+		gocv.Circle(&img, point, radius, colorCountours, 1)
 	}
+
+	out := basePath + fmt.Sprintf("\\dp_%f_minDist_%f_p1_%f_p2_%f_minR_%f_minR_%f_%s",
+		dp, minDist, param1, param2, minRadius, maxRadius, houghCircles)
 
 	if ok := gocv.IMWrite(out, img); !ok {
 		fmt.Printf("Failed to write image\n")
@@ -143,7 +151,7 @@ func DrawCircles(in, out string) {
 	}
 }
 
-func DrawCustomContours(in string) [][]image.Point {
+func DrawCustomContours(in string, t1 float32, t2 float32) [][]image.Point {
 	path := filepath.Join(in)
 	img := gocv.IMRead(path, gocv.IMReadColor)
 	if img.Empty() {
@@ -191,7 +199,7 @@ func DrawCustomContours(in string) [][]image.Point {
 	*/
 
 	//finally detect edges
-	gocv.Canny(morph, &edges, 100, 200)
+	gocv.Canny(morph, &edges, t1, t2)
 	//possibly instead of canny, use threshold?: threshold (gray, bw, 0, 255, THRESH_BINARY|THRESH_OTSU);
 
 	contours := gocv.FindContours(edges, gocv.RetrievalExternal, gocv.ChainApproxSimple)
@@ -199,12 +207,12 @@ func DrawCustomContours(in string) [][]image.Point {
 	var toSort CustomContour
 	toSort.c = contours
 	//find the contour with the largest area
-	sort.Sort(CustomContour(toSort))
+	sort.Sort(toSort)
 
 	statusColor := color.RGBA{R: 255, G: 255, B: 255}
 
 	if len(toSort.c) > 0 {
-		gocv.FillPoly(&img, toSort.c, statusColor)
+		gocv.DrawContours(&img, toSort.c, -1, statusColor, 1)
 	}
 
 	hull := gocv.NewMat()
@@ -228,7 +236,9 @@ func DrawCustomContours(in string) [][]image.Point {
 		gocv.BoxPoints(rect, &pts)
 	}
 
-	if ok := gocv.IMWrite(contoursPathImage, img); !ok {
+	out := basePath + fmt.Sprintf("\\t1_%f_t2_%f_%s", t1, t2, customContours)
+
+	if ok := gocv.IMWrite(out, img); !ok {
 		fmt.Printf("Failed to write image\n")
 		os.Exit(1)
 	}
@@ -236,7 +246,7 @@ func DrawCustomContours(in string) [][]image.Point {
 	return toSort.c
 }
 
-func GetHoles(in, out string) {
+func GetHoles(in string) {
 	path := filepath.Join(in)
 	img := gocv.IMRead(path, gocv.IMReadColor)
 	if img.Empty() {
@@ -257,7 +267,7 @@ func GetHoles(in, out string) {
 
 	contour := gocv.FindContours(binImageInv, gocv.RetrievalCComp, gocv.ChainApproxSimple)
 
-	statusColor := color.RGBA{255, 0, 0, 0}
+	statusColor := color.RGBA{R: 255}
 	gocv.DrawContours(&binImageInv, contour, 0, statusColor, 1)
 
 	nt := gocv.NewMat()
@@ -265,6 +275,8 @@ func GetHoles(in, out string) {
 
 	gocv.BitwiseNot(binImage, &nt)
 	gocv.BitwiseOr(binImageInv, nt, &binImageInv)
+
+	out := basePath + fmt.Sprintf("\\%s", holes)
 
 	if ok := gocv.IMWrite(out, binImageInv); !ok {
 		fmt.Printf("Failed to write image\n")

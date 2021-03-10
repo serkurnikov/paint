@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	basePath           = "C:\\Users\\master\\go\\src\\projects\\paint\\assets\\examples"
+	basePath           = "D:\\Sergey\\projects\\Go Projects\\paint\\assets\\examples"
 	meanShiftPathImage = basePath + "\\meanShift.jpg"
 )
 

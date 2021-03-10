@@ -1,4 +1,5 @@
 package mixcolors
+//https://www.imgonline.com.ua/
 
 import (
 	"encoding/json"
@@ -8,13 +9,72 @@ import (
 	"paint/internal/gRPC/imageProcessingService/colorProcessing/prominentcolor"
 	"paint/internal/utils"
 	"strings"
+	"sync"
 )
 import "paint/assets"
 
-const root = "assets/structure.json"
-const Path = "Path"
+var instance map[string][]ColorAsset
+var once sync.Once
 
-//https://www.imgonline.com.ua/
+const (
+	root = "assets/structure.json"
+	Path = "Path"
+	MasterColors = "masters_colors"
+)
+
+type ColorAsset struct {
+	name string
+	hex  string
+	path []string
+}
+
+func getMapOfAllColors() map[string][]ColorAsset {
+	once.Do(func() {
+		instance = createMapOfAllColors()
+	})
+	return instance
+}
+
+func createMapOfAllColors() map[string][]ColorAsset {
+
+	mapOfAllColors := make(map[string][]ColorAsset, 0)
+	data := GetAssetsData()
+
+	for _, a := range data.Assets {
+		mastersColors, _ := utils.StructToMap(a.ColorsFabric.MastersColors)
+		colors := make([]ColorAsset, 0)
+		for colorName, images := range mastersColors {
+
+			for _, image := range images.([]interface{}) {
+				var imagesPath = make([]string, 0)
+				for key, value := range image.(map[string]interface{}) {
+					if strings.Compare(key, Path) == 0 {
+						imagesPath = append(imagesPath, value.(string))
+					}
+				}
+
+				colors = append(colors, ColorAsset{
+					name: colorName,
+					hex:  getMastersColors()[colorName],
+					path: imagesPath,
+				})
+			}
+		}
+		mapOfAllColors[MasterColors] = colors
+	}
+	return mapOfAllColors
+}
+
+func GetAssetsData() assets.Assets {
+	data, err := ioutil.ReadFile(root)
+	assets := assets.Assets{}
+	err = json.Unmarshal(data, &assets)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return assets
+}
+
 func getMastersColors() map[string]string {
 	return map[string]string{
 		"ararat_green":                "#322c26",
@@ -130,42 +190,7 @@ func getMastersColors() map[string]string {
 		"yellow_travertine":           "#b77111"}
 }
 
-type ColorAsset struct {
-	name string
-	hex  string
-	path []string
-}
-
-func InitColors() []ColorAsset {
-
-	colors := make([]ColorAsset, 0)
-	data := GetAssetsData()
-
-	for _, a := range data.Assets {
-		mastersColors, _ := utils.StructToMap(a.ColorsFabric.MastersColors)
-
-		for colorName, images := range mastersColors {
-
-			for _, image := range images.([]interface{}) {
-				var imagesPath = make([]string, 0)
-				for key, value := range image.(map[string]interface{}) {
-					if strings.Compare(key, Path) == 0 {
-						imagesPath = append(imagesPath, value.(string))
-					}
-				}
-
-				colors = append(colors, ColorAsset{
-					name: colorName,
-					hex:  getMastersColors()[colorName],
-					path: imagesPath,
-				})
-			}
-		}
-	}
-	return colors
-}
-
-func CalculateDominantColorByImageAssets(imagesPath []string) {
+func CalculateDominantColorByImageAssets(imagesPath []string) string {
 
 	imagesPalette := make(map[image.Image][]string)
 	for _, path := range imagesPath {
@@ -180,17 +205,10 @@ func CalculateDominantColorByImageAssets(imagesPath []string) {
 	println(imagesPath[0])
 	for _, hexes := range imagesPalette {
 		for _, hex := range hexes {
+			//TODO calculate color hex by images
 			println(hex)
 		}
 	}
-}
 
-func GetAssetsData() assets.Assets {
-	data, err := ioutil.ReadFile(root)
-	assets := assets.Assets{}
-	err = json.Unmarshal(data, &assets)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	return assets
+	return "#nil"
 }

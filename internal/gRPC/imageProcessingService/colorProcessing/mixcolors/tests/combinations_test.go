@@ -1,7 +1,8 @@
-package mixcolors
+package tests
 
 import (
 	"fmt"
+	"paint/internal/gRPC/imageProcessingService/colorProcessing/mixcolors"
 	"reflect"
 	"testing"
 )
@@ -70,7 +71,7 @@ func TestStringCombinations(t *testing.T) {
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			out := All(tc.in)
+			out := mixcolors.All(tc.in)
 			if !reflect.DeepEqual(out, tc.out) {
 				t.Errorf("error: \nreturn:\t%v\nwant:\t%v", out, tc.out)
 			}
@@ -79,7 +80,7 @@ func TestStringCombinations(t *testing.T) {
 }
 
 func ExampleAll() {
-	combinations := All([]string{"A", "B", "C"})
+	combinations := mixcolors.All([]string{"A", "B", "C"})
 	fmt.Println(combinations)
 	// Output:
 	// [[A] [B] [A B] [C] [A C] [B C] [A B C]]
@@ -185,7 +186,7 @@ func TestStringCombinationsN(t *testing.T) {
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			out := Combinations(tc.in, tc.n)
+			out := mixcolors.Combinations(tc.in, tc.n)
 			if !reflect.DeepEqual(out, tc.out) {
 				t.Errorf("error: \nreturn:\t%v\nwant:\t%v", out, tc.out)
 			}

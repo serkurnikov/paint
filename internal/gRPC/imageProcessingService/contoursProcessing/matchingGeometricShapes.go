@@ -1,4 +1,4 @@
-package app
+package contoursProcessing
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 	"image"
 	"image/color"
 	"os"
-	"paint/internal/gRPC/imageProcessingService/contoursProcessing"
 	"path/filepath"
 )
 
@@ -19,12 +18,14 @@ func FindingMatchingGeometricShapes(in string) {
 	}
 	defer img.Close()
 
-	countours := contoursProcessing.DrawCustomContours(in)
+	/*countours := contoursProcessing.DrawCustomContours(in)
 	for _, countour := range countours {
-		displayLineByImagePoints(img, countour)
-	}
+		if countour != nil {
+			displayLineByImagePoints(img, countour)
+		}
+	}*/
 
-	if ok := gocv.IMWrite(palettePathImage, img); !ok {
+	if ok := gocv.IMWrite("", img); !ok {
 		fmt.Printf("Failed to write image\n")
 		os.Exit(1)
 	}
