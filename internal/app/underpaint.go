@@ -1,8 +1,6 @@
 package app
 
-import (
-	pb "paint/internal/gRPC/imageProcessingService/service"
-)
+import "paint/internal/gRPC/imageProcessingService/colorProcessing/mixcolors"
 
 //https://github.com/golang-standards/project-layout
 
@@ -20,12 +18,5 @@ func (a App) ExternalApiTest() {}
 func (a App) Scobel()          {}
 
 func (a App) Render(ctx Ctx) {
-
-	for i := 0; i < 10; i++ {
-		_, _ = a.imageProcessingClient.Watershed(ctx, &pb.WatershedRequest{
-			PathPicture: watershedPathImage,
-			NErode:      int32(i)*2,
-			NDilate:     int32(i),
-		})
-	}
+	mixcolors.FindAdditiveColorsLUVInterColorFabric("#123f31", mixcolors.MasterColors)
 }

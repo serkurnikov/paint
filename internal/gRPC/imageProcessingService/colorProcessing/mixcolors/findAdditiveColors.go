@@ -11,9 +11,12 @@ import (
 	"strings"
 )
 
-const DefaultCountOfColors = 5
-const DefaultChannelsLUV = 3
-const P = "."
+const (
+	DefaultCountOfColors = 5
+	DefaultChannelsLUV   = 3
+	P                    = "."
+	Slash                = "/"
+)
 
 type ColorAdditiveLUV struct {
 	hex        string
@@ -29,7 +32,7 @@ func FindAdditiveColorsLUVInterColorFabric(mainColorS, colorFabric string) []Col
 	sortAdditiveColors := make(map[int][]ColorAdditiveLUV)
 	colorsHexValues := make([]string, 0)
 
-	for _, colorAsset := range getMapOfAllColors()[colorFabric] {
+	for _, colorAsset := range InitColors().mapOfAllColors[colorFabric] {
 		colorsHexValues = append(colorsHexValues, colorAsset.hex)
 	}
 
@@ -68,16 +71,17 @@ func getSimilarColorsLUV(mainColorS string, additiveColors map[int][]ColorAdditi
 					var blendColors map[string]interface{}
 					json.Unmarshal([]byte(value.String()), &blendColors)
 
-					for _, v := range blendColors {
+					for shade, v := range blendColors {
 						if !utils.Contains(resultColors, v.(string)) {
-							resultColors = append(resultColors, v.(string))
+							//#213f24/0.5/#123f22
+							resultColors = append(resultColors, combinations[i][0]+Slash+shade+Slash+v.(string))
 						}
 					}
 				}
 			}
 		}
 	}
-	test(mainColorS, resultColors)
+	//test(mainColorS, resultColors)
 	return nil
 }
 
@@ -112,7 +116,6 @@ func test(mainColorS string, colors []string) []SimilarColor {
 	}
 
 	sort.Slice(result, func(i, j int) bool { return result[i].difference < result[j].difference })
-	println(result[:5])
 	return result[:5]
 }
 
