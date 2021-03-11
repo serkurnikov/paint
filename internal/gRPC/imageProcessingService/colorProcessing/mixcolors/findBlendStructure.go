@@ -16,19 +16,31 @@ const (
 	DefaultChannelsLUV   = 3
 	P                    = "."
 	Slash                = "/"
+	Lattice              = "#"
 )
 
 type ColorAdditiveLUV struct {
-	hex        string
-	difference []float64
+	Hex        string
+	Difference []float64
 }
 
 type SimilarColor struct {
-	hex        string
-	difference float64
+	Structure  string
+	Difference float64
 }
 
-func FindAdditiveColorsLUVInterColorFabric(mainColorS, colorFabric string) []ColorAdditiveLUV {
+type BlendStructure struct {
+	C1Hex string
+	C2Hex string
+	C3Hex string
+
+	C2Portion string
+	C3Portion string
+
+	ResultHex string
+}
+
+func FindBlendStructureAmongFabricColorsLUV(mainColorS, colorFabric string) []BlendStructure {
 	sortAdditiveColors := make(map[int][]ColorAdditiveLUV)
 	colorsHexValues := make([]string, 0)
 
@@ -40,19 +52,32 @@ func FindAdditiveColorsLUVInterColorFabric(mainColorS, colorFabric string) []Col
 		sortAdditiveColors[i] = getSortAdditiveColorsByChanelLUV(mainColorS, colorsHexValues, i, DefaultCountOfColors)
 	}
 
-	getSimilarColorsLUV(mainColorS, sortAdditiveColors)
+	blendStructures := make([]BlendStructure, 0)
 
-	return nil
+	cs := getSimilarColorsLUV(mainColorS, sortAdditiveColors)
+	for _, similarColor := range cs {
+		values := strings.Split(similarColor.Structure, Slash)
+
+		blendStructures = append(blendStructures, BlendStructure{
+			C1Hex:     values[0],
+			C2Hex:     "#" + strings.Split(values[1], Lattice)[1],
+			C3Hex:     "#" + strings.Split(values[2], Lattice)[1],
+			C2Portion: strings.Split(values[1], Lattice)[0],
+			C3Portion: strings.Split(values[2], Lattice)[0],
+			ResultHex: values[len(values)-1],
+		})
+	}
+	return blendStructures
 }
 
-func getSimilarColorsLUV(mainColorS string, additiveColors map[int][]ColorAdditiveLUV) []string {
+func getSimilarColorsLUV(mainColorS string, additiveColors map[int][]ColorAdditiveLUV) []SimilarColor {
 	colors := make([]string, 0)
 	resultColors := make([]string, 0)
 
 	for k, value := range additiveColors {
 		for i := 0; i < len(value); i++ {
-			if !utils.Contains(colors, value[i].hex) {
-				colors = append(colors, fmt.Sprintf(value[i].hex+P+strconv.Itoa(k)))
+			if !utils.Contains(colors, value[i].Hex) {
+				colors = append(colors, fmt.Sprintf(value[i].Hex+P+strconv.Itoa(k)))
 			}
 		}
 	}
@@ -66,23 +91,24 @@ func getSimilarColorsLUV(mainColorS string, additiveColors map[int][]ColorAdditi
 				C2: strings.Split(combinations[i][1], P)[0],
 				C3: strings.Split(combinations[i][2], P)[0]}, DefaultNumberOfShades)
 
-			for _, child := range blendResult.S(strings.Split(combinations[i][0], P)[0]).Children() {
-				for _, value := range child.Children() {
+			for C2, child := range blendResult.S(strings.Split(combinations[i][0], P)[0]).ChildrenMap() {
+				for C3, value := range child.ChildrenMap() {
 					var blendColors map[string]interface{}
 					json.Unmarshal([]byte(value.String()), &blendColors)
 
 					for shade, v := range blendColors {
 						if !utils.Contains(resultColors, v.(string)) {
-							//#213f24/0.5/#123f22
-							resultColors = append(resultColors, combinations[i][0]+Slash+shade+Slash+v.(string))
+							result := fmt.Sprintf("%v/%v/%v%v/%v", strings.Split(combinations[i][0], P)[0],
+								C2, shade, C3, v.(string))
+
+							resultColors = append(resultColors, result)
 						}
 					}
 				}
 			}
 		}
 	}
-	//test(mainColorS, resultColors)
-	return nil
+	return sortResultColorsByDifferenceLUV(mainColorS, resultColors)
 }
 
 func getSortAdditiveColorsByChanelLUV(mainColorS string, additiveColors []string, channel, count int) []ColorAdditiveLUV {
@@ -96,26 +122,27 @@ func getSortAdditiveColorsByChanelLUV(mainColorS string, additiveColors []string
 		li, ui, vi := cAdditive.Luv()
 
 		params = append(params, ColorAdditiveLUV{
-			hex:        cAdditive.Hex(),
-			difference: []float64{math.Abs(l - li), math.Abs(u - ui), math.Abs(v - vi)},
+			Hex:        cAdditive.Hex(),
+			Difference: []float64{math.Abs(l - li), math.Abs(u - ui), math.Abs(v - vi)},
 		})
 	}
 
-	sort.Slice(params, func(i, j int) bool { return params[i].difference[channel] < params[j].difference[channel] })
+	sort.Slice(params, func(i, j int) bool { return params[i].Difference[channel] < params[j].Difference[channel] })
 	return params[:count]
 }
 
-func test(mainColorS string, colors []string) []SimilarColor {
+func sortResultColorsByDifferenceLUV(mainColorS string, colors []string) []SimilarColor {
 	result := make([]SimilarColor, 0)
 
 	for i := 0; i < len(colors); i++ {
+		values := strings.Split(colors[i], Slash)
 		result = append(result, SimilarColor{
-			hex:        colors[i],
-			difference: DistanceLuv(mainColorS, colors[i]),
+			Structure:  colors[i],
+			Difference: DistanceLuv(mainColorS, values[len(values)-1]),
 		})
 	}
 
-	sort.Slice(result, func(i, j int) bool { return result[i].difference < result[j].difference })
+	sort.Slice(result, func(i, j int) bool { return result[i].Difference < result[j].Difference })
 	return result[:5]
 }
 

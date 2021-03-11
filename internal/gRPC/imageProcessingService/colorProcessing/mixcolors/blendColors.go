@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-const DefaultNumberOfShades = 5
+const DefaultNumberOfShades = 10
 
 type Color3 struct {
 	C1, C2, C3 string

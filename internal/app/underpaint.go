@@ -1,6 +1,9 @@
 package app
 
-import "paint/internal/gRPC/imageProcessingService/colorProcessing/mixcolors"
+import (
+	"fmt"
+	"paint/internal/gRPC/imageProcessingService/colorProcessing/mixcolors"
+)
 
 //https://github.com/golang-standards/project-layout
 
@@ -18,5 +21,5 @@ func (a App) ExternalApiTest() {}
 func (a App) Scobel()          {}
 
 func (a App) Render(ctx Ctx) {
-	mixcolors.FindAdditiveColorsLUVInterColorFabric("#123f31", mixcolors.MasterColors)
+	fmt.Printf("%v", mixcolors.FindBlendStructureAmongFabricColorsLUV("#123f31", mixcolors.MasterColors))
 }

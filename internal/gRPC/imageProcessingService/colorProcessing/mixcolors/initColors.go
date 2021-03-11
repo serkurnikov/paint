@@ -14,7 +14,7 @@ import (
 import "paint/assets"
 
 const (
-	root = "assets/structure.json"
+	root = "D:\\Sergey\\projects\\Go Projects\\paint\\assets\\structure.json"
 	Path = "Path"
 	MasterColors = "masters_colors"
 )
@@ -159,7 +159,7 @@ func createMapOfAllColors() map[string][]ColorAsset {
 
 	mapOfAllColors := make(map[string][]ColorAsset)
 	colors := make([]ColorAsset, 0)
-	data := getAssetsData()
+	data := GetAssetsData()
 
 	mastersColors, _ := utils.StructToMap(data.Assets[0].ColorsFabric.MastersColors)
 	for colorName, images := range mastersColors {
@@ -199,7 +199,7 @@ func calculateDominantColorByImageAssets(imagesPath []string) string {
 	println(imagesPath[0])
 	for _, hexes := range imagesPalette {
 		for _, hex := range hexes {
-			//TODO calculate color hex by images
+			//TODO calculate color blendStructure by images
 			println(hex)
 		}
 	}
@@ -207,7 +207,7 @@ func calculateDominantColorByImageAssets(imagesPath []string) string {
 	return "#nil"
 }
 
-func getAssetsData() assets.Assets {
+func GetAssetsData() assets.Assets {
 	data, err := ioutil.ReadFile(root)
 	assets := assets.Assets{}
 	err = json.Unmarshal(data, &assets)
