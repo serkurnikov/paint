@@ -16,7 +16,6 @@ service ImageProcessingService {
 
   rpc Threshold (ThresholdRequest) returns (DefaultReply) {}
   rpc Watershed (WatershedRequest) returns (DefaultReply) {}
-
   rpc Open (OpenRequest) returns (DefaultReply) {}
   rpc Close (CloseRequest) returns (DefaultReply) {}
 

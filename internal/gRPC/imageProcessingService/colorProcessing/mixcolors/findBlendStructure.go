@@ -14,7 +14,7 @@ import (
 const (
 	DefaultCountOfColors = 5
 	DefaultChannelsLUV   = 3
-	DefaultDifferenceLUV = 0.05
+	DefaultDifferenceLUV = 0.2
 	P                    = "."
 	Slash                = "/"
 	Lattice              = "#"
@@ -194,3 +194,18 @@ func isCombinationRight(elements []string) bool {
 	}
 	return true
 }
+
+//TODO try to create new function for finding colors without channels.
+/*
+1. Init map of main colors and additive segments (use color articles) on base colorFabric
+May be use graph or matrix
+
+2. Search color from simple colors fabric, if find - regulate by white and black shades
+(function witch allow you to find "примеси" other colors)
+
+3. If color has large difference between simple colors - Search color among map
+Map contains BlendStructure based on colors technical
+
+4. Takes Base BlendStructure - find additive color among color Fabric
+5. Blend and display result
+ */

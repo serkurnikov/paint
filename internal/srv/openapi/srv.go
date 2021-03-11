@@ -10,6 +10,7 @@ import (
 	"paint/api/openapi/restapi"
 	"paint/api/openapi/restapi/op"
 	"paint/internal/app"
+	"paint/internal/srv/openapi/highload"
 	"paint/pkg/def"
 	"paint/pkg/netx"
 
@@ -65,8 +66,8 @@ func NewServer(appl app.Appl) (*restapi.Server, error) {
 	server.Host = "localhost"
 	server.Port = 9000
 
-	//dispatcher := highload.NewDispatcher(100)
-	//dispatcher.Run()
+	dispatcher := highload.NewDispatcher(100)
+	dispatcher.Run()
 
 	// The middleware executes before anything.
 	api.UseSwaggerUI()
