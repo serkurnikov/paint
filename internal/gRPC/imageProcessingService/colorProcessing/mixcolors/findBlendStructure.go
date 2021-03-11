@@ -14,6 +14,7 @@ import (
 const (
 	DefaultCountOfColors = 5
 	DefaultChannelsLUV   = 3
+	DefaultDifferenceLUV = 0.05
 	P                    = "."
 	Slash                = "/"
 	Lattice              = "#"
@@ -66,6 +67,10 @@ func FindBlendStructureAmongFabricColorsLUV(mainColorS, colorFabric string) []Bl
 			C3Portion: strings.Split(values[2], Lattice)[0],
 			ResultHex: values[len(values)-1],
 		})
+	}
+
+	if DistanceLuv(mainColorS, blendStructures[0].ResultHex) > 0.1 {
+		FindBlendStructureAmongFabricColorsLUV(mainColorS, colorFabric)
 	}
 	return blendStructures
 }
@@ -127,8 +132,28 @@ func getSortAdditiveColorsByChanelLUV(mainColorS string, additiveColors []string
 		})
 	}
 
-	sort.Slice(params, func(i, j int) bool { return params[i].Difference[channel] < params[j].Difference[channel] })
+	sort.Slice(params, func(i, j int) bool {
+		return lessFunction(i, j, channel, params)
+	})
+
 	return params[:count]
+}
+
+func lessFunction(i, j, channel int, params []ColorAdditiveLUV) bool {
+	return params[i].Difference[channel] < params[j].Difference[channel] &&
+		params[i].Difference[getOtherChannels(channel)[0]] < DefaultDifferenceLUV &&
+		params[i].Difference[getOtherChannels(channel)[1]] < DefaultDifferenceLUV
+}
+
+func getOtherChannels(channel int) []int {
+	otherChannels := make([]int, 2)
+
+	for i := 0; i < DefaultChannelsLUV; i++ {
+		if i != channel {
+			otherChannels = append(otherChannels, i)
+		}
+	}
+	return otherChannels
 }
 
 func sortResultColorsByDifferenceLUV(mainColorS string, colors []string) []SimilarColor {

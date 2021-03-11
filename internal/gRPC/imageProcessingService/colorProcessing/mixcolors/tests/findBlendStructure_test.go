@@ -18,12 +18,21 @@ func TestFindBlendStructure(t *testing.T) {
 	distance := mixcolors.DistanceLuv(mainColorS, blendStructure[0].ResultHex)
 
 	if distance > 0.1 {
-		t.Errorf("MainColors %s, BlendResultColor %s, DistanceLUV %f", mainColorS, blendStructure[0].ResultHex, distance)
-		t.Errorf("BlendResult: \nС1DIF = %v, \nP2 = %v, \nС2DIF = %v, \nP3 = %v, \nС3DIF = %v",
-			mixcolors.DistanceLuv("#322c26", blendStructure[0].C1Hex),
+		t.Errorf("Incorrect distanceLUV got %f, wait < 0.1", distance)
+	} else {
+		t.Logf("MainColors %s, BlendResultColor %s, DistanceLUV %f", mainColorS, blendStructure[0].ResultHex, distance)
+		t.Logf("BlendResult: \nС1DIF = %v, \nP2 = %v, \nС2DIF = %v, \nP3 = %v, \nС3DIF = %v",
+			blendStructure[0].C1Hex,
 			blendStructure[0].C2Portion,
-			mixcolors.DistanceLuv("#fe8e01", blendStructure[0].C2Hex),
+			blendStructure[0].C2Hex,
 			blendStructure[0].C3Portion,
-			mixcolors.DistanceLuv("#0091f6", blendStructure[0].C3Hex))
+			blendStructure[0].C3Hex)
+	}
+}
+
+func BenchmarkSample(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		//TODO optimized function
+		mixcolors.FindBlendStructureAmongFabricColorsLUV("#85739b", mixcolors.MasterColors)
 	}
 }

@@ -19,6 +19,8 @@ service ImageProcessingService {
 
   rpc Open (OpenRequest) returns (DefaultReply) {}
   rpc Close (CloseRequest) returns (DefaultReply) {}
+
+  rpc FindBlendStructureAmongFabricColorsLUV (CloseRequest) returns (DefaultReply) {}
 }
 
 message PyrRequest {
