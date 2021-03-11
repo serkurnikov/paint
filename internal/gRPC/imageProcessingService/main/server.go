@@ -6,6 +6,7 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"paint/internal/gRPC/imageProcessingService/colorProcessing/mixcolors"
 	"paint/internal/gRPC/imageProcessingService/contoursProcessing"
 	"paint/internal/gRPC/imageProcessingService/imageFilterProcessing"
 	"paint/internal/gRPC/imageProcessingService/morphProcessing"
@@ -71,6 +72,25 @@ func (s *server) Close(ctx context.Context, in *pb.CloseRequest) (*pb.DefaultRep
 	return &pb.DefaultReply{OutPicture: ""}, nil
 }
 
+func (s *server) FindBlendStructureAmongFabricColorsLUV(ctx context.Context, in *pb.BlendStructureRequest) (*pb.BlendStructureReply, error) {
+	result := mixcolors.FindBlendStructureAmongFabricColorsLUV(in.MainColorS, in.ColorFabric)
+	blendStructures := make([]*pb.BlendStructureReply_BlendStructure, 0)
+
+	for i := 0; i < len(result); i++ {
+		blendStructures = append(blendStructures,
+		&pb.BlendStructureReply_BlendStructure{
+			C1Hex:     result[i].C1Hex,
+			C2Hex:     result[i].C2Hex,
+			C3Hex:     result[i].C3Hex,
+			C2Portion: result[i].C2Portion,
+			C3Portion: result[i].C3Portion,
+			ResultHex: result[i].ResultHex,
+		})
+	}
+	return &pb.BlendStructureReply{
+		BlendStructures: blendStructures,
+	}, nil
+}
 
 func main() {
 	lis, err := net.Listen("tcp", port)

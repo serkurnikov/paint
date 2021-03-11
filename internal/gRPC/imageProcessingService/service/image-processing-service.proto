@@ -20,7 +20,7 @@ service ImageProcessingService {
   rpc Open (OpenRequest) returns (DefaultReply) {}
   rpc Close (CloseRequest) returns (DefaultReply) {}
 
-  rpc FindBlendStructureAmongFabricColorsLUV (CloseRequest) returns (DefaultReply) {}
+  rpc FindBlendStructureAmongFabricColorsLUV (BlendStructureRequest) returns (BlendStructureReply) {}
 }
 
 message PyrRequest {
@@ -80,3 +80,21 @@ message OpenRequest {
 message DefaultReply {
   string OutPicture = 1;
 }
+
+message BlendStructureRequest {
+  string mainColorS = 1;
+  string colorFabric = 2;
+}
+
+message BlendStructureReply {
+  message BlendStructure {
+    string C1Hex = 1;
+    string C2Hex = 2;
+    string C3Hex = 3;
+    string C2Portion = 4;
+    string C3Portion = 5;
+    string ResultHex = 6;
+  }
+  repeated BlendStructure blendStructures = 1;
+}
+

@@ -1,8 +1,8 @@
 package app
 
 import (
-	"fmt"
 	"paint/internal/gRPC/imageProcessingService/colorProcessing/mixcolors"
+	pb "paint/internal/gRPC/imageProcessingService/service"
 )
 
 //https://github.com/golang-standards/project-layout
@@ -21,5 +21,13 @@ func (a App) ExternalApiTest() {}
 func (a App) Scobel()          {}
 
 func (a App) Render(ctx Ctx) {
-	fmt.Printf("%v", mixcolors.FindBlendStructureAmongFabricColorsLUV("#123f31", mixcolors.MasterColors))
+	r, err := a.imageProcessingClient.FindBlendStructureAmongFabricColorsLUV(ctx, &pb.BlendStructureRequest{
+		MainColorS:  "#85739b",
+		ColorFabric: mixcolors.MasterColors,
+	})
+
+	println(r.BlendStructures[0].ResultHex)
+	if err != nil {
+
+	}
 }

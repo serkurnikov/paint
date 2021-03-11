@@ -27,6 +27,7 @@ type ImageProcessingServiceClient interface {
 	Watershed(ctx context.Context, in *WatershedRequest, opts ...grpc.CallOption) (*DefaultReply, error)
 	Open(ctx context.Context, in *OpenRequest, opts ...grpc.CallOption) (*DefaultReply, error)
 	Close(ctx context.Context, in *CloseRequest, opts ...grpc.CallOption) (*DefaultReply, error)
+	FindBlendStructureAmongFabricColorsLUV(ctx context.Context, in *BlendStructureRequest, opts ...grpc.CallOption) (*BlendStructureReply, error)
 }
 
 type imageProcessingServiceClient struct {
@@ -118,6 +119,15 @@ func (c *imageProcessingServiceClient) Close(ctx context.Context, in *CloseReque
 	return out, nil
 }
 
+func (c *imageProcessingServiceClient) FindBlendStructureAmongFabricColorsLUV(ctx context.Context, in *BlendStructureRequest, opts ...grpc.CallOption) (*BlendStructureReply, error) {
+	out := new(BlendStructureReply)
+	err := c.cc.Invoke(ctx, "/service.ImageProcessingService/FindBlendStructureAmongFabricColorsLUV", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ImageProcessingServiceServer is the server API for ImageProcessingService service.
 // All implementations must embed UnimplementedImageProcessingServiceServer
 // for forward compatibility
@@ -131,6 +141,7 @@ type ImageProcessingServiceServer interface {
 	Watershed(context.Context, *WatershedRequest) (*DefaultReply, error)
 	Open(context.Context, *OpenRequest) (*DefaultReply, error)
 	Close(context.Context, *CloseRequest) (*DefaultReply, error)
+	FindBlendStructureAmongFabricColorsLUV(context.Context, *BlendStructureRequest) (*BlendStructureReply, error)
 	mustEmbedUnimplementedImageProcessingServiceServer()
 }
 
@@ -164,6 +175,9 @@ func (UnimplementedImageProcessingServiceServer) Open(context.Context, *OpenRequ
 }
 func (UnimplementedImageProcessingServiceServer) Close(context.Context, *CloseRequest) (*DefaultReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Close not implemented")
+}
+func (UnimplementedImageProcessingServiceServer) FindBlendStructureAmongFabricColorsLUV(context.Context, *BlendStructureRequest) (*BlendStructureReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindBlendStructureAmongFabricColorsLUV not implemented")
 }
 func (UnimplementedImageProcessingServiceServer) mustEmbedUnimplementedImageProcessingServiceServer() {
 }
@@ -341,6 +355,24 @@ func _ImageProcessingService_Close_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ImageProcessingService_FindBlendStructureAmongFabricColorsLUV_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlendStructureRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ImageProcessingServiceServer).FindBlendStructureAmongFabricColorsLUV(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/service.ImageProcessingService/FindBlendStructureAmongFabricColorsLUV",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ImageProcessingServiceServer).FindBlendStructureAmongFabricColorsLUV(ctx, req.(*BlendStructureRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ImageProcessingService_ServiceDesc is the grpc.ServiceDesc for ImageProcessingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -383,6 +415,10 @@ var ImageProcessingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Close",
 			Handler:    _ImageProcessingService_Close_Handler,
+		},
+		{
+			MethodName: "FindBlendStructureAmongFabricColorsLUV",
+			Handler:    _ImageProcessingService_FindBlendStructureAmongFabricColorsLUV_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
