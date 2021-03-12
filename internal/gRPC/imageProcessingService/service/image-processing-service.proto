@@ -20,6 +20,7 @@ service ImageProcessingService {
   rpc Close (CloseRequest) returns (DefaultReply) {}
 
   rpc FindBlendStructureAmongFabricColorsLUV (BlendStructureRequest) returns (BlendStructureReply) {}
+  rpc DisplayPictureInDominatedColors(PictureInDominatedColorsRequest) returns (DefaultReply) {}
 }
 
 message PyrRequest {
@@ -95,5 +96,11 @@ message BlendStructureReply {
     string ResultHex = 6;
   }
   repeated BlendStructure blendStructures = 1;
+}
+
+message PictureInDominatedColorsRequest {
+  string InPicture = 1;
+  string OutPicture = 2;
+  int32 NumberOfClusters = 3;
 }
 

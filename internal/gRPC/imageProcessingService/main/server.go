@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"paint/internal/gRPC/imageProcessingService/colorProcessing/mixcolors"
+	"paint/internal/gRPC/imageProcessingService/colorProcessing/prominentcolor"
 	"paint/internal/gRPC/imageProcessingService/contoursProcessing"
 	"paint/internal/gRPC/imageProcessingService/imageFilterProcessing"
 	"paint/internal/gRPC/imageProcessingService/morphProcessing"
@@ -90,6 +91,12 @@ func (s *server) FindBlendStructureAmongFabricColorsLUV(ctx context.Context, in 
 	return &pb.BlendStructureReply{
 		BlendStructures: blendStructures,
 	}, nil
+}
+
+func (s *server) DisplayPictureInDominatedColors(ctx context.Context, in *pb.PictureInDominatedColorsRequest) (*pb.DefaultReply, error) {
+	prominentcolor.DisplayPictureInDominatedColors(in.InPicture, in.OutPicture, int(in.NumberOfClusters))
+
+	return &pb.DefaultReply{OutPicture: ""}, nil
 }
 
 func main() {

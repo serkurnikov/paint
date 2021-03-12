@@ -1,6 +1,7 @@
 package prominentcolor
 
 import (
+	"github.com/lucasb-eyer/go-colorful"
 	"image"
 	"image/color"
 	"image/draw"
@@ -8,6 +9,8 @@ import (
 	"image/png"
 	"log"
 	"os"
+	"paint/internal/gRPC/imageProcessingService/colorProcessing/mixcolors"
+	"sort"
 )
 
 func loadImage(fileInput string) (image.Image, error) {
@@ -35,13 +38,10 @@ func BuildP(in string, clusters int) (image.Image, []ColorItem) {
 		log.Printf("Error: failed loading %s\n", in)
 		return nil, nil
 	}
-	cols, err := KmeansWithAll(clusters, img, ArgumentAverageMean, DefaultSize, GetDefaultMasks())
+	cols, err := KmeansWithAll(clusters, img, ArgumentDefault, DefaultSize, GetDefaultMasks())
 	if err != nil {
 		log.Println(err)
 		return nil, nil
-	}
-	for i := 0; i < len(cols); i++ {
-		println("#" + cols[i].AsString())
 	}
 	return img, cols
 }
@@ -72,3 +72,41 @@ func DisplayPalette(in, out string, clusters int) {
 	img, cols := BuildP(in, clusters)
 	displayColors(img, cols, out)
 }
+
+func DisplayPictureInDominatedColors(in, out string, clusters int) {
+	img, cols := BuildP(in, clusters)
+	result := image.NewRGBA(image.Rect(0, 0, img.Bounds().Max.X, img.Bounds().Max.Y))
+
+	for x := 0; x < img.Bounds().Max.X; x++ {
+		for y := 0; y < img.Bounds().Max.Y; y++ {
+			resultColor := img.At(x, y)
+			additiveColor, _ := FindAdditiveColorFromDominates(cols, resultColor)
+			result.Set(x, y, additiveColor)
+		}
+	}
+
+	file, err := os.Create(out)
+	if err != nil {
+		log.Fatalf("failed create file: %s", err)
+	}
+	png.Encode(file, result)
+}
+
+func FindAdditiveColorFromDominates(cols []ColorItem, originalColor color.Color) (color.Color, error) {
+	data := make([]mixcolors.SimilarColor, 0)
+
+	for i := 0; i < len(cols); i++ {
+		origCol, _ := colorful.MakeColor(originalColor)
+		clusterCol, _ := colorful.Hex("#" + cols[i].AsString())
+
+		data = append(data, mixcolors.SimilarColor{
+			Structure:  clusterCol.Hex(),
+			Difference: origCol.DistanceLab(clusterCol),
+		})
+	}
+
+	sort.Slice(data, func(i, j int) bool { return data[i].Difference < data[j].Difference })
+	return colorful.Hex(data[0].Structure)
+}
+
+func DisplayPictureWithPalette(in, out string, clusters int) {}

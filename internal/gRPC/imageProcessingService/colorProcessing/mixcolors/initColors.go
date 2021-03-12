@@ -3,10 +3,8 @@ package mixcolors
 
 import (
 	"encoding/json"
-	"image"
 	"io/ioutil"
 	"log"
-	"paint/internal/gRPC/imageProcessingService/colorProcessing/prominentcolor"
 	"paint/internal/utils"
 	"strings"
 	"sync"
@@ -184,8 +182,9 @@ func createMapOfAllColors() map[string][]ColorAsset {
 	return mapOfAllColors
 }
 
-func calculateDominantColorByImageAssets(imagesPath []string) string {
-
+func calculateDominantColorByImageAssets(imagesPath []string) {
+/*
+	//TODD cycle imports (mix colors / prominentcolor)- bug
 	imagesPalette := make(map[image.Image][]string)
 	for _, path := range imagesPath {
 		img, cols := prominentcolor.BuildP(path, prominentcolor.DefaultK)
@@ -205,6 +204,8 @@ func calculateDominantColorByImageAssets(imagesPath []string) string {
 	}
 
 	return "#nil"
+
+ */
 }
 
 func GetAssetsData() assets.Assets {
