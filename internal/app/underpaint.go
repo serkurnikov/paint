@@ -1,7 +1,9 @@
 package app
 
 import (
-	"paint/internal/gRPC/imageProcessingService/colorProcessing/prominentcolor"
+	"fmt"
+	"paint/internal/gRPC/imageProcessingService/colorProcessing/mixcolors"
+	pb "paint/internal/gRPC/imageProcessingService/service"
 )
 
 //https://github.com/golang-standards/project-layout
@@ -22,5 +24,15 @@ func (a App) ExternalApiTest() {}
 func (a App) Scobel()          {}
 
 func (a App) Render(ctx Ctx) {
-	prominentcolor.DisplayPictureInDominatedColors(meanShiftPathImage, palettePathImage, 10)
+	r, _ := a.imageProcessingClient.FindBlendStructureAmongFabricColorsLUV(ctx,
+		&pb.BlendStructureRequest{MainColorS: "#ADD8E6", ColorFabric: mixcolors.MasterColors})
+
+	fmt.Printf("\nresult Hex %v, Combination %v + %v + %v Portions %v + %v",
+		r.BlendStructures[0].ResultHex,
+		r.BlendStructures[0].C1Hex,
+		r.BlendStructures[0].C2Hex,
+		r.BlendStructures[0].C3Hex,
+
+		r.BlendStructures[0].C2Portion,
+		r.BlendStructures[0].C3Portion)
 }
