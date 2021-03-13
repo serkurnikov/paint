@@ -74,7 +74,7 @@ func (s *server) Close(ctx context.Context, in *pb.CloseRequest) (*pb.DefaultRep
 }
 
 func (s *server) FindBlendStructureAmongFabricColorsLUV(ctx context.Context, in *pb.BlendStructureRequest) (*pb.BlendStructureReply, error) {
-	result := mixcolors.FindBlendStructureAmongFabricColorsLUV(in.MainColorS, in.ColorFabric)
+	result := mixcolors.BlendStructureAmongFabricColors(in.MainColorS, in.ColorFabric, int(in.BlendType))
 	blendStructures := make([]*pb.BlendStructureReply_BlendStructure, 0)
 
 	for i := 0; i < len(result); i++ {

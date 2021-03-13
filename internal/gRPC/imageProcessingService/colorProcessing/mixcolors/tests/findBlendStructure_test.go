@@ -2,37 +2,80 @@ package tests
 
 import (
 	"github.com/lucasb-eyer/go-colorful"
+	"image"
+	"image/color"
+	"image/draw"
+	"image/png"
+	"os"
 	"paint/internal/gRPC/imageProcessingService/colorProcessing/mixcolors"
 	"testing"
 )
 
-func TestFindBlendStructure(t *testing.T) {
+const (
+	testPath = "C:\\Users\\master\\go\\src\\projects\\paint\\internal\\" +
+		"gRPC\\imageProcessingService\\colorProcessing\\mixcolors\\tests\\"
+
+	testFindBlendStructure = testPath + "testBlendStructure.jpg"
+)
+
+func TestBlendStructure(t *testing.T) {
 	portion := 0.5
-	c1, _ := colorful.Hex("#322c26") //ararat_green
-	c2, _ := colorful.Hex("#fe8e01") //cadmin_orange
-	c3, _ := colorful.Hex("#0091f6") //ceruleum_blue
+	c1, _ := colorful.Hex("#11317a")
+	c2, _ := colorful.Hex("#a14e23")
+	c3, _ := colorful.Hex("#e3b9a1")
 
 	mainColorS := c1.BlendLuv(c2, portion).BlendLuv(c3, portion).Hex()
-	blendStructure := mixcolors.FindBlendStructureAmongFabricColorsLUV(mainColorS, mixcolors.MasterColors)
+	blendStructures := mixcolors.BlendStructureAmongFabricColors(mainColorS, mixcolors.MasterColors,
+		mixcolors.TypeLABCIEDE2000)
 
-	distance := mixcolors.DistanceLuv(mainColorS, blendStructure[0].ResultHex)
+	m, _ := colorful.Hex(mainColorS)
+	r, _ := colorful.Hex(blendStructures[0].ResultHex)
 
-	if distance > 0.1 {
-		t.Errorf("Incorrect distanceLUV got %f, wait < 0.1", distance)
+	//Additive colors
+	c21, _ := colorful.Hex(blendStructures[0].C1Hex)
+	c22, _ := colorful.Hex(blendStructures[0].C2Hex)
+	c23, _ := colorful.Hex(blendStructures[0].C3Hex)
+
+	colors := []colorful.Color{m, r, c21, c22, c23}
+
+	diff := mixcolors.DifferenceByType(m, r, mixcolors.TypeLABCIEDE2000)
+
+	if diff > mixcolors.DefaultDiff {
+		t.Errorf("Incorrect distance got %f, wait < %v,", diff, mixcolors.DefaultDiff)
 	} else {
-		t.Logf("MainColors %s, BlendResultColor %s, DistanceLUV %f", mainColorS, blendStructure[0].ResultHex, distance)
+		t.Logf("MainColors %s, BlendResultColor %s, Distance %f", mainColorS, blendStructures[0].ResultHex, diff)
 		t.Logf("BlendResult: \nС1DIF = %v, \nP2 = %v, \nС2DIF = %v, \nP3 = %v, \nС3DIF = %v",
-			blendStructure[0].C1Hex,
-			blendStructure[0].C2Portion,
-			blendStructure[0].C2Hex,
-			blendStructure[0].C3Portion,
-			blendStructure[0].C3Hex)
+			blendStructures[0].C1Hex,
+			blendStructures[0].C2Portion,
+			blendStructures[0].C2Hex,
+			blendStructures[0].C3Portion,
+			blendStructures[0].C3Hex)
 	}
+
+	result := image.NewRGBA(image.Rect(0, 0, mixcolors.WEIGHT, mixcolors.HEIGHT))
+
+	h := result.Bounds().Max.X / len(colors)
+	w := result.Bounds().Max.Y
+
+	for i := 0; i < len(colors); i++ {
+		r, g, b, a := colors[i].RGBA()
+		currentColor := color.RGBA{R: uint8(r), G: uint8(g), B: uint8(b), A: uint8(a)}
+		draw.Draw(result, image.Rect(0, i*h, w, i*h+h), &image.Uniform{C: currentColor}, image.Point{
+			X: 0,
+			Y: 0,
+		}, draw.Src)
+	}
+
+	file, _ := os.Create(testFindBlendStructure)
+	png.Encode(file, result)
 }
 
+/*Latest Test
+BenchmarkSample
+BenchmarkSample-8   	       2	 635495150 ns/op
+*/
 func BenchmarkSample(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		//TODO optimized function
-		mixcolors.FindBlendStructureAmongFabricColorsLUV("#85739b", mixcolors.MasterColors)
+		mixcolors.BlendStructureAmongFabricColors("#85739b", mixcolors.MasterColors, mixcolors.TypeLABCIEDE2000)
 	}
 }

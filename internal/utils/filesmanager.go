@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"image"
 	"io/ioutil"
 	"log"
 	"os"
@@ -39,6 +40,16 @@ func GetListingDirectoryInfo(root string) ([]Info, error) {
 	return information, err
 }
 
+func OpenFile(fileInput string) (*os.File, error) {
+	f, err := os.Open(fileInput)
+	defer f.Close()
+	if err != nil {
+		log.Println("File not found:", fileInput)
+		return nil, err
+	}
+	return f, err
+}
+
 func WriteFile(data []byte, path string) {
 	err := ioutil.WriteFile(path, data, 0644)
 	if err != nil {
@@ -52,6 +63,16 @@ func ReadFile(path string) ([]byte, error) {
 		return nil, err
 	}
 	return b, nil
+}
+
+func LoadImage(fileInput string) (image.Image, error) {
+	f, err := OpenFile(fileInput)
+	img, _, err := image.Decode(f)
+	if err != nil {
+		return nil, err
+	}
+
+	return img, nil
 }
 
 func ParsePath(info Info) []string {

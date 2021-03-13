@@ -292,15 +292,6 @@ func Dilate(src Mat, dst *Mat, kernel Mat) {
 	C.Dilate(src.p, dst.p, kernel.p)
 }
 
-func DilateWithParams(src Mat, dst *Mat, kernel Mat, anchor image.Point, iterations, borderType int) {
-	cAnchor := C.struct_Point{
-		x: C.int(anchor.X),
-		y: C.int(anchor.Y),
-	}
-
-	C.DilateWithParams(src.p, dst.p, kernel.p, cAnchor, C.int(iterations), C.int(borderType))
-}
-
 // DistanceTransformLabelTypes are the types of the DistanceTransform algorithm flag
 type DistanceTransformLabelTypes int
 
@@ -760,10 +751,6 @@ func PyrUp(src Mat, dst *Mat, ksize image.Point, borderType BorderType) {
 		width:  C.int(ksize.Y),
 	}
 	C.PyrUp(src.p, dst.p, pSize, C.int(borderType))
-}
-
-func PyrMeanShiftFiltering(src Mat, dst *Mat, sp float64, sr float64, maxLevel int) {
-	C.PyrMeanShiftFiltering(src.p, dst.p, C.double(sp), C.double(sr), C.int(maxLevel))
 }
 
 // MorphologyDefaultBorder returns "magic" border value for erosion and dilation.

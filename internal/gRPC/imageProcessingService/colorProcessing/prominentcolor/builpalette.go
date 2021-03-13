@@ -10,29 +10,15 @@ import (
 	"log"
 	"os"
 	"paint/internal/gRPC/imageProcessingService/colorProcessing/mixcolors"
+	"paint/internal/utils"
 	"sort"
 )
-
-func loadImage(fileInput string) (image.Image, error) {
-	f, err := os.Open(fileInput)
-	defer f.Close()
-	if err != nil {
-		log.Println("File not found:", fileInput)
-		return nil, err
-	}
-	img, _, err := image.Decode(f)
-	if err != nil {
-		return nil, err
-	}
-
-	return img, nil
-}
 
 // Process images in a directory, for each image it picks out the dominant color and
 // prints out an imagemagick call to resize image and use the dominant color as padding for the background
 // it saves tmp files in /tmp/ with the masked bit marked as pink
 func BuildP(in string, clusters int) (image.Image, []ColorItem) {
-	img, err := loadImage(in)
+	img, err := utils.LoadImage(in)
 	if nil != err {
 		log.Println(err)
 		log.Printf("Error: failed loading %s\n", in)
@@ -46,7 +32,7 @@ func BuildP(in string, clusters int) (image.Image, []ColorItem) {
 	return img, cols
 }
 
-func displayColors(img image.Image, colors []ColorItem, out string) {
+func DisplayColors(img image.Image, colors []ColorItem, out string) {
 
 	result := image.NewRGBA(image.Rect(0, 0, img.Bounds().Max.X, img.Bounds().Max.Y))
 
@@ -70,7 +56,7 @@ func displayColors(img image.Image, colors []ColorItem, out string) {
 
 func DisplayPalette(in, out string, clusters int) {
 	img, cols := BuildP(in, clusters)
-	displayColors(img, cols, out)
+	DisplayColors(img, cols, out)
 }
 
 func DisplayPictureInDominatedColors(in, out string, clusters int) {
@@ -93,20 +79,20 @@ func DisplayPictureInDominatedColors(in, out string, clusters int) {
 }
 
 func FindAdditiveColorFromDominates(cols []ColorItem, originalColor color.Color) (color.Color, error) {
-	data := make([]mixcolors.SimilarColor, 0)
+	data := make([]mixcolors.ColorAdditive, 0)
 
 	for i := 0; i < len(cols); i++ {
 		origCol, _ := colorful.MakeColor(originalColor)
 		clusterCol, _ := colorful.Hex("#" + cols[i].AsString())
 
-		data = append(data, mixcolors.SimilarColor{
-			Structure:  clusterCol.Hex(),
-			Difference: origCol.DistanceLab(clusterCol),
+		data = append(data, mixcolors.ColorAdditive{
+			Hex:  clusterCol.Hex(),
+			Diff: []float64{origCol.DistanceLab(clusterCol), 0.0, 0.0},
 		})
 	}
 
-	sort.Slice(data, func(i, j int) bool { return data[i].Difference < data[j].Difference })
-	return colorful.Hex(data[0].Structure)
+	sort.Slice(data, func(i, j int) bool { return data[i].Diff[0] < data[j].Diff[0] })
+	return colorful.Hex(data[0].Hex)
 }
 
 func DisplayPictureWithPalette(in, out string, clusters int) {}

@@ -84,6 +84,7 @@ message DefaultReply {
 message BlendStructureRequest {
   string mainColorS = 1;
   string colorFabric = 2;
+  int32 blendType = 3;
 }
 
 message BlendStructureReply {

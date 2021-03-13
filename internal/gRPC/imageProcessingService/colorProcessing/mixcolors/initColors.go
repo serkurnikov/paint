@@ -12,7 +12,7 @@ import (
 import "paint/assets"
 
 const (
-	root = "D:\\Sergey\\projects\\Go Projects\\paint\\assets\\structure.json"
+	root = "C:\\Users\\master\\go\\src\\projects\\paint\\assets\\structure.json"
 	Path = "Path"
 	MasterColors = "masters_colors"
 )

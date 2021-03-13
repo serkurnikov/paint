@@ -12,6 +12,7 @@ require (
 	github.com/charithe/durationcheck v0.0.6 // indirect
 	github.com/disintegration/gift v1.2.1
 	github.com/esimonov/ifshort v1.0.1 // indirect
+	github.com/ghiac/bimg v1.0.19
 	github.com/go-critic/go-critic v0.5.4 // indirect
 	github.com/go-openapi/errors v0.20.0
 	github.com/go-openapi/jsonreference v0.19.5 // indirect

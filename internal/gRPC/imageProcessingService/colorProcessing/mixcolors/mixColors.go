@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	HEIGHT = 1000
-	WEIGHT = 1000
+	HEIGHT = 500
+	WEIGHT = 500
 )
 
 type Blend interface {
