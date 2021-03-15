@@ -73,13 +73,13 @@ func (s *server) Close(ctx context.Context, in *pb.CloseRequest) (*pb.DefaultRep
 	return &pb.DefaultReply{OutPicture: ""}, nil
 }
 
-func (s *server) FindBlendStructureAmongFabricColorsLUV(ctx context.Context, in *pb.BlendStructureRequest) (*pb.BlendStructureReply, error) {
-	result := mixcolors.BlendStructureAmongFabricColors(in.MainColorS, in.ColorFabric, int(in.BlendType))
-	blendStructures := make([]*pb.BlendStructureReply_BlendStructure, 0)
+func (s *server) FindBlendStructure(ctx context.Context, in *pb.SeparationRequest) (*pb.SeparationReply, error) {
+	result := mixcolors.BlendStructureAmongFabricColors(in.MainColorS, in.ColorFabric, int(in.SpaceType))
+	blendStructures := make([]*pb.SeparationReply_BlendStructure, 0)
 
 	for i := 0; i < len(result); i++ {
 		blendStructures = append(blendStructures,
-		&pb.BlendStructureReply_BlendStructure{
+		&pb.SeparationReply_BlendStructure{
 			C1Hex:     result[i].C1Hex,
 			C2Hex:     result[i].C2Hex,
 			C3Hex:     result[i].C3Hex,
@@ -88,7 +88,7 @@ func (s *server) FindBlendStructureAmongFabricColorsLUV(ctx context.Context, in 
 			ResultHex: result[i].ResultHex,
 		})
 	}
-	return &pb.BlendStructureReply{
+	return &pb.SeparationReply{
 		BlendStructures: blendStructures,
 	}, nil
 }
@@ -97,6 +97,12 @@ func (s *server) DisplayPictureInDominatedColors(ctx context.Context, in *pb.Pic
 	prominentcolor.DisplayPictureInDominatedColors(in.InPicture, in.OutPicture, int(in.NumberOfClusters))
 
 	return &pb.DefaultReply{OutPicture: ""}, nil
+}
+
+func (s *server) ColorSeparation(ctx context.Context, in *pb.SeparationRequest) (*pb.SeparationReply, error) {
+	mixcolors.ColorSeparation(in.MainColorS, in.ColorFabric, int(in.SpaceType))
+
+	return &pb.SeparationReply{BlendStructures: nil}, nil
 }
 
 func main() {

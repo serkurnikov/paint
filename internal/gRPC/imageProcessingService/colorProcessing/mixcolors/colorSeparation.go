@@ -5,7 +5,7 @@ import (
 	"sort"
 )
 
-func FromFabricColors(mainColorS, colorFabric string, typeS int) []BlendStructure {
+func ColorSeparation(mainColorS, colorFabric string, typeS int) []BlendStructure {
 	similarColors := sortByDiff(mainColorS, ColorsHex(colorFabric), typeS)
 	compensationChls(mainColorS, similarColors, typeS)
 

@@ -19,7 +19,9 @@ service ImageProcessingService {
   rpc Open (OpenRequest) returns (DefaultReply) {}
   rpc Close (CloseRequest) returns (DefaultReply) {}
 
-  rpc FindBlendStructureAmongFabricColorsLUV (BlendStructureRequest) returns (BlendStructureReply) {}
+  rpc FindBlendStructure (SeparationRequest) returns (SeparationReply) {}
+  rpc ColorSeparation (SeparationRequest) returns (SeparationReply) {}
+
   rpc DisplayPictureInDominatedColors(PictureInDominatedColorsRequest) returns (DefaultReply) {}
 }
 
@@ -81,13 +83,13 @@ message DefaultReply {
   string OutPicture = 1;
 }
 
-message BlendStructureRequest {
+message SeparationRequest {
   string mainColorS = 1;
   string colorFabric = 2;
-  int32 blendType = 3;
+  int32 spaceType = 3;
 }
 
-message BlendStructureReply {
+message SeparationReply {
   message BlendStructure {
     string C1Hex = 1;
     string C2Hex = 2;
