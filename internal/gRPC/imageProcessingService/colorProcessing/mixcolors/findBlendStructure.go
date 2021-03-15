@@ -51,7 +51,7 @@ func BlendStructureAmongFabricColors(mainColorS, colorFabric string, spaceType i
 		additiveColors := make(map[int][]ColorAdditive)
 
 		for ch := 0; ch < DefaultChannels; ch++ {
-			additiveColors[ch] = sortAdditiveColorsByChannel(mainColorS,
+			additiveColors[ch] = sortColorsByChannel(mainColorS,
 				ColorsHex(colorFabric), ch, spaceType, DefaultCountOfColors)
 		}
 
@@ -65,16 +65,6 @@ func BlendStructureAmongFabricColors(mainColorS, colorFabric string, spaceType i
 			return blendStructures
 		}
 	}
-}
-
-func ColorsHex(colorFabric string) []string {
-	colorsHexValues := make([]string, 0)
-
-	for _, colorAsset := range InitColors().mapOfAllColors[colorFabric] {
-		colorsHexValues = append(colorsHexValues, colorAsset.hex)
-	}
-
-	return colorsHexValues
 }
 
 func CompareByType(c1, c2 string, t int) []float64 {
@@ -225,7 +215,7 @@ func lessFunction(i, j, ch int, c []ColorAdditive) bool {
 		c[i].Diff[chls[1]] < DefaultDiff
 }
 
-func sortAdditiveColorsByChannel(mainColorS string, additiveColors []string, channel, spaceType int, count int) []ColorAdditive {
+func sortColorsByChannel(mainColorS string, additiveColors []string, channel, spaceType int, count int) []ColorAdditive {
 	additives := make([]ColorAdditive, 0)
 
 	for i := 0; i < len(additiveColors); i++ {

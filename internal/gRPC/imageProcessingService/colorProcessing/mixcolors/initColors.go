@@ -1,19 +1,22 @@
 package mixcolors
+
 //https://www.imgonline.com.ua/
 
 import (
 	"encoding/json"
+	"github.com/lucasb-eyer/go-colorful"
 	"io/ioutil"
 	"log"
 	"paint/internal/utils"
+	"sort"
 	"strings"
 	"sync"
 )
 import "paint/assets"
 
 const (
-	root = "C:\\Users\\master\\go\\src\\projects\\paint\\assets\\structure.json"
-	Path = "Path"
+	root         = "C:\\Users\\master\\go\\src\\projects\\paint\\assets\\structure.json"
+	Path         = "Path"
 	MasterColors = "masters_colors"
 )
 
@@ -24,7 +27,8 @@ type ColorAsset struct {
 }
 
 type singleton struct {
-	mapOfAllColors map[string][]ColorAsset
+	mapOfAllColors   map[string][]ColorAsset
+	sortColorsByChls map[int][]ColorAdditive
 }
 
 var instance *singleton
@@ -34,6 +38,7 @@ func InitColors() *singleton {
 	once.Do(func() {
 		instance = &singleton{}
 		instance.mapOfAllColors = createMapOfAllColors()
+		instance.sortColorsByChls = createMapOfSortColorsByChls()
 	})
 	return instance
 }
@@ -182,30 +187,72 @@ func createMapOfAllColors() map[string][]ColorAsset {
 	return mapOfAllColors
 }
 
+func createMapOfSortColorsByChls() map[int][]ColorAdditive {
+	result := make(map[int][]ColorAdditive, 0)
+
+	for i := 0; i < DefaultChannels; i++ {
+		result[i] = sortByChls(ColorsHex(MasterColors), i)
+	}
+	return result
+}
+
 func calculateDominantColorByImageAssets(imagesPath []string) {
-/*
-	//TODD cycle imports (mix colors / prominentcolor)- bug
-	imagesPalette := make(map[image.Image][]string)
-	for _, path := range imagesPath {
-		img, cols := prominentcolor.BuildP(path, prominentcolor.DefaultK)
-		hexColors := make([]string, 0)
-		for i := 0; i < len(cols); i++ {
-			hexColors = append(hexColors, "#"+cols[i].AsString())
+	/*
+		//TODD cycle imports (mix colors / prominentcolor)- bug
+		imagesPalette := make(map[image.Image][]string)
+		for _, path := range imagesPath {
+			img, cols := prominentcolor.BuildP(path, prominentcolor.DefaultK)
+			hexColors := make([]string, 0)
+			for i := 0; i < len(cols); i++ {
+				hexColors = append(hexColors, "#"+cols[i].AsString())
+			}
+			imagesPalette[img] = hexColors
 		}
-		imagesPalette[img] = hexColors
+
+		println(imagesPath[0])
+		for _, hexes := range imagesPalette {
+			for _, hex := range hexes {
+				//TODO calculate color blendStructure by images
+				println(hex)
+			}
+		}
+
+		return "#nil"
+
+	*/
+}
+
+func sortByChls(colors []string, ch int) []ColorAdditive {
+	result := make([]ColorAdditive, 0)
+
+	for i := 0; i < len(colors); i++ {
+
+		c, _ := colorful.Hex(colors[i])
+		l, a, b := c.Lab()
+		result = append(result, ColorAdditive{
+			Hex:  colors[i],
+			Diff: []float64{l, a, b}},
+		)
 	}
 
-	println(imagesPath[0])
-	for _, hexes := range imagesPalette {
-		for _, hex := range hexes {
-			//TODO calculate color blendStructure by images
-			println(hex)
-		}
+	sort.Slice(result, func(i, j int) bool { return lessChls(i, j, result, ch) })
+	return result[:5]
+}
+
+func lessChls(i, j int, result []ColorAdditive, ch int) bool {
+	return result[i].Diff[ch] > result[j].Diff[ch] &&
+		result[i].Diff[OtherChls(ch)[0]] < DefaultDiff &&
+		result[i].Diff[OtherChls(ch)[1]] < DefaultDiff
+}
+
+func ColorsHex(colorFabric string) []string {
+	colorsHexValues := make([]string, 0)
+
+	for _, colorAsset := range InitColors().mapOfAllColors[colorFabric] {
+		colorsHexValues = append(colorsHexValues, colorAsset.hex)
 	}
 
-	return "#nil"
-
- */
+	return colorsHexValues
 }
 
 func GetAssetsData() assets.Assets {
