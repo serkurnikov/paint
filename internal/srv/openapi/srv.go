@@ -6,11 +6,9 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"os"
 	"paint/api/openapi/restapi"
 	"paint/api/openapi/restapi/op"
 	"paint/internal/app"
-	"paint/internal/srv/openapi/highload"
 	"paint/pkg/def"
 	"paint/pkg/netx"
 
@@ -20,10 +18,10 @@ import (
 	"github.com/sebest/xff"
 )
 
-var (
+/*var (
 	MaxWorker = os.Getenv("MAX_WORKERS")
 	MaxQueue  = os.Getenv("MAX_QUEUE")
-)
+)*/
 
 type (
 	// Ctx is a synonym for convenience.
@@ -66,8 +64,8 @@ func NewServer(appl app.Appl) (*restapi.Server, error) {
 	server.Host = "localhost"
 	server.Port = 9000
 
-	dispatcher := highload.NewDispatcher(100)
-	dispatcher.Run()
+	//dispatcher := highload.NewDispatcher(100)
+	//dispatcher.Run()
 
 	// The middleware executes before anything.
 	api.UseSwaggerUI()

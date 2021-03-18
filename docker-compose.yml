@@ -15,3 +15,13 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - state-db:/var/lib/postgresql/data
+  rabbit:
+    image: "rabbitmq:3.8.3-management-alpine"
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "a-secret-hash"
+      RABBITMQ_DEFAULT_VHOST: ""
+      RABBITMQ_DEFAULT_USER: root
+      RABBITMQ_DEFAULT_PASS: password
