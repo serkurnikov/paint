@@ -123,7 +123,7 @@ type ServeConfig struct {
 	MySQL               *mysql.Config
 	MySQLGooseDir       string
 	RabbitMQ            rabbitmq.Config
-	imageProcessingAMQP imageProcessing.AMQPConfig
+	ImageProcessingAMQP imageProcessing.AMQPConfig
 }
 
 // GetServe validates and returns configuration for subcommand.
@@ -149,7 +149,7 @@ func GetServe() (c *ServeConfig, err error) {
 				MaxAttempt int
 			}{all.RabbitMQVReconnectInterval.Value(&err), all.RabbitMQVReconnectMaxAttempt.Value(&err)},
 		},
-		imageProcessingAMQP: imageProcessing.AMQPConfig{Create: struct {
+		ImageProcessingAMQP: imageProcessing.AMQPConfig{Create: struct {
 			ExchangeName string
 			ExchangeType string
 			RoutingKey   string

@@ -29,8 +29,8 @@ type (
 
 func NewAppl(repo Repo, api apiexternal.Api, client pb.ImageProcessingServiceClient) Appl {
 	return &App{
-		repo:     repo,
-		alphaApi: api,
+		repo:                  repo,
+		alphaApi:              api,
 		imageProcessingClient: client,
 	}
 }

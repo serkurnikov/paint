@@ -1,4 +1,5 @@
 package rabbitmq
+//http://www.inanzzz.com/index.php/post/0aeg/creating-a-rabbitmq-producer-example-with-golang
 
 import (
 	"fmt"

@@ -24,6 +24,12 @@ type service struct {
 
 func (s *service) runServe(ctxStartup, ctxShutdown Ctx, shutdown func()) (err error) {
 	log := structlog.FromContext(ctxShutdown, nil)
+	if s.cfg == nil {
+		s.cfg, err = config.GetServe()
+	}
+	if err != nil {
+		return log.Err("failed to get config", "err", err)
+	}
 
 	db, err := connectDB()
 	if err != nil {
@@ -33,12 +39,24 @@ func (s *service) runServe(ctxStartup, ctxShutdown Ctx, shutdown func()) (err er
 	if err = migrationDB(db); err != nil {
 		return log.Err("err", err)
 	}
+	
+	//rbt := rabbitmq.New(s.cfg.RabbitMQ)
+	//if err := rbt.Connect(); err != nil {log.Fatalln(err)}
+
+	//processingAMQP := imageProcessing.NewAMQP(s.cfg.ImageProcessingAMQP, rbt)
+	//if err := processingAMQP.Setup(); err != nil {log.Fatalln(err)}
+
+	//rabbitImageProcessing := imageProcessing.NewCreate(rbt)
+
 
 	alphaApi := apiexternal.NewAlphaVantage()
 	repo := dal.New(db)
-	client := imageProcessingService.NewImageProcessingClient()
+	processingClient := imageProcessingService.NewImageProcessingClient()
 
-	appl := app.NewAppl(repo, alphaApi, client)
+
+
+
+	appl := app.NewAppl(repo, alphaApi, processingClient)
 	s.srv, err = openapi.NewServer(appl)
 	if err != nil {
 		return log.Err("failed to openapi.NewServer", "err", err)

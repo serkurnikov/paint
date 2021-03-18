@@ -19,7 +19,7 @@ func NewCreate(rabbitmq *rabbitmq.RabbitMQ) Create {
 	}
 }
 
-func (c Create) publish(message string) error {
+func (c Create) Publish(message string) error {
 	channel, err := c.rabbitmq.Channel()
 	if err != nil {
 		return errors.Wrap(err, "failed to open channel")
