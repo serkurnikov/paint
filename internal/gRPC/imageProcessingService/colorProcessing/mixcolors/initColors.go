@@ -15,7 +15,7 @@ import (
 import "paint/assets"
 
 const (
-	root         = "C:\\Users\\master\\go\\src\\projects\\paint\\assets\\structure.json"
+	root         = "D:\\Sergey\\projects\\Go Projects\\paint\\assets\\structure.json"
 	Path         = "Path"
 	MasterColors = "masters_colors"
 )
@@ -36,11 +36,19 @@ var once sync.Once
 
 func InitColors() *singleton {
 	once.Do(func() {
-		instance = &singleton{}
-		instance.mapOfAllColors = createMapOfAllColors()
-		instance.sortColorsByChls = createMapOfSortColorsByChls()
+		instance = &singleton{
+			initMapOfAllColors(),
+			initMapOfSortColorsByChls()}
 	})
 	return instance
+}
+
+func (s* singleton) GetMapOfAllColors() map[string][]ColorAsset {
+	return s.mapOfAllColors
+}
+
+func (s* singleton) GetSortColorsByChls() map[int][]ColorAdditive {
+	return s.sortColorsByChls
 }
 
 func GetMastersColors() map[string]string {
@@ -158,7 +166,7 @@ func GetMastersColors() map[string]string {
 		"yellow_travertine":           "#b77111"}
 }
 
-func createMapOfAllColors() map[string][]ColorAsset {
+func initMapOfAllColors() map[string][]ColorAsset {
 
 	mapOfAllColors := make(map[string][]ColorAsset)
 	colors := make([]ColorAsset, 0)
@@ -187,13 +195,56 @@ func createMapOfAllColors() map[string][]ColorAsset {
 	return mapOfAllColors
 }
 
-func createMapOfSortColorsByChls() map[int][]ColorAdditive {
+func initMapOfSortColorsByChls() map[int][]ColorAdditive {
 	result := make(map[int][]ColorAdditive, 0)
 
 	for i := 0; i < DefaultChannels; i++ {
 		result[i] = sortByChls(ColorsHex(MasterColors), i)
 	}
 	return result
+}
+
+func sortByChls(colors []string, ch int) []ColorAdditive {
+	result := make([]ColorAdditive, 0)
+
+	for i := 0; i < len(colors); i++ {
+
+		c, _ := colorful.Hex(colors[i])
+		l, a, b := c.Lab()
+		result = append(result, ColorAdditive{
+			Hex:  colors[i],
+			Diff: []float64{l, a, b}},
+		)
+	}
+
+	sort.Slice(result, func(i, j int) bool { return lessChlsFn(i, j, result, ch) })
+	return result[:5]
+}
+
+func lessChlsFn(i, j int, result []ColorAdditive, ch int) bool {
+	return result[i].Diff[ch] > result[j].Diff[ch] &&
+		result[i].Diff[OtherChls(ch)[0]] < DefaultDiff &&
+		result[i].Diff[OtherChls(ch)[1]] < DefaultDiff
+}
+
+func ColorsHex(colorFabric string) []string {
+	colorsHexValues := make([]string, 0)
+
+	for _, colorAsset := range initMapOfAllColors()[colorFabric] {
+		colorsHexValues = append(colorsHexValues, colorAsset.hex)
+	}
+
+	return colorsHexValues
+}
+
+func GetAssetsData() assets.Assets {
+	data, err := ioutil.ReadFile(root)
+	assets := assets.Assets{}
+	err = json.Unmarshal(data, &assets)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return assets
 }
 
 func calculateDominantColorByImageAssets(imagesPath []string) {
@@ -220,47 +271,4 @@ func calculateDominantColorByImageAssets(imagesPath []string) {
 		return "#nil"
 
 	*/
-}
-
-func sortByChls(colors []string, ch int) []ColorAdditive {
-	result := make([]ColorAdditive, 0)
-
-	for i := 0; i < len(colors); i++ {
-
-		c, _ := colorful.Hex(colors[i])
-		l, a, b := c.Lab()
-		result = append(result, ColorAdditive{
-			Hex:  colors[i],
-			Diff: []float64{l, a, b}},
-		)
-	}
-
-	sort.Slice(result, func(i, j int) bool { return lessChls(i, j, result, ch) })
-	return result[:5]
-}
-
-func lessChls(i, j int, result []ColorAdditive, ch int) bool {
-	return result[i].Diff[ch] > result[j].Diff[ch] &&
-		result[i].Diff[OtherChls(ch)[0]] < DefaultDiff &&
-		result[i].Diff[OtherChls(ch)[1]] < DefaultDiff
-}
-
-func ColorsHex(colorFabric string) []string {
-	colorsHexValues := make([]string, 0)
-
-	for _, colorAsset := range InitColors().mapOfAllColors[colorFabric] {
-		colorsHexValues = append(colorsHexValues, colorAsset.hex)
-	}
-
-	return colorsHexValues
-}
-
-func GetAssetsData() assets.Assets {
-	data, err := ioutil.ReadFile(root)
-	assets := assets.Assets{}
-	err = json.Unmarshal(data, &assets)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	return assets
 }

@@ -50,11 +50,12 @@ func OpenFile(fileInput string) (*os.File, error) {
 	return f, err
 }
 
-func WriteFile(data []byte, path string) {
+func WriteFile(data []byte, path string) error {
 	err := ioutil.WriteFile(path, data, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
+	return err
 }
 
 func ReadFile(path string) ([]byte, error) {
@@ -80,10 +81,10 @@ func ParsePath(info Info) []string {
 	return result
 }
 
-func GetFileAbsPath() string {
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+func GetCurrentDir() (string, error) {
+	dir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
 	}
-	return dir
+	return dir, err
 }

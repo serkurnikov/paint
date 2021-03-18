@@ -8,14 +8,12 @@ import (
 	"image/png"
 	"os"
 	"paint/internal/gRPC/imageProcessingService/colorProcessing/mixcolors"
+	"paint/internal/utils"
 	"testing"
 )
 
 const (
-	testPath = "C:\\Users\\master\\go\\src\\projects\\paint\\internal\\" +
-		"gRPC\\imageProcessingService\\colorProcessing\\mixcolors\\tests\\"
-
-	testFindBlendStructure = testPath + "testBlendStructure.jpg"
+	testFindBlendStructure = "\\testBlendStructure.jpg"
 )
 
 func TestBlendStructure(t *testing.T) {
@@ -66,13 +64,14 @@ func TestBlendStructure(t *testing.T) {
 		}, draw.Src)
 	}
 
-	file, _ := os.Create(testFindBlendStructure)
+	currentDir, _ := utils.GetCurrentDir()
+	file, _ := os.Create(currentDir + testFindBlendStructure)
 	png.Encode(file, result)
 }
 
 /*Latest Test
 BenchmarkSample
-BenchmarkSample-8   	       2	 635495150 ns/op
+BenchmarkSample-6   	       3	 470548300 ns/op
 */
 func BenchmarkSample(b *testing.B) {
 	for i := 0; i < b.N; i++ {
