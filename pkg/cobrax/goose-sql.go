@@ -3,26 +3,24 @@ package cobrax
 import (
 	"context"
 	"fmt"
-	"strings"
-
 	"github.com/go-sql-driver/mysql"
-	goosepkg "github.com/powerman/goose/v2"
-	"github.com/spf13/cobra"
-
 	"github.com/powerman/go-service-example/pkg/migrate"
+	goosePkg "github.com/powerman/goose/v2"
+	"github.com/spf13/cobra"
+	"strings"
 )
 
-// GooseMySQLConfig contain configuration for goose command.
-type GooseMySQLConfig struct {
-	MySQL         *mysql.Config
-	MySQLGooseDir string
+// GooseSQLConfig contain configuration for goose command.
+type GooseSQLConfig struct {
+	SQL         *mysql.Config
+	SQLGooseDir string
 }
 
-// NewGooseMySQLCmd creates new goose command executed by run.
-func NewGooseMySQLCmd(goose *goosepkg.Instance, getCfg func() (*GooseMySQLConfig, error)) *cobra.Command {
+// NewGooseSQLCmd creates new goose command executed by run.
+func NewGooseSQLCmd(goose *goosePkg.Instance, getCfg func() (*GooseSQLConfig, error)) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "goose-mysql",
-		Short: "Migrate MySQL database schema",
+		Use:   "goose-sql",
+		Short: "Migrate SQL database schema",
 		Args:  gooseArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			gooseCmd := strings.Join(args, " ")
@@ -33,7 +31,7 @@ func NewGooseMySQLCmd(goose *goosepkg.Instance, getCfg func() (*GooseMySQLConfig
 				return fmt.Errorf("failed to get config: %w", err)
 			}
 
-			err = migrate.Run(ctx, goose, cfg.MySQLGooseDir, gooseCmd, cfg.MySQL)
+			err = migrate.Run(ctx, goose, cfg.SQLGooseDir, gooseCmd, cfg.SQL)
 			if err != nil {
 				return fmt.Errorf("failed to run goose %s: %w", gooseCmd, err)
 			}

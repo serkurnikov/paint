@@ -12,6 +12,12 @@ basePath: /
 schemes:
   - http
 
+securityDefinitions:
+  api_key:
+    type: apiKey
+    in: header
+    name: API-Key
+
 definitions:
   # This model should match output of api.ServeError handler, to ensure
   # errors returned by go-swagger (like failed validation) use same
@@ -30,6 +36,8 @@ definitions:
       message:
         type: string
 
+security:
+  - api_key: []
 consumes:
   - application/json
 produces:
@@ -40,22 +48,6 @@ paths:
     get:
       operationId: render
       description: render
-      responses:
-        '200':
-          description: response
-          schema:
-            type: object
-            required:
-              - result
-            properties:
-              result:
-                type: object
-        default:
-          $ref: '#/definitions/Error'
-  /scobel:
-    get:
-      operationId: scobel
-      description: scobel
       responses:
         '200':
           description: response

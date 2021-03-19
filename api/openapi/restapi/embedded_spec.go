@@ -59,31 +59,6 @@ func init() {
           }
         }
       }
-    },
-    "/scobel": {
-      "get": {
-        "description": "scobel",
-        "operationId": "scobel",
-        "responses": {
-          "200": {
-            "description": "response",
-            "schema": {
-              "type": "object",
-              "required": [
-                "result"
-              ],
-              "properties": {
-                "result": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "default": {
-            "$ref": "#/definitions/Error"
-          }
-        }
-      }
     }
   },
   "definitions": {
@@ -106,7 +81,19 @@ func init() {
         }
       }
     }
-  }
+  },
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "API-Key",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "api_key": []
+    }
+  ]
 }`))
 	FlatSwaggerJSON = json.RawMessage([]byte(`{
   "consumes": [
@@ -148,29 +135,6 @@ func init() {
           "default": {}
         }
       }
-    },
-    "/scobel": {
-      "get": {
-        "description": "scobel",
-        "operationId": "scobel",
-        "responses": {
-          "200": {
-            "description": "response",
-            "schema": {
-              "type": "object",
-              "required": [
-                "result"
-              ],
-              "properties": {
-                "result": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "default": {}
-        }
-      }
     }
   },
   "definitions": {
@@ -193,6 +157,18 @@ func init() {
         }
       }
     }
-  }
+  },
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "API-Key",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "api_key": []
+    }
+  ]
 }`))
 }

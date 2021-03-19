@@ -35,14 +35,21 @@ func configureAPI(api *op.PaintAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	if api.RenderHandler == nil {
-		api.RenderHandler = op.RenderHandlerFunc(func(params op.RenderParams) op.RenderResponder {
-			return op.RenderNotImplemented()
-		})
+	// Applies when the "API-Key" header is set
+	if api.APIKeyAuth == nil {
+		api.APIKeyAuth = func(token string) (interface{}, error) {
+			return nil, errors.NotImplemented("api key auth (api_key) API-Key from header param [API-Key] has not yet been implemented")
+		}
 	}
-	if api.ScobelHandler == nil {
-		api.ScobelHandler = op.ScobelHandlerFunc(func(params op.ScobelParams) op.ScobelResponder {
-			return op.ScobelNotImplemented()
+
+	// Set your custom authorizer if needed. Default one is security.Authorized()
+	// Expected interface runtime.Authorizer
+	//
+	// Example:
+	// api.APIAuthorizer = security.Authorized()
+	if api.RenderHandler == nil {
+		api.RenderHandler = op.RenderHandlerFunc(func(params op.RenderParams, principal interface{}) op.RenderResponder {
+			return op.RenderNotImplemented()
 		})
 	}
 

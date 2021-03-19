@@ -1,56 +1,50 @@
-// Package repo provide helpers for Data Access Layer.
 package repo
 
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
-	"strconv"
-
 	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	goosepkg "github.com/powerman/goose/v2"
+	"github.com/pkg/errors"
 	"github.com/powerman/narada4d/schemaver"
-	"github.com/powerman/sqlxx"
 	"github.com/powerman/structlog"
+	"github.com/pressly/goose"
+	"io/ioutil"
+	"strconv"
+	"time"
 
-	"github.com/powerman/go-service-example/pkg/migrate"
 	"github.com/powerman/go-service-example/pkg/reflectx"
 )
 
-// Ctx is a synonym for convenience.
 type Ctx = context.Context
 
-// MaxKeySize for indexed MySQL utf8mb4 CHAR/VARCHAR column.
-const MaxKeySize = 191
-
-// Errors.
 var (
 	ErrSchemaVer = errors.New("unsupported DB schema version")
 )
 
-// DuplicateEntry returns true if err is mysql error "Duplicate entry…".
-func DuplicateEntry(err error) bool {
-	const duplicateEntry = 1062
-	if errMySQL := new(mysql.MySQLError); errors.As(err, &errMySQL) {
-		return errMySQL.Number == duplicateEntry
-	}
-	return false
-}
+const (
+	DbHost     = "localhost"
+	DbPort     = 5432
+	DbUser     = "root"
+	DbPassword = "password"
+	DbName     = "paint"
 
-// Config contains repo configuration.
+	DefaultMaxIdleCons = 50
+	DefaultMaxOpenCons  = 50
+
+	DefaultDialect = "postgres"
+)
+
 type Config struct {
-	MySQL         *mysql.Config
 	GooseDir      string
 	SchemaVersion int64
 	Metric        Metrics
-	ReturnErrs    []error // List of app.Err… returned by DAL methods.
+	ReturnErrs    []error
 }
 
-// Repo provides access to storage.
 type Repo struct {
-	DB            *sqlxx.DB
+	DB            *sqlx.DB
 	SchemaVer     *schemaver.SchemaVer
 	schemaVersion string
 	returnErrs    []error
@@ -58,41 +52,39 @@ type Repo struct {
 	log           *structlog.Logger
 }
 
-// New creates and returns new Repo.
-// It will also run required DB migrations and connects to DB.
-func New(ctx Ctx, goose *goosepkg.Instance, cfg Config) (*Repo, error) {
+func New(ctx Ctx, cfg Config) (*Repo, error) {
 	log := structlog.FromContext(ctx, nil)
 
-	schemaVer, err := migrate.UpTo(ctx, goose, cfg.GooseDir, cfg.SchemaVersion, cfg.MySQL)
+	dbDsnString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		DbHost, DbPort, DbUser, DbPassword, DbName,
+	)
+
+	dbConn, err := sqlx.Connect(DefaultDialect, dbDsnString)
 	if err != nil {
-		return nil, fmt.Errorf("migration: %w", err)
+		return nil, err
 	}
 
-	db, err := sql.Open("mysql", cfg.MySQL.FormatDSN())
-	if err != nil {
-		log.WarnIfFail(schemaVer.Close)
-		return nil, fmt.Errorf("sql.Open: %w", err)
-	}
+	dbConn.SetMaxIdleConns(DefaultMaxIdleCons)
+	dbConn.SetMaxOpenConns(DefaultMaxOpenCons)
 
-	if cfg.MySQL.Timeout != 0 {
-		var cancel func()
-		ctx, cancel = context.WithTimeout(ctx, cfg.MySQL.Timeout)
-		defer cancel()
-	}
-	err = db.PingContext(ctx)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	err = dbConn.PingContext(ctx)
 	for err != nil {
-		nextErr := db.PingContext(ctx)
-		if errors.Is(nextErr, context.DeadlineExceeded) || errors.Is(nextErr, context.Canceled) {
-			log.WarnIfFail(db.Close)
-			log.WarnIfFail(schemaVer.Close)
-			return nil, fmt.Errorf("db.Ping: %w", err)
+		nextErr := dbConn.PingContext(ctx)
+		if nextErr == context.DeadlineExceeded {
+			log.WarnIfFail(dbConn.Close)
+			return nil, errors.Wrap(err, "connect to postgres")
 		}
 		err = nextErr
 	}
 
+	if err = migration(dbConn); err != nil {
+		return nil, errors.Wrap(err, "migrate postgres")
+	}
+
 	r := &Repo{
-		DB:            sqlxx.NewDB(sqlx.NewDb(db, "mysql")),
-		SchemaVer:     schemaVer,
+		DB:            dbConn,
 		schemaVersion: strconv.Itoa(int(cfg.SchemaVersion)),
 		returnErrs:    cfg.ReturnErrs,
 		metric:        cfg.Metric,
@@ -101,7 +93,33 @@ func New(ctx Ctx, goose *goosepkg.Instance, cfg Config) (*Repo, error) {
 	return r, nil
 }
 
-// Close closes connection to DB.
+func migration(db *sqlx.DB) error {
+	_ = goose.SetDialect(DefaultDialect)
+
+	current, err := goose.EnsureDBVersion(db.DB)
+	if err != nil {
+		return fmt.Errorf("failed to EnsureDBVersion: %v", errors.WithStack(err))
+	}
+
+	files, err := ioutil.ReadDir("migrations")
+	if err != nil {
+		return err
+	}
+
+	migrations, err := goose.CollectMigrations("migrations", current, int64(len(files)))
+	if err != nil {
+		return err
+	}
+
+	for _, m := range migrations {
+		if err := m.Up(db.DB); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (r *Repo) Close() {
 	r.log.WarnIfFail(r.DB.Close)
 	r.log.WarnIfFail(r.SchemaVer.Close)
@@ -161,11 +179,11 @@ func (r *Repo) NoTx(f func() error) (err error) {
 // - general metrics for DAL methods,
 // - wrapping errors with DAL method name,
 // - transaction.
-func (r *Repo) Tx(ctx Ctx, opts *sql.TxOptions, f func(*sqlxx.Tx) error) (err error) {
+func (r *Repo) Tx(ctx Ctx, opts *sql.TxOptions, f func(*sqlx.Tx) error) (err error) {
 	methodName := reflectx.CallerMethodName(1)
 	return r.strict(r.schemaLock(r.metric.instrument(methodName, func() error {
 		tx, err := r.DB.BeginTxx(ctx, opts)
-		if err == nil { //nolint:nestif // No idea how to simplify.
+		if err == nil {
 			defer func() {
 				if err := recover(); err != nil {
 					if err := tx.Rollback(); err != nil {

@@ -1,41 +1,29 @@
-// Package config provides configurations for subcommands.
-//
-// Default values can be obtained from various sources (constants,
-// environment variables, etc.) and then overridden by flags.
-//
-// As configuration is global you can get it only once for safety:
-// you can call only one of Get… functions and call it just once.
 package config
 
 import (
-	"github.com/go-sql-driver/mysql"
 	"github.com/powerman/appcfg"
 	"github.com/spf13/pflag"
 	"paint/internal/app/imageProcessing"
+	"paint/pkg/cobrax"
 	"paint/pkg/def"
 	"paint/pkg/netx"
 	"paint/pkg/rabbitmq"
 	"time"
 )
 
-// EnvPrefix defines common prefix for environment variables.
 const envPrefix = "EXAMPLE_"
 
-// All configurable values of the microservice.
-//
-// If microservice may runs in different ways (e.g. using CLI subcommands)
-// then these subcommands may use subset of these values.
-var all = &struct { //nolint:gochecknoglobals // Config is global anyway.
+var all = &struct {
 	APIKeyAdmin                   appcfg.NotEmptyString `env:"APIKEY_ADMIN"`
 	AddrHost                      appcfg.NotEmptyString `env:"ADDR_HOST"`
 	AddrPort                      appcfg.Port           `env:"ADDR_PORT"`
 	MetricsAddrPort               appcfg.Port           `env:"METRICS_ADDR_PORT"`
-	MySQLAddrHost                 appcfg.NotEmptyString `env:"MYSQL_ADDR_HOST"`
-	MySQLAddrPort                 appcfg.Port           `env:"MYSQL_ADDR_PORT"`
-	MySQLAuthLogin                appcfg.NotEmptyString `env:"MYSQL_AUTH_LOGIN"`
-	MySQLAuthPass                 appcfg.String         `env:"MYSQL_AUTH_PASS"`
-	MySQLDBName                   appcfg.NotEmptyString `env:"MYSQL_DB"`
-	MySQLGooseDir                 appcfg.NotEmptyString
+	SqlAddrHost                   appcfg.NotEmptyString `env:"SQL_ADDR_HOST"`
+	SqlAddrPort                   appcfg.Port           `env:"SQL_ADDR_PORT"`
+	SqlAuthLogin                  appcfg.NotEmptyString `env:"SQL_AUTH_LOGIN"`
+	SqlAuthPass                   appcfg.String         `env:"SQL_AUTH_PASS"`
+	SqlDbName                     appcfg.NotEmptyString `env:"SQL_DB"`
+	SqlGooseDir                   appcfg.NotEmptyString
 	RabbitMQSchema                appcfg.NotEmptyString `env:"RABBITMQ_SCHEMA"`
 	RabbitMQUserName              appcfg.NotEmptyString `env:"RABBITMQ_USERNAME"`
 	RabbitMQPass                  appcfg.NotEmptyString `env:"RABBITMQ_PASS"`
@@ -50,30 +38,26 @@ var all = &struct { //nolint:gochecknoglobals // Config is global anyway.
 	RabbitMQExchangeType          appcfg.NotEmptyString `env:"RABBITMQ_EXCHANGE_TYPE"`
 	RabbitMQRoutingKey            appcfg.NotEmptyString `env:"RABBITMQ_ROUTING_KEY"`
 	RabbitMQQueueName             appcfg.NotEmptyString `env:"RABBITMQ_QUEUE_NAME"`
-}{ // Defaults, if any:
+}{
 	AddrHost:        appcfg.MustNotEmptyString(def.Hostname),
 	AddrPort:        appcfg.MustPort("8000"),
 	MetricsAddrPort: appcfg.MustPort("9000"),
-	MySQLAddrPort:   appcfg.MustPort("3306"),
-	MySQLAuthLogin:  appcfg.MustNotEmptyString(def.ProgName),
-	MySQLDBName:     appcfg.MustNotEmptyString(def.ProgName),
-	MySQLGooseDir:   appcfg.MustNotEmptyString("internal/migrations/mysql"),
+	SqlAddrPort:     appcfg.MustPort("3306"),
+	SqlAuthLogin:    appcfg.MustNotEmptyString(def.ProgName),
+	SqlDbName:       appcfg.MustNotEmptyString(def.ProgName),
+	SqlGooseDir:     appcfg.MustNotEmptyString("internal/migrations/mysql"),
 }
 
-// FlagSets for all CLI subcommands which use flags to set config values.
 type FlagSets struct {
-	Serve      *pflag.FlagSet
-	GooseMySQL *pflag.FlagSet
-	RabbitMQ   *pflag.FlagSet
+	Serve    *pflag.FlagSet
+	GooseSQL *pflag.FlagSet
+	RabbitMQ *pflag.FlagSet
 }
 
-var fs FlagSets //nolint:gochecknoglobals // Flags are global anyway.
+var fs FlagSets
 
-// Init updates config defaults (from env) and setup subcommands flags.
-//
-// Init must be called once before using this package.
-func Init(flagsets FlagSets) error {
-	fs = flagsets
+func Init(flagSets FlagSets) error {
+	fs = flagSets
 
 	fromEnv := appcfg.NewFromEnv(envPrefix)
 	err := appcfg.ProvideStruct(all, fromEnv)
@@ -84,17 +68,11 @@ func Init(flagsets FlagSets) error {
 	appcfg.AddPFlag(fs.Serve, &all.AddrHost, "host", "host to serve OpenAPI")
 	appcfg.AddPFlag(fs.Serve, &all.AddrPort, "port", "port to serve OpenAPI")
 	appcfg.AddPFlag(fs.Serve, &all.MetricsAddrPort, "metrics.port", "port to serve Prometheus metrics")
-	appcfg.AddPFlag(fs.Serve, &all.MySQLAddrHost, "mysql.host", "host to connect to MySQL")
-	appcfg.AddPFlag(fs.Serve, &all.MySQLAddrPort, "mysql.port", "port to connect to MySQL")
-	appcfg.AddPFlag(fs.Serve, &all.MySQLAuthLogin, "mysql.user", "MySQL username")
-	appcfg.AddPFlag(fs.Serve, &all.MySQLAuthPass, "mysql.pass", "MySQL password")
-	appcfg.AddPFlag(fs.Serve, &all.MySQLDBName, "mysql.dbname", "MySQL database name")
-
-	appcfg.AddPFlag(fs.GooseMySQL, &all.MySQLAddrHost, "mysql.host", "host to connect to MySQL")
-	appcfg.AddPFlag(fs.GooseMySQL, &all.MySQLAddrPort, "mysql.port", "port to connect to MySQL")
-	appcfg.AddPFlag(fs.GooseMySQL, &all.MySQLAuthLogin, "mysql.user", "MySQL username")
-	appcfg.AddPFlag(fs.GooseMySQL, &all.MySQLAuthPass, "mysql.pass", "MySQL password")
-	appcfg.AddPFlag(fs.GooseMySQL, &all.MySQLDBName, "mysql.dbname", "MySQL database name")
+	appcfg.AddPFlag(fs.Serve, &all.SqlAddrHost, "sql.host", "host to connect to SQL")
+	appcfg.AddPFlag(fs.Serve, &all.SqlAddrPort, "sql.port", "port to connect to SQL")
+	appcfg.AddPFlag(fs.Serve, &all.SqlAuthLogin, "sql.user", "SQL username")
+	appcfg.AddPFlag(fs.Serve, &all.SqlAuthPass, "sql.pass", "SQL password")
+	appcfg.AddPFlag(fs.Serve, &all.SqlDbName, "sql.dbname", "SQL database name")
 
 	appcfg.AddPFlag(fs.RabbitMQ, &all.RabbitMQSchema, "rabbitmq.schema", "Rabbit schema")
 	appcfg.AddPFlag(fs.RabbitMQ, &all.RabbitMQUserName, "rabbitmq.userName", "Rabbit username")
@@ -115,26 +93,22 @@ func Init(flagsets FlagSets) error {
 	return nil
 }
 
-// ServeConfig contains configuration for subcommand.
 type ServeConfig struct {
 	APIKeyAdmin         string
 	Addr                netx.Addr
 	MetricsAddr         netx.Addr
-	MySQL               *mysql.Config
-	MySQLGooseDir       string
+	SQLGooseDir         string
 	RabbitMQ            rabbitmq.Config
 	ImageProcessingAMQP imageProcessing.AMQPConfig
 }
 
-// GetServe validates and returns configuration for subcommand.
 func GetServe() (c *ServeConfig, err error) {
 	defer cleanup()
 
 	c = &ServeConfig{
-		APIKeyAdmin:   all.APIKeyAdmin.Value(&err),
-		Addr:          netx.NewAddr(all.AddrHost.Value(&err), all.AddrPort.Value(&err)),
-		MetricsAddr:   netx.NewAddr(all.AddrHost.Value(&err), all.MetricsAddrPort.Value(&err)),
-		MySQLGooseDir: all.MySQLGooseDir.Value(&err),
+		APIKeyAdmin: all.APIKeyAdmin.Value(&err),
+		Addr:        netx.NewAddr(all.AddrHost.Value(&err), all.AddrPort.Value(&err)),
+		MetricsAddr: netx.NewAddr(all.AddrHost.Value(&err), all.MetricsAddrPort.Value(&err)),
 		RabbitMQ: rabbitmq.Config{
 			Schema:               all.RabbitMQSchema.Value(&err),
 			Username:             all.RabbitMQUserName.Value(&err),
@@ -165,8 +139,24 @@ func GetServe() (c *ServeConfig, err error) {
 	return c, nil
 }
 
-// Cleanup must be called by all Get* functions to ensure second call to
-// any of them will panic.
+func GetGooseSQL() (c *cobrax.GooseSQLConfig, err error) {
+	defer cleanup()
+
+	c = &cobrax.GooseSQLConfig{
+		SQL: def.NewSQLConfig(def.SQLConfig{
+			Addr: netx.NewAddr(all.SqlAddrHost.Value(&err), all.SqlAddrPort.Value(&err)),
+			User: all.SqlAuthLogin.Value(&err),
+			Pass: all.SqlAuthPass.Value(&err),
+			DB:   all.SqlDbName.Value(&err),
+		}),
+		SQLGooseDir: all.SqlGooseDir.Value(&err),
+	}
+	if err != nil {
+		return nil, appcfg.WrapPErr(err, fs.GooseSQL, all)
+	}
+	return c, nil
+}
+
 func cleanup() {
 	all = nil
 }

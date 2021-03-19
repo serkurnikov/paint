@@ -2,20 +2,19 @@ package def
 
 import (
 	"github.com/go-sql-driver/mysql"
-
 	"github.com/powerman/go-service-example/pkg/netx"
 )
 
-// MySQLConfig contains MySQL connection and authentication details.
-type MySQLConfig struct {
+// SQLConfig contains SQL connection and authentication details.
+type SQLConfig struct {
 	Addr netx.Addr
 	User string
 	Pass string
 	DB   string
 }
 
-// NewMySQLConfig creates a new default config for MySQL.
-func NewMySQLConfig(cfg MySQLConfig) *mysql.Config {
+// NewSQLConfig creates a new default config for SQL.
+func NewSQLConfig(cfg SQLConfig) *mysql.Config {
 	c := mysql.NewConfig()
 	c.User = cfg.User
 	c.Passwd = cfg.Pass

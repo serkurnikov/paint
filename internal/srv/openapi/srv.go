@@ -4,6 +4,7 @@ package openapi
 import (
 	"context"
 	"fmt"
+	"github.com/go-openapi/runtime"
 	"net"
 	"net/http"
 	"paint/api/openapi/restapi"
@@ -24,11 +25,9 @@ import (
 )*/
 
 type (
-	// Ctx is a synonym for convenience.
 	Ctx = context.Context
-	// Log is a synonym for convenience.
 	Log = *structlog.Logger
-	// Config contains configuration for OpenAPI server.
+
 	Config struct {
 		APIKeyAdmin string
 		Addr        netx.Addr
@@ -43,22 +42,28 @@ type (
 
 // NewServer returns OpenAPI server configured to listen on the TCP network
 // address cfg.Host:cfg.Port and handle requests on incoming connections.
-func NewServer(appl app.Appl) (*restapi.Server, error) {
+func NewServer(appl app.Appl, config Config) (*restapi.Server, error) {
 	srv := &server{
 		app: appl,
+		cfg: config,
 	}
 
 	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
 	if err != nil {
 		return nil, fmt.Errorf("load embedded swagger spec: %w", err)
 	}
-	swaggerSpec.Spec().BasePath = swaggerSpec.BasePath()
+	if config.BasePath == "" {
+		config.BasePath = swaggerSpec.BasePath()
+	}
+	swaggerSpec.Spec().BasePath = config.BasePath
+
 
 	api := op.NewPaintAPI(swaggerSpec)
 	api.Logger = structlog.New(structlog.KeyUnit, "swagger").Printf
+	api.APIKeyAuth = srv.authenticate
+	api.APIAuthorizer = runtime.AuthorizerFunc(srv.authorize)
 
 	api.RenderHandler = op.RenderHandlerFunc(srv.RenderHandlerFunc)
-	api.ScobelHandler = op.ScobelHandlerFunc(srv.ScobelHandlerFunc)
 
 	server := restapi.NewServer(api)
 	server.Host = "localhost"
@@ -76,6 +81,7 @@ func NewServer(appl app.Appl) (*restapi.Server, error) {
 			middleware.Spec(swaggerSpec.BasePath(), restapi.FlatSwaggerJSON,
 				cors(handler))))))
 	}
+	
 	// The middleware executes after serving /swagger.json and routing,
 	// but before authentication, binding and validation.
 	middlewares := func(handler http.Handler) http.Handler {

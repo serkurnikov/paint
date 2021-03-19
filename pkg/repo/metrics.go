@@ -8,7 +8,7 @@ import (
 	"github.com/powerman/go-service-example/pkg/reflectx"
 )
 
-// Metrics contains general metrics for DAL methods.
+
 type Metrics struct {
 	callErrTotal *prometheus.CounterVec
 	callDuration *prometheus.HistogramVec
@@ -16,8 +16,6 @@ type Metrics struct {
 
 const methodLabel = "method"
 
-// NewMetrics registers and returns common DAL metrics used by all
-// services (namespace).
 func NewMetrics(reg *prometheus.Registry, namespace, subsystem string, methodsFrom interface{}) (metric Metrics) {
 	metric.callErrTotal = prometheus.NewCounterVec(
 		prometheus.CounterOpts{

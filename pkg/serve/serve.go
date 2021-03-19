@@ -63,12 +63,12 @@ func HTTP(ctx Ctx, addr netx.Addr, handler http.Handler, service string) error {
 	}
 
 	log.Info("serve", def.LogHost, addr.Host(), def.LogPort, addr.Port())
-	errc := make(chan error, 1)
-	go func() { errc <- srv.ListenAndServe() }()
+	errors := make(chan error, 1)
+	go func() { errors <- srv.ListenAndServe() }()
 
 	var err error
 	select {
-	case err = <-errc:
+	case err = <-errors:
 	case <-ctx.Done():
 		err = srv.Shutdown(context.Background())
 	}

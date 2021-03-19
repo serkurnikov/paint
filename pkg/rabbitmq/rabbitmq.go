@@ -34,12 +34,12 @@ type RabbitMQ struct {
 	ChannelNotifyTimeout time.Duration
 }
 
-func New(config Config) *RabbitMQ {
+func New(config Config) (*RabbitMQ, error) {
 	return &RabbitMQ{
 		config:               config,
 		dialConfig:           amqp.Config{Properties: amqp.Table{"connection_name": config.ConnectionName}},
 		ChannelNotifyTimeout: config.ChannelNotifyTimeout,
-	}
+	}, nil
 }
 
 // Connect creates a new connection. Use once at application

@@ -42,12 +42,16 @@ func NewPaintAPI(spec *loads.Document) *PaintAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
-		RenderHandler: RenderHandlerFunc(func(params RenderParams) RenderResponder {
+		RenderHandler: RenderHandlerFunc(func(params RenderParams, principal interface{}) RenderResponder {
 			return RenderNotImplemented()
 		}),
-		ScobelHandler: ScobelHandlerFunc(func(params ScobelParams) ScobelResponder {
-			return ScobelNotImplemented()
-		}),
+
+		// Applies when the "API-Key" header is set
+		APIKeyAuth: func(token string) (interface{}, error) {
+			return nil, errors.NotImplemented("api key auth (api_key) API-Key from header param [API-Key] has not yet been implemented")
+		},
+		// default authorizer is authorized meaning no requests are blocked
+		APIAuthorizer: security.Authorized(),
 	}
 }
 
@@ -86,10 +90,15 @@ type PaintAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
+	// APIKeyAuth registers a function that takes a token and returns a principal
+	// it performs authentication based on an api key API-Key provided in the header
+	APIKeyAuth func(string) (interface{}, error)
+
+	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
+	APIAuthorizer runtime.Authorizer
+
 	// RenderHandler sets the operation handler for the render operation
 	RenderHandler RenderHandler
-	// ScobelHandler sets the operation handler for the scobel operation
-	ScobelHandler ScobelHandler
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
 	ServeError func(http.ResponseWriter, *http.Request, error)
@@ -166,11 +175,12 @@ func (o *PaintAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.APIKeyAuth == nil {
+		unregistered = append(unregistered, "APIKeyAuth")
+	}
+
 	if o.RenderHandler == nil {
 		unregistered = append(unregistered, "RenderHandler")
-	}
-	if o.ScobelHandler == nil {
-		unregistered = append(unregistered, "ScobelHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -187,12 +197,21 @@ func (o *PaintAPI) ServeErrorFor(operationID string) func(http.ResponseWriter, *
 
 // AuthenticatorsFor gets the authenticators for the specified security schemes
 func (o *PaintAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
-	return nil
+	result := make(map[string]runtime.Authenticator)
+	for name := range schemes {
+		switch name {
+		case "api_key":
+			scheme := schemes[name]
+			result[name] = o.APIKeyAuthenticator(scheme.Name, scheme.In, o.APIKeyAuth)
+
+		}
+	}
+	return result
 }
 
 // Authorizer returns the registered authorizer
 func (o *PaintAPI) Authorizer() runtime.Authorizer {
-	return nil
+	return o.APIAuthorizer
 }
 
 // ConsumersFor gets the consumers for the specified media types.
@@ -264,10 +283,6 @@ func (o *PaintAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/render"] = NewRender(o.context, o.RenderHandler)
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
-	o.handlers["GET"]["/scobel"] = NewScobel(o.context, o.ScobelHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP
