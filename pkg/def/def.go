@@ -20,6 +20,7 @@ const (
 	LogPort       = "port"       // TCP/UDP port number.
 	LogHTTPMethod = "httpMethod" // GET, POST, etc.
 	LogHTTPStatus = "httpStatus" // Status code: 200, 404, etc.
+
 )
 
 // Default values.

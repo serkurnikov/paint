@@ -58,7 +58,6 @@ func NewServer(appl app.Appl) (*restapi.Server, error) {
 	api.Logger = structlog.New(structlog.KeyUnit, "swagger").Printf
 
 	api.RenderHandler = op.RenderHandlerFunc(srv.RenderHandlerFunc)
-	api.ScobelHandler = op.ScobelHandlerFunc(srv.ScobelHandlerFunc)
 
 	server := restapi.NewServer(api)
 	server.Host = "localhost"

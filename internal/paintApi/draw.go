@@ -8,8 +8,8 @@ import (
 )
 
 func (s service) DrawDefaultContours(ctx context.Context, in *api.ContoursRequest) (*api.DefaultReply, error) {
-	contoursProcessing.DrawDefaultContours(in.PathPicture, in.T1, in.T2)
-	return &api.DefaultReply{OutPicture: ""}, nil
+	//contoursProcessing.DrawDefaultContours(in.PathPicture, in.T1, in.T2)
+	return &api.DefaultReply{OutPicture: "TEST"}, nil
 }
 
 func (s service) DrawCustomContours(ctx context.Context, in *api.ContoursRequest) (*api.DefaultReply, error) {

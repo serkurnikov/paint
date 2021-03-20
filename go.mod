@@ -23,12 +23,14 @@ require (
 	github.com/oliamb/cutter v0.2.2
 	github.com/pkg/errors v0.9.1
 	github.com/powerman/go-service-example v1.3.0
+	github.com/powerman/goose/v2 v2.7.0
 	github.com/powerman/must v0.1.0
 	github.com/powerman/structlog v0.7.1
 	github.com/pressly/goose v2.7.0+incompatible
 	github.com/prometheus/client_golang v1.10.0
 	github.com/rs/cors v1.7.0
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
+	github.com/streadway/amqp v1.0.0
 	gocv.io/x/gocv v0.26.0
 	golang.org/x/net v0.0.0-20210316092652-d523dce5a7f4
 	google.golang.org/grpc v1.36.0

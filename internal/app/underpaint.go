@@ -1,7 +1,5 @@
 package app
 
-import ()
-
 //https://github.com/golang-standards/project-layout
 
 const (
@@ -17,7 +15,4 @@ const (
 )
 
 func (a app) ExternalApiTest() {}
-func (a app) Scobel()          {}
-
-func (a app) Render(ctx Ctx) {
-}
+func (a app) Render(ctx Ctx) {}

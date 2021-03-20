@@ -13,8 +13,3 @@ func (srv *server) RenderHandlerFunc(params op.RenderParams) op.RenderResponder 
 
 	return op.NewRenderOK().WithPayload(&op.RenderOKBody{Result: "render finished"})
 }
-
-func (srv *server) ScobelHandlerFunc(params op.ScobelParams) op.ScobelResponder {
-	srv.app.Scobel()
-	return op.NewScobelOK().WithPayload(&op.ScobelOKBody{Result: "scobel finished"})
-}
