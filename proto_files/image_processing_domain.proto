@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+option go_package = "paint/internal/service/imageProcessingService/service";
+
+package api;
+
+message PyrRequest {
+  string pathPicture = 1;
+  float sp = 2;
+  float sr = 3;
+  int32 maxLevel = 4;
+}
+
+message ContoursRequest {
+  string pathPicture = 1;
+  float t1 = 2;
+  float t2 = 3;
+}
+
+message HoughLinesWithPRequest {
+  string pathPicture = 1;
+  float rho = 2;
+  float theta = 3;
+  int32 threshold = 4;
+  float minLineLength = 5;
+  float maxLineGap = 6;
+}
+
+message HoughCirclesRequest {
+  string pathPicture = 1;
+  float dp = 2;
+  float minDist = 3;
+  float p1 = 4;
+  float p2 = 5;
+  int32 minR = 6;
+  int32 maxR = 7;
+}
+
+message ThresholdRequest {
+  string pathPicture = 1;
+  float thresh = 2;
+  float maxvalue = 3;
+}
+
+message WatershedRequest {
+  string pathPicture = 1;
+  int32 nErode = 2;
+  int32 nDilate = 3;
+}
+
+message CloseRequest {
+  string pathPicture = 1;
+  int32 kernelSize = 2;
+}
+
+message OpenRequest {
+  string pathPicture = 1;
+  int32 kernelSize = 2;
+}
+
+message DefaultReply {
+  string OutPicture = 1;
+}
+
+message SeparationRequest {
+  string mainColorS = 1;
+  string colorFabric = 2;
+  int32 spaceType = 3;
+}
+
+message SeparationReply {
+  message BlendStructure {
+    string C1Hex = 1;
+    string C2Hex = 2;
+    string C3Hex = 3;
+    string C2Portion = 4;
+    string C3Portion = 5;
+    string ResultHex = 6;
+  }
+  repeated BlendStructure blendStructures = 1;
+}
+
+message PictureInDominatedColorsRequest {
+  string InPicture = 1;
+  string OutPicture = 2;
+  int32 NumberOfClusters = 3;
+}

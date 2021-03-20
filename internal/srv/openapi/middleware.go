@@ -5,9 +5,6 @@ import (
 	"net"
 	"net/http"
 	"paint/api/openapi/model"
-	"paint/pkg/def"
-	"path"
-	"strings"
 
 	"github.com/go-openapi/swag"
 	"github.com/powerman/structlog"
@@ -32,12 +29,7 @@ func makeLogger(basePath string) middlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			log := structlog.FromContext(r.Context(), nil)
-			log.SetDefaultKeyvals(
-				def.LogRemote, r.RemoteAddr,
-				def.LogHTTPStatus, "",
-				def.LogHTTPMethod, r.Method,
-				def.LogFunc, path.Join("/", strings.TrimPrefix(r.URL.Path, basePath)),
-			)
+			log.SetDefaultKeyvals()
 			r = r.WithContext(structlog.NewContext(r.Context(), log))
 
 			next.ServeHTTP(w, r)
@@ -58,11 +50,11 @@ func recovery(next http.Handler) http.Handler {
 				switch err := recover(); err := err.(type) {
 				default:
 					log := structlog.FromContext(r.Context(), nil)
-					log.PrintErr("panic", def.LogHTTPStatus, code, "err", err, structlog.KeyStack, structlog.Auto)
+					log.PrintErr("panic", "err", err)
 					middlewareError(w, code, "internal error")
 				case net.Error:
 					log := structlog.FromContext(r.Context(), nil)
-					log.PrintErr("recovered", def.LogHTTPStatus, code, "err", err)
+					log.PrintErr("recovered", "err", err)
 					middlewareError(w, code, "internal error")
 				}
 			}

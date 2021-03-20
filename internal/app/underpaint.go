@@ -1,8 +1,6 @@
 package app
 
-import (
-	pb "paint/internal/gRPC/imageProcessingService/service"
-)
+import ()
 
 //https://github.com/golang-standards/project-layout
 
@@ -18,12 +16,8 @@ const (
 	PalettePathImage = BasePath + "palette.jpg"
 )
 
-func (a App) ExternalApiTest() {}
-func (a App) Scobel()          {}
+func (a app) ExternalApiTest() {}
+func (a app) Scobel()          {}
 
-func (a App) Render(ctx Ctx) {
-	_, _ = a.imageProcessingClient.DisplayPictureInDominatedColors(ctx, &pb.PictureInDominatedColorsRequest{
-		InPicture:        MeanShiftPathImage,
-		OutPicture:       PalettePathImage,
-		NumberOfClusters: 10})
+func (a app) Render(ctx Ctx) {
 }

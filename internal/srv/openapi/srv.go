@@ -4,14 +4,12 @@ package openapi
 import (
 	"context"
 	"fmt"
-	"net"
 	"net/http"
 	"os"
 	"paint/api/openapi/restapi"
 	"paint/api/openapi/restapi/op"
 	"paint/internal/app"
 	"paint/internal/srv/openapi/highload"
-	"paint/pkg/def"
 	"paint/pkg/netx"
 
 	"github.com/go-openapi/loads"
@@ -92,8 +90,6 @@ func NewServer(appl app.Appl) (*restapi.Server, error) {
 
 func fromRequest(r *http.Request) (Ctx, Log) {
 	ctx := r.Context()
-	remoteIP, _, _ := net.SplitHostPort(r.RemoteAddr)
-	ctx = def.NewContextWithRemoteIP(ctx, remoteIP)
-	log := structlog.FromContext(ctx, nil)
+	log := structlog.FromContext(context.Background(), nil)
 	return ctx, log
 }

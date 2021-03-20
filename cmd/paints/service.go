@@ -2,57 +2,43 @@ package main
 
 import (
 	"context"
-	"github.com/powerman/structlog"
-	"paint/api/openapi/restapi"
-	"paint/internal/apiexternal"
 	"paint/internal/app"
-	"paint/internal/config"
 	"paint/internal/dal"
-	"paint/internal/gRPC/imageProcessingService"
-	"paint/internal/srv/openapi"
+	"paint/internal/paintApi"
 	"paint/pkg/concurrent"
+	"paint/pkg/netx"
 	"paint/pkg/serve"
+
+	"github.com/pkg/errors"
+	"github.com/powerman/structlog"
+	"google.golang.org/grpc"
 )
 
-// Ctx is a synonym for convenience.
 type Ctx = context.Context
 
 type service struct {
-	cfg *config.ServeConfig
-	srv *restapi.Server
+	srv *grpc.Server
 }
 
-func (s *service) runServe(ctxStartup, ctxShutdown Ctx, shutdown func()) (err error) {
-	log := structlog.FromContext(ctxShutdown, nil)
-
-	db, err := connectDB()
-	if err != nil {
-		return log.Err("err", err)
+func RunService(repo *dal.Repo, log *structlog.Logger) (context.CancelFunc, error) {
+	appl := app.NewAppl(repo, nil)
+	server := paintApi.NewServer(appl)
+	s := service{
+		srv: server,
 	}
 
-	if err = migrationDB(db); err != nil {
-		return log.Err("err", err)
-	}
-
-	alphaApi := apiexternal.NewAlphaVantage()
-	repo := dal.New(db)
-	client := imageProcessingService.NewImageProcessingClient()
-
-	appl := app.NewAppl(repo, alphaApi, client)
-	s.srv, err = openapi.NewServer(appl)
-	if err != nil {
-		return log.Err("failed to openapi.NewServer", "err", err)
-	}
-
-	err = concurrent.Serve(ctxShutdown, shutdown,
-		s.serveOpenAPI,
+	ctxShutdown, shutdown := context.WithCancel(context.Background())
+	err := concurrent.Serve(ctxShutdown, shutdown,
+		s.serveGRPC,
 	)
 	if err != nil {
-		return log.Err("failed to serve", "err", err)
+		return nil, errors.Wrap(err, "starting serve services")
 	}
-	return nil
+
+	return shutdown, nil
 }
 
-func (s *service) serveOpenAPI(ctx Ctx) error {
-	return serve.OpenAPI(ctx, s.srv, "OpenAPI")
+func (s *service) serveGRPC(ctx Ctx) error {
+	addr := netx.NewAddr("", cfg.grpcPort)
+	return serve.ServerGRPC(ctx, addr, s.srv)
 }

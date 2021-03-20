@@ -4,9 +4,10 @@ package serve
 import (
 	"context"
 	"fmt"
+	"google.golang.org/grpc"
 	"net"
 	"net/http"
-	"paint/pkg/def"
+	"paint/internal/def"
 	"paint/pkg/netx"
 
 	"github.com/powerman/must"
@@ -86,4 +87,26 @@ func Metrics(ctx Ctx, addr netx.Addr, reg *prometheus.Registry) error {
 	mux := http.NewServeMux()
 	mux.Handle("/metrics", handler)
 	return HTTP(ctx, addr, mux, "Prometheus metrics")
+}
+
+func ServerGRPC(ctx Ctx, addr netx.Addr, srv *grpc.Server) error {
+	log := structlog.FromContext(ctx, nil).New(def.LogServer, addr.String())
+
+	listen, err := net.Listen("tcp", addr.String())
+	if err != nil {
+		return err
+	}
+
+	errc := make(chan error, 1)
+	go func() { errc <- srv.Serve(listen) }()
+
+	select {
+	case err = <-errc:
+	case <-ctx.Done():
+		_ = srv.Stop
+	}
+	if err != nil {
+		return log.Err("failed to serve grpc", "err", err)
+	}
+	return nil
 }

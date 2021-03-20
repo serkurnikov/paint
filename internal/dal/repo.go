@@ -1,18 +1,21 @@
 package dal
 
 import (
-	"context"
-	"paint/internal/app"
-
-	"github.com/jmoiron/sqlx"
+	"github.com/powerman/structlog"
+	"paint/pkg/repo"
 )
 
-type Ctx = context.Context
-
-type repo struct {
-	db *sqlx.DB
+// Repo provides access to storage.
+type Repo struct {
+	*repo.Repo
 }
 
-func New(db *sqlx.DB) app.Repo {
-	return &repo{db: db}
+func New(cfg *repo.Config, logger *structlog.Logger) (*Repo, error) {
+	r := &Repo{}
+	var err error
+	r.Repo, err = repo.New(cfg, logger)
+	if err != nil {
+		return nil, err
+	}
+	return r, nil
 }
