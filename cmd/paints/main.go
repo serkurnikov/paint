@@ -29,10 +29,10 @@ var (
 	log    = structlog.New()
 	dbConf dbConfig
 	cfg    struct {
-		version         bool
-		logLevel        string
-		grpcPort        int
-		migrationPath   string
+		version       bool
+		logLevel      string
+		grpcPort      int
+		migrationPath string
 	}
 )
 
@@ -51,6 +51,7 @@ func Init() {
 
 func main() {
 	Init()
+	//TODO
 	flag.Parse()
 
 	done := make(chan os.Signal, 1)
