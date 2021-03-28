@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/lucasb-eyer/go-colorful"
 	"math"
-	"paint/internal/utils"
+	"paint/pkg/utils"
 	"sort"
 	"strconv"
 	"strings"

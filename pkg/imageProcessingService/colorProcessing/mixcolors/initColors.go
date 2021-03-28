@@ -7,7 +7,7 @@ import (
 	"github.com/lucasb-eyer/go-colorful"
 	"io/ioutil"
 	"log"
-	"paint/internal/utils"
+	"paint/pkg/utils"
 	"sort"
 	"strings"
 	"sync"
@@ -15,7 +15,7 @@ import (
 import "paint/assets"
 
 const (
-	root         = "D:\\Sergey\\projects\\Go Projects\\paint\\assets\\structure.json"
+	root         = "C:\\Users\\Курников Сергей\\go\\src\\gitlab.com\\serkurnikov\\paint\\assets\\structure.json"
 	Path         = "Path"
 	MasterColors = "masters_colors"
 )

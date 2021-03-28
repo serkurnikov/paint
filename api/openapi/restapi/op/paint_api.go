@@ -42,11 +42,11 @@ func NewPaintAPI(spec *loads.Document) *PaintAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
-		RenderHandler: RenderHandlerFunc(func(params RenderParams) RenderResponder {
-			return RenderNotImplemented()
+		HealthCheckHandler: HealthCheckHandlerFunc(func(params HealthCheckParams) HealthCheckResponder {
+			return HealthCheckNotImplemented()
 		}),
-		ScobelHandler: ScobelHandlerFunc(func(params ScobelParams) ScobelResponder {
-			return ScobelNotImplemented()
+		PyrMeanShiftFilterHandler: PyrMeanShiftFilterHandlerFunc(func(params PyrMeanShiftFilterParams) PyrMeanShiftFilterResponder {
+			return PyrMeanShiftFilterNotImplemented()
 		}),
 	}
 }
@@ -86,10 +86,10 @@ type PaintAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
-	// RenderHandler sets the operation handler for the render operation
-	RenderHandler RenderHandler
-	// ScobelHandler sets the operation handler for the scobel operation
-	ScobelHandler ScobelHandler
+	// HealthCheckHandler sets the operation handler for the health check operation
+	HealthCheckHandler HealthCheckHandler
+	// PyrMeanShiftFilterHandler sets the operation handler for the pyr mean shift filter operation
+	PyrMeanShiftFilterHandler PyrMeanShiftFilterHandler
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
 	ServeError func(http.ResponseWriter, *http.Request, error)
@@ -166,11 +166,11 @@ func (o *PaintAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
-	if o.RenderHandler == nil {
-		unregistered = append(unregistered, "RenderHandler")
+	if o.HealthCheckHandler == nil {
+		unregistered = append(unregistered, "HealthCheckHandler")
 	}
-	if o.ScobelHandler == nil {
-		unregistered = append(unregistered, "ScobelHandler")
+	if o.PyrMeanShiftFilterHandler == nil {
+		unregistered = append(unregistered, "PyrMeanShiftFilterHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -263,11 +263,11 @@ func (o *PaintAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/render"] = NewRender(o.context, o.RenderHandler)
+	o.handlers["GET"]["/health-check"] = NewHealthCheck(o.context, o.HealthCheckHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/scobel"] = NewScobel(o.context, o.ScobelHandler)
+	o.handlers["GET"]["/v1/pyrMeanShiftFilter"] = NewPyrMeanShiftFilter(o.context, o.PyrMeanShiftFilterHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

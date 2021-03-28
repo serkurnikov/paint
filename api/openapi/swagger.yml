@@ -30,16 +30,51 @@ definitions:
       message:
         type: string
 
+responses:
+  GenericError:
+    description: General errors using same model as used by go-swagger for validation errors.
+    schema:
+      $ref: '#/definitions/Error'
+
+security:
+  - api_key: []
 consumes:
   - application/json
 produces:
   - application/json
 
 paths:
-  /render:
+  /health-check:
     get:
-      operationId: render
-      description: render
+      operationId: healthCheck
+      description: Returns 200 if service works okay.
+      security: []
+      responses:
+        '200':
+          description: Extra details about service status, if any.
+          schema:
+            type: object
+            additionalProperties: true
+        default: { $ref: '#/responses/GenericError' }
+
+  /v1/pyrMeanShiftFilter:
+    get:
+      operationId: pyrMeanShiftFilter
+      description: pyrMeanShiftFiltering
+      security: []
+      parameters:
+        - in: query
+          name: picture
+          type: string
+        - in: query
+          name: sp
+          type: number
+        - in: query
+          name: sr
+          type: number
+        - in: query
+          name: maxLevel
+          type: integer
       responses:
         '200':
           description: response
@@ -50,21 +85,4 @@ paths:
             properties:
               result:
                 type: object
-        default:
-          $ref: '#/definitions/Error'
-  /scobel:
-    get:
-      operationId: scobel
-      description: scobel
-      responses:
-        '200':
-          description: response
-          schema:
-            type: object
-            required:
-              - result
-            properties:
-              result:
-                type: object
-        default:
-          $ref: '#/definitions/Error'
+        default: { $ref: '#/responses/GenericError' }

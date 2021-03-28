@@ -35,14 +35,14 @@ func configureAPI(api *op.PaintAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	if api.RenderHandler == nil {
-		api.RenderHandler = op.RenderHandlerFunc(func(params op.RenderParams) op.RenderResponder {
-			return op.RenderNotImplemented()
+	if api.HealthCheckHandler == nil {
+		api.HealthCheckHandler = op.HealthCheckHandlerFunc(func(params op.HealthCheckParams) op.HealthCheckResponder {
+			return op.HealthCheckNotImplemented()
 		})
 	}
-	if api.ScobelHandler == nil {
-		api.ScobelHandler = op.ScobelHandlerFunc(func(params op.ScobelParams) op.ScobelResponder {
-			return op.ScobelNotImplemented()
+	if api.PyrMeanShiftFilterHandler == nil {
+		api.PyrMeanShiftFilterHandler = op.PyrMeanShiftFilterHandlerFunc(func(params op.PyrMeanShiftFilterParams) op.PyrMeanShiftFilterResponder {
+			return op.PyrMeanShiftFilterNotImplemented()
 		})
 	}
 

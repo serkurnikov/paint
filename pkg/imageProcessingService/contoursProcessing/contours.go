@@ -142,7 +142,7 @@ func DrawHoughCircles(in string, method gocv.HoughMode, dp, minDist, param1, par
 		gocv.Circle(&img, point, radius, colorCountours, 1)
 	}
 
-	out := basePath + fmt.Sprintf("\\dp_%f_minDist_%f_p1_%f_p2_%f_minR_%f_minR_%f_%s",
+	out := basePath + fmt.Sprintf("\\dp_%f_minDist_%f_p1_%f_p2_%f_minR_%v_minR_%v_%s",
 		dp, minDist, param1, param2, minRadius, maxRadius, houghCircles)
 
 	if ok := gocv.IMWrite(out, img); !ok {

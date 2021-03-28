@@ -35,35 +35,52 @@ func init() {
   },
   "basePath": "/",
   "paths": {
-    "/render": {
+    "/health-check": {
       "get": {
-        "description": "render",
-        "operationId": "render",
+        "security": [],
+        "description": "Returns 200 if service works okay.",
+        "operationId": "healthCheck",
         "responses": {
           "200": {
-            "description": "response",
+            "description": "Extra details about service status, if any.",
             "schema": {
               "type": "object",
-              "required": [
-                "result"
-              ],
-              "properties": {
-                "result": {
-                  "type": "object"
-                }
-              }
+              "additionalProperties": true
             }
           },
           "default": {
-            "$ref": "#/definitions/Error"
+            "$ref": "#/responses/GenericError"
           }
         }
       }
     },
-    "/scobel": {
+    "/v1/pyrMeanShiftFilter": {
       "get": {
-        "description": "scobel",
-        "operationId": "scobel",
+        "security": [],
+        "description": "pyrMeanShiftFiltering",
+        "operationId": "pyrMeanShiftFilter",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "picture",
+            "in": "query"
+          },
+          {
+            "type": "number",
+            "name": "sp",
+            "in": "query"
+          },
+          {
+            "type": "number",
+            "name": "sr",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "name": "maxLevel",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "description": "response",
@@ -80,7 +97,7 @@ func init() {
             }
           },
           "default": {
-            "$ref": "#/definitions/Error"
+            "$ref": "#/responses/GenericError"
           }
         }
       }
@@ -106,7 +123,20 @@ func init() {
         }
       }
     }
-  }
+  },
+  "responses": {
+    "GenericError": {
+      "description": "General errors using same model as used by go-swagger for validation errors.",
+      "schema": {
+        "$ref": "#/definitions/Error"
+      }
+    }
+  },
+  "security": [
+    {
+      "api_key": []
+    }
+  ]
 }`))
 	FlatSwaggerJSON = json.RawMessage([]byte(`{
   "consumes": [
@@ -126,33 +156,55 @@ func init() {
   },
   "basePath": "/",
   "paths": {
-    "/render": {
+    "/health-check": {
       "get": {
-        "description": "render",
-        "operationId": "render",
+        "security": [],
+        "description": "Returns 200 if service works okay.",
+        "operationId": "healthCheck",
         "responses": {
           "200": {
-            "description": "response",
+            "description": "Extra details about service status, if any.",
             "schema": {
               "type": "object",
-              "required": [
-                "result"
-              ],
-              "properties": {
-                "result": {
-                  "type": "object"
-                }
-              }
+              "additionalProperties": true
             }
           },
-          "default": {}
+          "default": {
+            "description": "General errors using same model as used by go-swagger for validation errors.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
         }
       }
     },
-    "/scobel": {
+    "/v1/pyrMeanShiftFilter": {
       "get": {
-        "description": "scobel",
-        "operationId": "scobel",
+        "security": [],
+        "description": "pyrMeanShiftFiltering",
+        "operationId": "pyrMeanShiftFilter",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "picture",
+            "in": "query"
+          },
+          {
+            "type": "number",
+            "name": "sp",
+            "in": "query"
+          },
+          {
+            "type": "number",
+            "name": "sr",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "name": "maxLevel",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "description": "response",
@@ -168,7 +220,12 @@ func init() {
               }
             }
           },
-          "default": {}
+          "default": {
+            "description": "General errors using same model as used by go-swagger for validation errors.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
         }
       }
     }
@@ -193,6 +250,19 @@ func init() {
         }
       }
     }
-  }
+  },
+  "responses": {
+    "GenericError": {
+      "description": "General errors using same model as used by go-swagger for validation errors.",
+      "schema": {
+        "$ref": "#/definitions/Error"
+      }
+    }
+  },
+  "security": [
+    {
+      "api_key": []
+    }
+  ]
 }`))
 }

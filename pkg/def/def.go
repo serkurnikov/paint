@@ -1,8 +1,6 @@
 package def
 
 import (
-	"os"
-	"strconv"
 	"time"
 
 	"github.com/powerman/must"
@@ -21,17 +19,6 @@ const (
 	LogHTTPMethod = "httpMethod" // GET, POST, etc.
 	LogHTTPStatus = "httpStatus" // Status code: 200, 404, etc.
 
-)
-
-// Default values.
-var (
-	GrpcServicePort = intGetEnv("GRPC_SERVICE_PORT", 100000)
-	DBHost          = os.Getenv("DB_HOST")
-	DBPort          = intGetEnv("DB_PORT", 5432)
-	DBUser          = os.Getenv("DB_USER")
-	DBName          = os.Getenv("DB_NAME")
-	DBPass          = os.Getenv("DB_PASS")
-	MigrationPath   = os.Getenv("MIGRATION_PATH")
 )
 
 // Init must be called once before using this package.
@@ -60,16 +47,4 @@ func Init() {
 			"request":           " %[1]s=% [2]X",
 			"response":          " %[1]s=% [2]X",
 		}).SetTimeFormat(time.StampMicro)
-}
-
-func intGetEnv(name string, def int) int {
-	value := os.Getenv(name)
-	if value == "" {
-		return def
-	}
-	i, err := strconv.Atoi(value)
-	if err != nil {
-		return def
-	}
-	return i
 }

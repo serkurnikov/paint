@@ -4,24 +4,31 @@ volumes:
   state-db:
 
 services:
-  db:
-    image: postgres:latest
-    restart: always
+  server:
+    build:
+      context: .
+      dockerfile: ./cmd/paints/Dockerfile
     ports:
-      - 5432:5432
+      - 8000:8000
+    depends_on:
+      - database
+      - image-proc
+  image-proc:
+    build:
+      context: .
+      dockerfile: ./cmd/image-proc/Dockerfile
+    ports:
+      - 10000:10000
+    depends_on:
+      - database
+  database:
+    image: postgres:alpine
+    restart: always
     environment:
       POSTGRES_DB: paint
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
     volumes:
       - state-db:/var/lib/postgresql/data
-  rabbit:
-    image: "rabbitmq:3.8.3-management-alpine"
-    ports:
-      - 5672:5672
-      - 15672:15672
-    environment:
-      RABBITMQ_ERLANG_COOKIE: "a-secret-hash"
-      RABBITMQ_DEFAULT_VHOST: ""
-      RABBITMQ_DEFAULT_USER: root
-      RABBITMQ_DEFAULT_PASS: password

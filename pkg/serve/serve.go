@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"net"
 	"net/http"
-	"paint/internal/def"
+	"paint/pkg/def"
 	"paint/pkg/netx"
 
 	"github.com/powerman/must"
@@ -64,12 +64,12 @@ func HTTP(ctx Ctx, addr netx.Addr, handler http.Handler, service string) error {
 	}
 
 	log.Info("serve", def.LogHost, addr.Host(), def.LogPort, addr.Port())
-	errors := make(chan error, 1)
-	go func() { errors <- srv.ListenAndServe() }()
+	errc := make(chan error, 1)
+	go func() { errc <- srv.ListenAndServe() }()
 
 	var err error
 	select {
-	case err = <-errors:
+	case err = <-errc:
 	case <-ctx.Done():
 		err = srv.Shutdown(context.Background())
 	}

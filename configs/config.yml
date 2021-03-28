@@ -1,0 +1,22 @@
+server:
+  host: localhost
+  port: 8000
+  metricAddrPort: 9000
+  timeout:
+    server: 30
+    read: 15
+    write: 10
+    idle: 5
+database:
+  host: localhost
+  port: 5432
+  user: root
+  pass: password
+  name: paint
+  maxIdleConns: 100
+  maxOpenConns: 50
+  migrationPath: migrations
+imageProc:
+  host: localhost
+  port: 10000
+  logLevel: debug

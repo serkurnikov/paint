@@ -9,8 +9,8 @@ import (
 	"image/png"
 	"log"
 	"os"
-	"paint/internal/utils"
 	"paint/pkg/imageProcessingService/colorProcessing/mixcolors"
+	"paint/pkg/utils"
 	"sort"
 )
 

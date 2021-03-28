@@ -1,3 +1,5 @@
+// Package concurrent provide a helpers to setup, start and shutdown a lot
+// of services in parallel.
 package concurrent
 
 import (
@@ -6,8 +8,10 @@ import (
 	"sync"
 )
 
+// Ctx is a synonym for convenience.
 type Ctx = context.Context
 
+// SetupFunc is described in Setup.
 type SetupFunc func(Ctx) (interface{}, error)
 
 // Setup processes map which keys must be references to variables and
@@ -24,7 +28,7 @@ type SetupFunc func(Ctx) (interface{}, error)
 // It will panic if referenced variable can't be nil or corresponding
 // function returns value which can't be assigned to that variable.
 func Setup(ctx Ctx, vars map[interface{}]SetupFunc) error {
-	errors := make(chan error, len(vars))
+	errc := make(chan error, len(vars))
 	var wg sync.WaitGroup
 	for v, setup := range vars {
 		elem := reflect.ValueOf(v).Elem()
@@ -35,14 +39,14 @@ func Setup(ctx Ctx, vars map[interface{}]SetupFunc) error {
 				if err == nil {
 					elem.Set(reflect.ValueOf(res))
 				}
-				errors <- err
+				errc <- err
 				wg.Done()
 			}(setup)
 		}
 	}
 	wg.Wait()
-	close(errors)
-	for err := range errors {
+	close(errc)
+	for err := range errc {
 		if err != nil {
 			return err
 		}
@@ -56,16 +60,16 @@ func Setup(ctx Ctx, vars map[interface{}]SetupFunc) error {
 //
 // Returns error of first imageProcessingService which returned non-nil error, if any.
 func Serve(ctx Ctx, cancel func(), services ...func(Ctx) error) (err error) {
-	errors := make(chan error)
+	errc := make(chan error)
 	for _, service := range services {
 		service := service
-		go func() { errors <- service(ctx) }()
+		go func() { errc <- service(ctx) }()
 	}
 	for range services {
 		if err == nil {
-			err = <-errors
+			err = <-errc
 		} else {
-			<-errors
+			<-errc
 		}
 		cancel()
 	}

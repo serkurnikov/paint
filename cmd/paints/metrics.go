@@ -1,9 +1,11 @@
 package main
 
 import (
-	"github.com/prometheus/client_golang/prometheus"
-	"paint/internal/def"
+	"paint/pkg/def"
 	"runtime"
+
+	"github.com/prometheus/client_golang/prometheus"
+
 )
 
 func initMetrics(reg *prometheus.Registry, namespace string) {
@@ -16,12 +18,12 @@ func initMetrics(reg *prometheus.Registry, namespace string) {
 			Name:      "build_info",
 			Help:      "A metric with a constant '1' value labeled by build-time details.",
 		},
-		[]string{"version", "goversion"},
+		[]string{"version", "go_version"},
 	)
 	reg.MustRegister(version)
 
 	version.With(prometheus.Labels{
 		"version":   def.Version(),
-		"goversion": runtime.Version(),
+		"go_version": runtime.Version(),
 	}).Set(1)
 }

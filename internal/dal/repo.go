@@ -5,7 +5,6 @@ import (
 	"paint/pkg/repo"
 )
 
-// Repo provides access to storage.
 type Repo struct {
 	*repo.Repo
 }

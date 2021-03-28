@@ -1,15 +1,15 @@
-// Package openapi implements OpenAPI server.
 package openapi
 
 import (
 	"context"
 	"fmt"
+	"net"
 	"net/http"
-	"os"
 	"paint/api/openapi/restapi"
 	"paint/api/openapi/restapi/op"
 	"paint/internal/app"
-	"paint/internal/srv/openapi/highload"
+	"paint/pkg/def"
+	"paint/pkg/highload"
 	"paint/pkg/netx"
 
 	"github.com/go-openapi/loads"
@@ -18,17 +18,10 @@ import (
 	"github.com/sebest/xff"
 )
 
-var (
-	MaxWorker = os.Getenv("MAX_WORKERS")
-	MaxQueue  = os.Getenv("MAX_QUEUE")
-)
-
 type (
-	// Ctx is a synonym for convenience.
 	Ctx = context.Context
-	// Log is a synonym for convenience.
 	Log = *structlog.Logger
-	// Config contains configuration for OpenAPI server.
+
 	Config struct {
 		APIKeyAdmin string
 		Addr        netx.Addr
@@ -43,7 +36,7 @@ type (
 
 // NewServer returns OpenAPI server configured to listen on the TCP network
 // address cfg.Host:cfg.Port and handle requests on incoming connections.
-func NewServer(appl app.Appl) (*restapi.Server, error) {
+func NewServer(appl app.Appl, cfg Config) (*restapi.Server, error) {
 	srv := &server{
 		app: appl,
 	}
@@ -57,11 +50,12 @@ func NewServer(appl app.Appl) (*restapi.Server, error) {
 	api := op.NewPaintAPI(swaggerSpec)
 	api.Logger = structlog.New(structlog.KeyUnit, "swagger").Printf
 
-	api.RenderHandler = op.RenderHandlerFunc(srv.RenderHandlerFunc)
+	api.HealthCheckHandler = op.HealthCheckHandlerFunc(srv.HealthCheck)
+	api.PyrMeanShiftFilterHandler = op.PyrMeanShiftFilterHandlerFunc(srv.PyrMeanShiftFilter)
 
 	server := restapi.NewServer(api)
-	server.Host = "localhost"
-	server.Port = 9000
+	server.Host = cfg.Addr.Host()
+	server.Port = cfg.Addr.Port()
 
 	dispatcher := highload.NewDispatcher(100)
 	dispatcher.Run()
@@ -89,6 +83,8 @@ func NewServer(appl app.Appl) (*restapi.Server, error) {
 
 func fromRequest(r *http.Request) (Ctx, Log) {
 	ctx := r.Context()
-	log := structlog.FromContext(context.Background(), nil)
+	remoteIP, _, _ := net.SplitHostPort(r.RemoteAddr)
+	ctx = def.NewContextWithRemoteIP(ctx, remoteIP)
+	log := structlog.FromContext(ctx, nil)
 	return ctx, log
 }

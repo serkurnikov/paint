@@ -7,6 +7,8 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/powerman/structlog"
 	"github.com/pressly/goose"
+
+	_ "github.com/lib/pq"
 )
 
 type Repo struct {

@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"github.com/Jeffail/gabs/v2"
 	"log"
-	"paint/internal/utils"
+	"paint/pkg/utils"
 	"strings"
 )
 

@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
-	"paint/internal/def"
+	"paint/pkg/def"
 )
 
 var (

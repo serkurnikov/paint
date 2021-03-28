@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option go_package = "paint/api/proto/v1";
+
+package api;
+
+import "image_processing_domain.proto";
+
+service ImageProcessingService {
+  rpc PyrMeanShiftFiltering (PyrRequest) returns (DefaultReply) {}
+}
+

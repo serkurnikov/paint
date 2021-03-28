@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option go_package = "paint/api/proto/v1";
+
+package api;
+
+message PyrRequest {
+  string pathPicture = 1;
+  float sp = 2;
+  float sr = 3;
+  int32 maxLevel = 4;
+}
+
+message DefaultReply {
+  string OutPicture = 1;
+}

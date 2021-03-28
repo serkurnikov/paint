@@ -46,7 +46,7 @@ func New(config Config) (*RabbitMQ, error) {
 // startup.
 func (r *RabbitMQ) Connect() error {
 	con, err := amqp.DialConfig(fmt.Sprintf(
-		"%s://%s:%s@%s:%s/%s",
+		"%s://%s:%s@%s:%v/%s",
 		r.config.Schema,
 		r.config.Username,
 		r.config.Password,
@@ -118,7 +118,7 @@ WATCH:
 		for i := 1; i <= r.config.Reconnect.MaxAttempt; i++ {
 			r.mux.RLock()
 			r.connection, err = amqp.DialConfig(fmt.Sprintf(
-				"%s://%s:%s@%s:%s/%s",
+				"%s://%s:%s@%s:%v/%s",
 				r.config.Schema,
 				r.config.Username,
 				r.config.Password,
